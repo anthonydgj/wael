@@ -1,0 +1,95 @@
+# WKT examples from https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry
+POINT (30 10);
+LINESTRING (30 10, 10 30, 40 40);
+POLYGON ((30 10, 40 40, 20 40, 10 20, 30 10));
+POLYGON ((35 10, 45 45, 15 40, 10 20, 35 10),
+    (20 30, 35 35, 30 20, 20 30));
+
+# Expressions are white-space insensitive and case-insensitive
+LineString (
+    1  2 , 
+    3  4
+) ; # LINESTRING(1 2, 3 4)
+
+# Supported data types
+1; 3.14159;                     # numeric
+Point(1 1);                     # point
+LineString(1 1, 2 2, 3 3);      # line string
+Polygon((1 1, 2 2, 3 3, 1 1));  # polygon
+GeometryCollection(Point(1 1)); # geometry collection
+
+# Embed geometry types 
+LineString(Point(1 2), 3 4); # LINESTRING(1 2, 3 4)
+
+# Use basic number arithmetic: + - * / ^
+Point((4 + 1) (2 * 9)); # POINT(5 18)
+
+# Use basic gemoetry arithmetic
+Point(1 2) + Point(3 4); # Point(4 6)
+LineString(1 1, 2 2, 3 3) + LineString(0 1, 2 3, 4 5); # LINESTRING(1 2, 4 5, 7 8)
+LineString(1 1, 2 2, 3 3) + Point(1 2); # LINESTRING(2 3, 3 4, 4 5)
+
+# Define variables
+longitude = 2;
+latitude = 3;
+a = Point(longitude latitude); # POINT(2 3)
+myLine = LineString(a, Point(4 5), 8 9); # LINESTRING(2 3, 4 5, 8 9)
+
+# Define functions
+getLatitude = Function(() => 55);
+createPointOneArg = Function(x => Point(x getLatitude()));
+createPointTwoArgs = Function((x, y) => Point(x y));
+otherLine = LineString(createPointOneArg(10), createPointTwoArgs(20, 55)); # LINESTRING(10 55, 20 55)
+
+# Define multi-line functions
+myFunction = Function(a => {
+    b = 2;
+    Point(a b)
+});
+myPoint = myFunction(1); # POINT(1 2)
+
+# Variables are function-scoped
+x = 1;
+createPointScopedVariables = Function(() => {
+    x = 2;
+    Point(x x)
+});
+LineString(Point(x x), createPointScopedVariables()); # LINESTRING(1 1, 2 2)
+
+# Execute anonymous functions
+latitude = Function(() => 12 + 4)(); # 16
+
+# Map values in array-like geometries using the pipe operator
+mappedLineString = LineString(1 1, 2 2, 3 3) 
+    | Function(l => l + Point(10 10)); # LINESTRING(11 11, 12 12, 13 13)
+
+# Generate point grid
+size = 50;
+spacing = 10;
+grid = Generate size Function(x => 
+    Generate size Function(y => 
+        Point((x * spacing) (y * spacing))
+    )
+);
+
+# Create multiple rings of points
+Circles = Function((numRings, radius, count) => {
+    Generate numRings Function(x => {
+        PointCircle((radius * (x + 1)), count)
+    })
+});
+
+# the final expression is returned from the script
+GeometryCollection(
+    myLine,
+    otherLine,
+    myPoint,
+    Point (4 latitude),
+    (Point(3 3) * Point(2 2)),
+    LineString (4 (12 + (3 * 2.5) + 4), -24.56 15.24, (Point(3 3) * Point(2 2))),
+    Polygon ((30 10, 40 40, 20 40, 10 20, (30+1) (10/2), 30 10)),
+    mappedLineString,
+    GeometryCollection(Point(1 1), Point(2 2)),
+    Circles(5, 5, 20),
+    grid
+) | Flatten
