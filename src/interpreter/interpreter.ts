@@ -22,10 +22,6 @@ import { BuiltInFunctions } from './built-in-functions';
 import { GRAMMAR } from './grammar';
 import { readFileSync } from 'fs';
 
-// Used for local development
-// const fs = require('fs');
-// const grammarString = fs.readFileSync('./src/interpreter/grammar.ohm', 'utf-8');
-
 const grammarString = GRAMMAR;
 
 export namespace Interpreter {
