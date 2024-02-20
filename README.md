@@ -4,7 +4,7 @@ WAEL is a domain-specific language for generating and manipulating geometry patt
 
 Basic support is currently available for the following 2D geometries: `POINT`, `LINESTRING`, `POLYGON`, `MULTIPOINT`, `MULTILINESTRING`, `GEOMETRYCOLLECTION`.
 
-**Try out the language at [geojsonscript.io](https://geojsonscript.io?lang=Wael) with the `WAEL` code editor option selected.**
+**Try out the language at [geojsonscript.io](https://geojsonscript.io?lang=WAEL) with the `WAEL` code editor option selected.**
 
 
 ## Usage
