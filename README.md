@@ -378,7 +378,7 @@ data = Import('etna.wael');
 data # POINT (14.99 37.75)
 ```
 
-Supported data formats include WKT, GeoJSON, and `WAEL`.
+Supported data formats include WKT, GeoJSON, and WAEL.
 
 ### Built-In Functions
 
@@ -450,7 +450,7 @@ npm test
 
 ## Implementation Details
 
-`WAEL` is implemented with TypeScript using [Ohm](https://ohmjs.org/). When code is evaluated, geometries are stored in an intermediate representation (IR) as GeoJSON objects, which can then be transformed to either WKT or GeoJSON as output.
+WAEL is implemented with TypeScript using [Ohm](https://ohmjs.org/). When code is evaluated, geometries are stored in an intermediate representation (IR) as GeoJSON objects, which can then be transformed to either WKT or GeoJSON as output.
 
 ## License
 
