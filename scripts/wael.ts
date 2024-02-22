@@ -4,6 +4,7 @@ import { Options, OutputFormat, Wael } from "../src/main";
 
 import { Interpreter } from '../src/interpreter/interpreter';
 import chalk from 'chalk';
+import { toString } from '../src/interpreter/helpers';
 import yargs from 'yargs'
 
 const readline = require('readline');
@@ -166,6 +167,9 @@ prompt();
 } else {
     if (hasEvaluated) {
         if (typeof result !== 'undefined') {
+            if (typeof result === 'object') {
+                result = toString(result);    
+            }
             console.log(result);
         }
     } else {
