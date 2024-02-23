@@ -50,6 +50,5 @@ test('should concatenate geometries', () => {
 
     result = defaultEval(`Point(2 2) ++ GeometryCollection(Point(3 3), Point(4 4))`);
     expect(result).toBeTruthy();
-    expect(result.geometry.geometries[0].coordinates).toStrictEqual([2, 2]);
-    expect(result.geometry.geometries[1].geometries.map((f: any) => f.coordinates)).toStrictEqual([[3, 3], [4, 4]]);
+    expect(result.geometry.geometries.map((f: any) => f.coordinates)).toStrictEqual([[2, 2], [3, 3], [4, 4]]);
 });

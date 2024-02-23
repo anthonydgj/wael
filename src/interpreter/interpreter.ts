@@ -194,6 +194,10 @@ export namespace Interpreter {
                     return turf.geometryCollection(geom1.geometries.concat([geom2])).geometry;
                 }
 
+                if (type2 === GeometryType.GeometryCollection) {
+                    return turf.geometryCollection([geom1].concat(...geom2.geometries)).geometry;
+                }
+
                 return turf.geometryCollection([geom1, geom2]).geometry;
             },
             PipeExp(a, op, f) {

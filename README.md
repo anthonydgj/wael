@@ -127,7 +127,7 @@ wael -e "start = Point(1 1)" path.wael
 
 The `start` variable will be defined in the `--evaluate` argument and the output will be:
 ```
-GEOMETRYCOLLECTION (POINT (1 1), GEOMETRYCOLLECTION (POINT (2 2), POINT (3 3), POINT (4 4)))
+GEOMETRYCOLLECTION (POINT (1 1), POINT (2 2), POINT (3 3), POINT (4 4))
 ```
 
 <br>
