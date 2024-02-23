@@ -174,3 +174,17 @@ test('should support variable type arithmetic', () => {
     expect(geometries[3].coordinates).toStrictEqual([[[4, 4], [5, 5], [6, 6]], [[7, 7], [8, 8], [9, 9]]]);
     expect(geometries[4].coordinates).toStrictEqual([[[4, 4], [5, 5], [6, 6], [4, 4]], [[10, 10], [11, 11], [12, 12], [10, 10]]]);
 });
+
+test('should obey operator precedence', () => {
+    let result = defaultEval(`1 + 2 - 3 * 4 / 5 ^ 6`);
+    expect(result.toFixed(6)).toBe(`2.999232`);
+
+    result = defaultEval(`(1) + (2) - (3) * (4) / (5) ^ (6)`);
+    expect(result.toFixed(6)).toBe(`2.999232`);
+
+    result = defaultEval(`(1 + (2 - (3 * (4 / (5 ^ (6))))))`);
+    expect(result.toFixed(6)).toBe(`2.999232`);
+
+    result = defaultEval(`(((((7 + 6) - 5) * 4) / 3) ^ 2)`);
+    expect(result.toFixed(9)).toBe(`113.777777778`);
+});

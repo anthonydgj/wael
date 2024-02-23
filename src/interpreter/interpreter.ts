@@ -400,49 +400,49 @@ export namespace Interpreter {
             PointNumberValue_expression(_leftParen, exp, _rightParen) {
                 return exp.eval();
             },
-            ArithmeticAddExp_plus(a, _, b) {
+            ArithmeticAdd_plus(a, _, b) {
                 const result = arithmeticOperationExp(a, b, (a, b) => a + b);
                 if (result !== undefined) {
                     return result;
                 }
                 throw new OperationNotSupported(`${toString(a.eval())} + ${toString(b.eval())}`);
             },
-            ArithmeticAddExp_minus(a, _, b) {
+            ArithmeticAdd_minus(a, _, b) {
                 const result = arithmeticOperationExp(a, b, (a, b) => a - b);
                 if (result !== undefined) {
                     return result;
                 }
                 throw new OperationNotSupported(`${toString(a.eval())} - ${toString(b.eval())}`);
             },
-            ArithmeticMulExp_times(a, _, b) {
+            ArithmeticMul_times(a, _, b) {
                 const result = arithmeticOperationExp(a, b, (a, b) => a * b);
                 if (result !== undefined) {
                     return result;
                 }
                 throw new OperationNotSupported(`${toString(a.eval())} * ${toString(b.eval())}`);
             },
-            ArithmeticMulExp_divide(a, _, b) {
+            ArithmeticMul_divide(a, _, b) {
                 const result = arithmeticOperationExp(a, b, (a, b) => a / b);
                 if (result !== undefined) {
                     return result;
                 }
                 throw new OperationNotSupported(`${toString(a.eval())} / ${toString(b.eval())}`);
             },
-            ArithmeticMulExp_mod(a, _, b) {
+            ArithmeticMul_mod(a, _, b) {
                 const result = arithmeticOperationExp(a, b, (a, b) => a % b);
                 if (result !== undefined) {
                     return result;
                 }
                 throw new OperationNotSupported(`${toString(a.eval())} % ${toString(b.eval())}`);
             },
-            ArithmeticExpExp_power(a, _, b) {
+            ArithmeticExp_power(a, _, b) {
                 const result = arithmeticOperationExp(a, b, (a, b) => Math.pow(a, b));
                 if (result !== undefined) {
                     return result;
                 }
                 throw new OperationNotSupported(`${toString(a.eval())} ^ ${toString(b.eval())}`);
             },
-            ArithmeticPriExp_paren(_l, exp, _r) {
+            ArithmeticPri_paren(_l, exp, _r) {
                 return exp.eval();
             },
             exactNumericLiteral_decimalWithWholeNumber(whole, _, decimal) {

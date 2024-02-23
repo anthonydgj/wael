@@ -74,21 +74,23 @@ WAEL {
     	| type
         
     // Arithmetic expressions
-    ParenthesizedArithmetic<Type> = "(" Arithmetic<Type> ")"
-    Arithmetic<Type> = ArithmeticAddExp<Type>
-    	| Type
-    ArithmeticAddExp<Type> = ArithmeticAddExp<Type> plusOperator ArithmeticMulExp<Type>  -- plus
-      | ArithmeticAddExp<Type> minusOperator ArithmeticMulExp<Type>  -- minus
-      | ArithmeticMulExp<Type>
-    ArithmeticMulExp<Type> = ArithmeticMulExp<Type> timesOperator ArithmeticExpExp<Type>  -- times
-      | ArithmeticMulExp<Type> divideOperator ArithmeticExpExp<Type>  -- divide
-      | ArithmeticMulExp<Type> modOperator ArithmeticExpExp<Type>  -- mod
-      | ArithmeticExpExp<Type>
-    ArithmeticExpExp<Type> = ArithmeticPriExp<Type> powerOperator ArithmeticExpExp<Type>  -- power
-      | ArithmeticPriExp<Type>
-    ArithmeticPriExp<Type> = "(" Arithmetic<Type> ")"  -- paren
-        | Type
-        
+    Arithmetic<Type> = ArithmeticAdd<Type>
+    ArithmeticAdd<Type> = 
+            | ArithmeticAdd<Type> plusOperator ArithmeticMul<Type>  -- plus
+            | ArithmeticAdd<Type> minusOperator ArithmeticMul<Type>  -- minus
+            | ArithmeticMul<Type>
+    ArithmeticMul<Type> = 
+            | ArithmeticMul<Type> timesOperator ArithmeticExp<Type>  -- times
+            | ArithmeticMul<Type> divideOperator ArithmeticExp<Type>  -- divide
+            | ArithmeticMul<Type> modOperator ArithmeticExp<Type>  -- mod
+            | ArithmeticExp<Type>
+    ArithmeticExp<Type> = 
+            | ArithmeticPri<Type> powerOperator ArithmeticExp<Type>  -- power
+            | ArithmeticPri<Type>
+    ArithmeticPri<Type> = 
+            | Type
+            | leftParen Arithmetic<Type> rightParen  -- paren
+            
    	// Operators
    	operator = 
    		| expressionDelimiter
