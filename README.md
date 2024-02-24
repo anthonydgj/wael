@@ -41,8 +41,8 @@ Point(-110 38) + PointGrid(20, 10, 2)
 Point(-110 38) +
     PointGrid(20, 10, 2) || 
     Function(p => {
-        xOffset = 1 - random() * 2;
-        yOffset = 1 - random() * 2;
+        xOffset = 1 - Math:random() * 2;
+        yOffset = 1 - Math:random() * 2;
         p + Point(xOffset yOffset)
     })
 ```
@@ -253,17 +253,17 @@ Geometry properties and methods can be accessed using the accessor (`:`) operato
 ```
 p = Point(3 4);
 p:type(); # Point
-p:x(); # 3
-p:y(); # 4
+p:x; # 3
+p:y; # 4
 
 g = GeometryCollection(Point(1 2), Point(3 4));
-g:type(); # GeometryCollection
-g:numGeometries(); # 2
+g:type; # GeometryCollection
+g:numGeometries; # 2
 g:geometryN(1); # POINT (3 4)
 
 l = LineString(1 2, 3 4);
-l:type(); # LineString
-l:numPoints(); # 2
+l:type; # LineString
+l:numPoints; # 2
 l:pointN(1); # POINT (3 4)
 ```
 
@@ -277,8 +277,8 @@ p # POINT (3 4)
 
 Functions can have parameters bound using the `bind()` method:
 ```
-Generate 10 Function(i => { x = random() * 100; Point(x x) }) # Create random points
-    || Round:bind(2)   # Round coordinates to 2 decimal places
+Generate 10 Function(i => { x = Math:random() * 100; Point(x x) }) 
+    || Round:bind(2)   
 
 # GEOMETRYCOLLECTION (POINT (18.98 18.98), POINT (14.26 14.26), ...)
 ```
@@ -298,12 +298,12 @@ Numeric values can be used in comparison expressions `< <= > >= == !=`, which re
 ```
 a = Point(1 2);
 b = Point(3 4);
-a:x() < b:x() # true
+a:x < b:x # true
 ```
 
 Control flow can be dictated using `If-Then-Else` expressions:
 ```
-result = If (Point(1 2):x() < 3)
+result = If (Point(1 2):x < 3)
          Then (LineString(1 1, 2 2, 3 3))
          Else (Point(0 0));
 result # LINESTRING(1 1, 2 2, 3 3)
@@ -312,7 +312,7 @@ result # LINESTRING(1 1, 2 2, 3 3)
 All three parts of the `If-Then-Else` expression are required. The `Then` and `Else` blocks can contain multiple lines, similar to a function body.
 ```
 points = GeometryCollection(Point(0 0), Point(0 0), Point(0 0), Point(0 0), Point(0 0));
-If (points:numGeometries() > 3) Then (
+If (points:numGeometries > 3) Then (
     a = Point(1 2);
     b = Point(3 4);
     a + b
@@ -368,7 +368,7 @@ LineString(1.4325 1.5325, 2.23525 2.7453, 3.26474 3.34643) |* Round:bind(1)
 
 Array-like geometries can be filtered using the filter (`|>`) operator:
 ```
-LineString(1 1, 2 2, 3 3) |> Function((x, i) => x:x() <= 2) # LINESTRING (1 1, 2 2)
+LineString(1 1, 2 2, 3 3) |> Function((x, i) => x:x <= 2) # LINESTRING (1 1, 2 2)
 ```
 
 ### Importing
@@ -382,7 +382,12 @@ Supported data formats include WKT, GeoJSON, and WAEL.
 
 ### Built-In Functions
 
-Several built-in functions are provided to support geometry generation and transformation. Additionally, all JavaScript `Math` [static properties](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math#static_properties) and [static functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math#static_methods) are available in top-level variables.
+Several built-in functions are provided to support geometry generation and transformation. Additionally, all JavaScript `Math` [static properties](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math#static_properties) and [static functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math#static_methods) are accessible from the `Math` variable:
+
+```
+pi = Math:PI; # 3.141592653589793
+Math:round(pi) # 3
+```
 
 #### Flatten
 `Flatten(g)` - flatten all geometries in a `GEOMETRYCOLLECTION`.

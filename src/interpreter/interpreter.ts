@@ -29,10 +29,11 @@ export namespace Interpreter {
     export const IDENTIFIER_LAST = '$?';
     
     export const STANDARD_LIBRARY: ScopeBindings = {};
-
+    const math: { [prop: string]: any } = {};
     Object.getOwnPropertyNames(Math).forEach(prop => {
-        STANDARD_LIBRARY[prop] = (Math as any)[prop];
+        math[prop] = (Math as any)[prop];
     });
+    STANDARD_LIBRARY['Math'] = math;
     STANDARD_LIBRARY['Flatten'] = BuiltInFunctions.Flatten;
     STANDARD_LIBRARY['PointCircle'] = BuiltInFunctions.PointCircle;
     STANDARD_LIBRARY['PointGrid'] = BuiltInFunctions.PointGrid;
@@ -290,18 +291,31 @@ export namespace Interpreter {
                 const value = fn(...params);
                 return value;
             },
-            AccessibleExp_method(val, _accessOp, prop, p) {
+            AccessibleExp_method(val, _accessOp, prop, optionalParams: ohm.Node) {
                 const value = val.eval();
-                const params = p.eval();
                 const identifier = prop.sourceString;
+                const isInvocation = optionalParams.children.length > 0;
+                const parameters = isInvocation ? optionalParams.children.map(c => c.eval())[0] : [];
+
+                // Function type accessor
                 if (typeof value === 'function') {
                     if (identifier === 'bind') {
-                        return value.bind(undefined, ...params)
+                        return value.bind(undefined, ...parameters)
                     }
-                } else if (isAnyGeometryType(value)) {
-                    return geometryAccessor(val, prop, p);
+                    throw new OperationNotSupported(`Method ${identifier} not supported on function type`);
                 }
-                return value;
+                
+                // Geometry type accessor
+                if (isAnyGeometryType(value)) {
+                    return geometryAccessor(val, prop, parameters);
+                }
+
+                // Object type accessor
+                const resolvedValue = value[identifier];
+                if (typeof resolvedValue === 'function' && isInvocation) {
+                    return resolvedValue(...parameters);
+                }
+                return resolvedValue;
             },
             Invocation(_leftParen, list, _rightParen) {
                 return list.asIteration().children.map(c => c.eval());

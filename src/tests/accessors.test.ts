@@ -2,13 +2,21 @@ import { defaultEval } from "./test-utils";
 
 test('should access point coordinates', () => {
     let result;
+    result = defaultEval(`Point(2 3):x`);
+    expect(result).toBe(2);
     result = defaultEval(`Point(2 3):x()`);
     expect(result).toBe(2);
     result = defaultEval(`Point(2 3):y()`);
     expect(result).toBe(3);
+    result = defaultEval(`Point(2 3):y`);
+    expect(result).toBe(3);
     result = defaultEval(`a = Point(2 3); a:x()`);
     expect(result).toBe(2);
+    result = defaultEval(`a = Point(2 3); a:x`);
+    expect(result).toBe(2);
     result = defaultEval(`a = Point(2 3); a:y()`);
+    expect(result).toBe(3);
+    result = defaultEval(`a = Point(2 3); a:y`);
     expect(result).toBe(3);
 });
 

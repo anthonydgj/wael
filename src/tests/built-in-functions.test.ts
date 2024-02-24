@@ -61,3 +61,17 @@ test('should round number values', () => {
     result = defaultEval(`Round(1, 1.255)`);
     expect(result).toBe(1.3);
 });
+
+test('should access Math object properties', () => {
+    let result = defaultEval(`Math:PI`);
+    expect(+result.toFixed(5)).toBe(3.14159);
+
+    result = defaultEval(`Math:round(Math:PI)`);
+    expect(result).toBe(3);
+
+    result = defaultEval(`Math:random()`);
+    expect(typeof result === 'number').toBeTruthy();
+
+    result = defaultEval(`random = Math:random; random()`);
+    expect(typeof result === 'number').toBeTruthy();
+});

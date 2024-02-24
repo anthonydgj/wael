@@ -54,7 +54,7 @@ WAEL {
     ComputedPrimitive = FunctionCallExp | Identifier
 
     AccessibleExp<Type> = 
-    	| Type accessorOperator Identifier Invocation --method
+    	| Type accessorOperator Identifier Invocation? --method
     	| Type
 
     // Additional operation expressions

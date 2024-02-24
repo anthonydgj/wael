@@ -236,10 +236,9 @@ export function convertToGeometry(json: any): any {
     return json;
 }
 
-export function geometryAccessor(v: any, p: any, par: any) {
+export function geometryAccessor(v: any, p: any, params: any[]) {
     const value = v.eval();
     const property = p.sourceString;
-    const params = par.eval();
 
     if (!isAnyGeometryType(value)) {
         throw new Error(`Expected a geometry type for value "${v.sourceString}" but got: ${toString(value)}`);
