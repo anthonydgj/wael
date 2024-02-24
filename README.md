@@ -211,19 +211,18 @@ Point(1 1) ++ Polygon((2 2, 3 3, 4 4, 2 2)); # GEOMETRYCOLLECTION(POINT (1 1),PO
 
 ### Variables
 
-Variables are defined using the equal (`=`) operator:
-```
-longitude = 2;
-latitude = 3;
-Point(longitude latitude) # POINT (2 3)
-```
-
-Supported data types include: 
+Variables are defined using the equal (`=`) operator. Supported data types include: 
 * Number
-* Boolean: `true`, `false`
+* Boolean: `True`, `False`
 * Geometry: `Point`, `MultiPoint`, `LineString`, `MultiLineString`, `Polygon`, `GeometryCollection`
 * Function
 
+```
+longitude = 2;
+bool = True; 
+p = Point(longitude 3); # POINT (2 3)
+f = Function(p => p + Point(1 1)); # POINT (3 4)
+```
 
 ### Functions
 
@@ -390,7 +389,7 @@ Math:round(pi) # 3
 ```
 
 #### Flatten
-`Flatten(g)` - flatten all geometries in a `GEOMETRYCOLLECTION`.
+`Flatten(g)` - flatten all geometries in a `GEOMETRYCOLLECTION`
 ```
 Flatten(GeometryCollection(Point(1 1), GeometryCollection(Point(2 2)))) # GEOMETRYCOLLECTION(POINT (1 1),POINT (2 2))
 ```
@@ -402,19 +401,19 @@ PointGrid(20, 10, 2) # GEOMETRYCOLLECTION(POINT (0 0),POINT (0 2), ... POINT (38
 ```
 
 #### PointCircle
-`PointCircle(radius, count)` - create a circle of points with a given radius and point count.
+`PointCircle(radius, count)` - create a circle of points with a given radius and point count
 ```
 PointCircle(5, 50) # GEOMETRYCOLLECTION(POINT (5 0),POINT (4.9605735065723895 0.6266661678215213), ... )
 ```
 
 #### Rotate
-`Rotate(angleDegrees, originPoint, geometry)` - rotate a geometry by the specified degrees around an origin point.
+`Rotate(angleDegrees, originPoint, geometry)` - rotate a geometry by the specified degrees around an origin point
 ```
 Rotate(23, Point(0 0), MultiPoint(1 1, 2 2, 3 3)) # MULTIPOINT (1.3112079320509338 0.5297935627181312, ... )
 ```
 
 #### Round
-`Round(precision, val)` - round a number or `Point` coordinates with a given precision (defaults to 0).
+`Round(precision, val)` - round a number or `Point` coordinates with a given precision (defaults to 0)
 ```
 Round(1, 1.255) # 1.3
 ```
