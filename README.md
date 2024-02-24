@@ -29,7 +29,7 @@ The following examples use language constructs and built-in functions to generat
 
 **Create a 20x10 grid of points with 2-unit spacing starting from coordinates -110, 38:**
 ```
-Point(-110 39) + PointGrid(20, 10, 2)
+Point(-110 38) + PointGrid(20, 10, 2)
 ```
 
 <image src="examples/grid.jpg" alt="Point grid" width="700px" />
@@ -38,7 +38,7 @@ Point(-110 39) + PointGrid(20, 10, 2)
 
 **Create the same grid and introduce random offsets:**
 ```
-Point(-110 39) +
+Point(-110 38) +
     PointGrid(20, 10, 2) || 
     Function(p => {
         xOffset = 1 - random() * 2;
@@ -64,7 +64,7 @@ PointGrid(20, 10, 4) | Rotate:bind(23, Point(0 0))
 numRings = 5;
 Generate numRings Function(i => {
     ring = numRings - i;
-    (PointCircle((ring * 2), (ring * 10))) | ToPolygon
+    PointCircle((ring * 2), (ring * 10)) | ToPolygon
 })
 ```
 <image src="examples/circles.jpg" alt="Nested circular polygons" width="700px" />
