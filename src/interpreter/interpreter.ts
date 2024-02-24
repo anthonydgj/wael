@@ -223,34 +223,46 @@ export namespace Interpreter {
                     case '|>':
                         listFn = Array.prototype.filter;
                         break;
+                    case '|-':
+                        listFn = Array.prototype.reduce;
+                        break;
                     default:
                         throw new Error(`Operator ${operator} not supported`)
                 }
 
                 if (isGeometryType(GeometryType.GeometryCollection, val)) {
-                    const mappedList = listFn.call(list, (v: any, i: number) => fn(v, i));
+                    const mappedList = listFn.call(list, fn);
+                    if (isAnyGeometryType(mappedList)) {
+                        return mappedList;
+                    }
                     return turf.geometryCollection(mappedList).geometry;
                 }
 
                 if (isGeometryType(GeometryType.LineString, val)) {
-                    const mappedList = listFn.call(
+                    let mappedList = listFn.call(
                         list.map(coords => turf.point(coords).geometry),
-                        (v: any, i: number) => fn(v, i)
-                    )
-                    .map((v: any) => v.coordinates);
+                        fn
+                    );
+                    if (isAnyGeometryType(mappedList)) {
+                        return mappedList;
+                    }
+                    mappedList = mappedList.map((v: any) => v.coordinates);
                     return turf.lineString(mappedList).geometry;
                 }
 
                 if (isGeometryType(GeometryType.MultiPoint, val)) {
-                    const mappedList = listFn.call(
+                    let mappedList = listFn.call(
                         list.map(coords => turf.point(coords).geometry),
-                        (v: any, i: number) => fn(v, i)
-                    )
-                    .map((v: any) => v.coordinates);
+                        fn
+                    );
+                    if (isAnyGeometryType(mappedList)) {
+                        return mappedList;
+                    }
+                    mappedList = mappedList.map((v: any) => v.coordinates);
                     return turf.multiPoint(mappedList).geometry;
                 }
 
-                // TODO -- Line types (Polygon, MultiLineString)
+                // TODO -- Multi line types (Polygon, MultiLineString)
 
                 throw Error(`Error mapping values to geometries`);
             },

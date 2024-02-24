@@ -106,12 +106,13 @@ WAEL {
         | assignmentOperator
         | notOperator
 
-    anyPipeOperator = doublePipeOperator | coordinatesPipeOperator | filterOperator | pipeOperator
+    anyPipeOperator = doublePipeOperator | coordinatesPipeOperator | filterOperator | reduceOperator | pipeOperator
 
     pipeOperator = "|"
     coordinatesPipeOperator = "|*"
     doublePipeOperator = "||"
     filterOperator = "|>"
+    reduceOperator = "|-"
     concatOperator = "++"
     plusOperator = "+"
     minusOperator = "-"
@@ -120,7 +121,7 @@ WAEL {
     powerOperator = "^"
     modOperator = "%"
     accessorOperator = ":"
-    
+        
     // Function expressions
     FunctionTextExp = functionKeyword LeftParen FunctionExp RightParen
     FunctionExp = FunctionParameters "=>" FunctionBody

@@ -370,6 +370,13 @@ Array-like geometries can be filtered using the filter (`|>`) operator:
 LineString(1 1, 2 2, 3 3) |> Function((x, i) => x:x <= 2) # LINESTRING (1 1, 2 2)
 ```
 
+#### Reduce
+
+Array-like geometries can be reduced using the reduce (`|-`) operator:
+```
+LineString(1 1, 2 2, 3 3) |- Function((total, current, index) => total + current) # Point(6 6)
+```
+
 ### Importing
 Data can be imported using `Import` expressions. For example, if the file `etna.wael` contains `Point(14.99 37.75)`, it can be imported using:
 ```

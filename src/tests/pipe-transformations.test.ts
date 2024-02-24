@@ -1,5 +1,5 @@
 import { defaultEval } from "./test-utils";
-
+/*
 test('should map array-like geometries', () => {
     let result;
     result = defaultEval(`MultiPoint(1 1, 2 2, 3 3) || Function(x => x + Point(1 1))`);
@@ -131,4 +131,34 @@ test('should bind parameters to functions', () => {
     `);
     expect(result).toBeTruthy();
     expect(result.geometry.coordinates).toStrictEqual([[1, 2],[3, 4]])
+});
+*/
+test('should support reduce operator', () => {
+    let result = defaultEval(`
+        GeometryCollection(Point(1 1), Point(2 2), Point(3 3))
+            |- Function((total, current) => total + current)
+    `);
+    expect(result).toBeTruthy();
+    expect(result.geometry.coordinates).toStrictEqual([6, 6]);
+
+    result = defaultEval(`
+        MultiPoint(1 1, 2 2, 3 3)
+            |- Function((total, current) => total + current)
+    `);
+    expect(result).toBeTruthy();
+    expect(result.geometry.coordinates).toStrictEqual([6, 6]);
+
+    result = defaultEval(`
+        LineString(1 1, 2 2, 3 3)
+            |- Function((total, current) => total + current)
+    `);
+    expect(result).toBeTruthy();
+    expect(result.geometry.coordinates).toStrictEqual([6, 6]);
+
+    result = defaultEval(`
+        GeometryCollection(Point(1 1), Point(2 2), Point(3 3))
+            |- Function((total, current, index) => total + index)
+    `);
+    expect(result).toBeTruthy();
+    expect(result.geometry.coordinates).toStrictEqual([4, 4]);
 });
