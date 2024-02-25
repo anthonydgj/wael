@@ -38,9 +38,8 @@ Point(-110 38) + PointGrid(20, 10, 2)
 
 **Create the same grid and introduce random offsets:**
 ```
-Point(-110 38) +
-    PointGrid(20, 10, 2) || 
-    Function(p => {
+Point(-110 38) + PointGrid(20, 10, 2)
+    || Function(p => {
         xOffset = 1 - Math:random() * 2;
         yOffset = 1 - Math:random() * 2;
         p + Point(xOffset yOffset)
@@ -218,10 +217,10 @@ Variables are defined using the equal (`=`) operator. Supported data types inclu
 * Function
 
 ```
-longitude = 2;
-bool = True; 
-p = Point(longitude 3); # POINT (2 3)
-f = Function(p => p + Point(1 1)); # POINT (3 4)
+longitude = 2;              # number
+bool = True;                # boolean
+p = Point(longitude 3);     # geometry
+fn = Function(p => p + 1);  # function
 ```
 
 ### Functions
@@ -251,7 +250,7 @@ myFn(1, 2, Point(3 4)) # LINESTRING (1 2, 3 4)
 Geometry properties and methods can be accessed using the accessor (`:`) operator:
 ```
 p = Point(3 4);
-p:type(); # Point
+p:type; # Point
 p:x; # 3
 p:y; # 4
 
@@ -357,15 +356,14 @@ LineString(1 1, 2 2, 3 3) || Function((x, i) => x * i) # LINESTRING (0 0, 2 2, 6
 
 Each point in a geometry can be transformed using the pipe-all (`|*`) operator:
 ```
-LineString(1.4325 1.5325, 2.23525 2.7453, 3.26474 3.34643) |* Round:bind(1)
-# LINESTRING (1.4 1.5, 2.2 2.7, 3.3 3.3)
+LineString(1.4325 1.5325, 2.23525 2.7453, 3.26474 3.34643) |* Round:bind(1) # LINESTRING (1.4 1.5, 2.2 2.7, 3.3 3.3)
 ```
 
 #### Filtering
 
 Array-like geometries can be filtered using the filter (`|~`) operator:
 ```
-LineString(1 1, 2 2, 3 3) |~ Function((x, i) => x:x <= 2) # LINESTRING (1 1, 2 2)
+LineString(1 1, 2 2, 3 3) |~ Function((p, i) => p:x <= 2) # LINESTRING (1 1, 2 2)
 ```
 
 #### Reducing
@@ -389,8 +387,8 @@ Supported data formats include WKT, GeoJSON, and WAEL.
 Several built-in functions are provided to support geometry generation and transformation. Additionally, all JavaScript `Math` [static properties](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math#static_properties) and [static functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math#static_methods) are accessible from the `Math` variable:
 
 ```
-pi = Math:PI; # 3.141592653589793
-Math:round(pi) # 3
+pi = Math:PI;   # 3.141592653589793
+Math:round(pi)  # 3
 ```
 
 #### Flatten
