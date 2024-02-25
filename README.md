@@ -355,8 +355,6 @@ The array map index is also available as function parameter:
 LineString(1 1, 2 2, 3 3) || Function((x, i) => x * i) # LINESTRING (0 0, 2 2, 6 6)
 ```
 
-#### Point Mapping
-
 Each point in a geometry can be transformed using the pipe-all (`|*`) operator:
 ```
 LineString(1.4325 1.5325, 2.23525 2.7453, 3.26474 3.34643) |* Round:bind(1)
@@ -365,16 +363,16 @@ LineString(1.4325 1.5325, 2.23525 2.7453, 3.26474 3.34643) |* Round:bind(1)
 
 #### Filtering
 
-Array-like geometries can be filtered using the filter (`|>`) operator:
+Array-like geometries can be filtered using the filter (`|~`) operator:
 ```
-LineString(1 1, 2 2, 3 3) |> Function((x, i) => x:x <= 2) # LINESTRING (1 1, 2 2)
+LineString(1 1, 2 2, 3 3) |~ Function((x, i) => x:x <= 2) # LINESTRING (1 1, 2 2)
 ```
 
-#### Reduce
+#### Reducing
 
-Array-like geometries can be reduced using the reduce (`|-`) operator:
+Array-like geometries can be reduced using the reduce (`|>`) operator:
 ```
-LineString(1 1, 2 2, 3 3) |- Function((total, current, index) => total + current) # Point(6 6)
+LineString(1 1, 2 2, 3 3) |> Function((total, current, index) => total + current) # Point(6 6)
 ```
 
 ### Importing

@@ -220,10 +220,10 @@ export namespace Interpreter {
                     case '||':
                         listFn = Array.prototype.map;
                         break;
-                    case '|>':
+                    case '|~':
                         listFn = Array.prototype.filter;
                         break;
-                    case '|-':
+                    case '|>':
                         listFn = Array.prototype.reduce;
                         break;
                     default:
