@@ -443,7 +443,7 @@ npm run build
 
 To build the CLI binary, run:
 ```
-npm run build-all
+npm run build-binary
 ```
 
 The binary will be available at:
