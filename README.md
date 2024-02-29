@@ -192,14 +192,14 @@ Array-like geometries can be combined using the concatenate (`++`) operator:
 ```
 LineString(1 1, 2 2) ++ LineString(3 3, 4 4); # LINESTRING (1 1, 2 2, 3 3, 4 4)
 MultiPoint(1 1, 2 2) ++ MultiPoint(3 3, 4 4); # MULTIPOINT (1 1, 2 2, 3 3, 4 4)
-GeometryCollection(1 1, 2 2) ++ GeometryCollection(3 3, 4 4); # GEOMETRYCOLLECTION(POINT (1 1),POINT (2 2),POINT (3 3),POINT (4 4))
+GeometryCollection(Point(1 1)) ++ GeometryCollection(Point(2 2)); # GEOMETRYCOLLECTION(POINT (1 1),POINT (2 2))
 ```
 
 Points can be appended to point array-like geometries:
 ```
 LineString(1 1, 2 2) ++ Point(3 3); # LINESTRING (1 1, 2 2, 3 3)
 MultiPoint(1 1, 2 2) ++ Point(3 3); # MULTIPOINT (1 1, 2 2, 3 3)
-GeometryCollection(1 1, 2 2) ++ Point(3 3); # GEOMETRYCOLLECTION(POINT (1 1),POINT (2 2),POINT (3 3))
+GeometryCollection(Point(1 1)) ++ Point(2 2); # GEOMETRYCOLLECTION(POINT (1 1),POINT (2 2))
 ```
 
 Non array-like geometries are concatenated into a `GEOMETRYCOLLECTION`:
