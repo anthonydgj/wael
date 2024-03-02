@@ -68,3 +68,30 @@ test('should return last evaluated value using $?', () => {
     expect(result.geometry.coordinates).toStrictEqual([2, 3]);
 
 });
+
+// Indexed expression result variables
+
+test('should return indexed evaluated values', () => {
+    let result;
+
+    // Provide custom scope
+    const scope = Interpreter.createGlobalScope();
+    defaultEval(`Point(2 3)`, { scope });
+    result = defaultEval(`$0`, { scope });
+    expect(result).toBeTruthy();
+    expect(result.geometry.coordinates).toStrictEqual([2, 3]);
+    result = defaultEval(`$0 + 2`, { scope });
+    expect(result).toBeTruthy();
+    expect(result.geometry.coordinates).toStrictEqual([4, 5]);
+
+    // Use Interpreter object
+    const wael = new Wael(DEFAULT_OPTIONS);
+    wael.evaluate(`Point(2 3)`);
+    result = wael.evaluate(`$0`);
+    expect(result).toBeTruthy();
+    expect(result.geometry.coordinates).toStrictEqual([2, 3]);
+    result = defaultEval(`$0 + 2`);
+    expect(result).toBeTruthy();
+    expect(result.geometry.coordinates).toStrictEqual([4, 5]);
+
+});

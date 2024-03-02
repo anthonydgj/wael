@@ -25,8 +25,6 @@ import { readFileSync } from 'fs';
 const grammarString = GRAMMAR;
 
 export namespace Interpreter {
-
-    export const IDENTIFIER_LAST = '$?';
     
     export const STANDARD_LIBRARY: ScopeBindings = {};
     const math: { [prop: string]: any } = {};
@@ -507,7 +505,6 @@ export namespace Interpreter {
         }
         const sem = semantics(matchResult);
         const result = sem.eval();
-        currentScope.store(IDENTIFIER_LAST, result);
         return result;
     }
     

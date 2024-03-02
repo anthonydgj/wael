@@ -11,16 +11,21 @@ export enum OutputFormat {
 
 export interface Options {
     outputFormat?: OutputFormat,
-    scope?: Scope
+    scope?: Scope;
+    storeHistoricalEvaluations?: boolean;
 }
 
 export const DEFAULT_OPTIONS: Options = {
     outputFormat: OutputFormat.WKT,
-    scope: Interpreter.createGlobalScope()
+    scope: Interpreter.createGlobalScope(),
+    storeHistoricalEvaluations: true
 }
 
 export class Wael {
     private options: Options;
+    private evaluationCount = 0;
+    static IDENTIFIER_LAST = '$?';
+
     constructor(
         initialOptions?: Options
     ) {
@@ -30,12 +35,26 @@ export class Wael {
         };
     }
 
+    getEvaluationCount(): number {
+        return this.evaluationCount;
+    }
+
     evaluate(input: string, overrideOptions?: Partial<Options>) {
         const options = {
             ...this.options,
             ...overrideOptions
         };
         const result = Interpreter.evaluateInput(input, options.scope);
+
+        // Track evaluations
+        options.scope?.store(Wael.IDENTIFIER_LAST, result);
+        if (options.storeHistoricalEvaluations) {
+            const indexedResultLabel = `$${this.evaluationCount}`;
+            options.scope?.store(indexedResultLabel, result);
+        }
+        this.evaluationCount++;
+
+        // Return result
         if (result === null) {
             return undefined;
         }
@@ -49,6 +68,7 @@ export class Wael {
                     break;
             }
         }
+
         return result;
     }
 
