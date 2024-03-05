@@ -10,10 +10,10 @@ import yargs from 'yargs'
 const readline = require('readline');
 const packageJson = require('../package.json')
 
-const input_file = 'input_files';
+const input_files = 'input_files';
 const version = packageJson.version;
 const args = yargs.command('$0', `${packageJson.description}\nVersion: ${version}`)
-    .positional(input_file, {
+    .positional(input_files, {
         array: true,
         description: 'List of 1 or more input files'
     })
@@ -31,9 +31,13 @@ const args = yargs.command('$0', `${packageJson.description}\nVersion: ${version
         description: 'Launch an interactive session'
     })
     .option('evaluate', {
-        alias: 'e',
+        alias: ['e', 'pre-evaluate'],
         string: true,
-        description: 'Evaluate the specified script text'
+        description: `Evaluate the specified script text before [${input_files}]`
+    })
+    .option('post-evaluate', {
+        string: true,
+        description: `Evaluate the specified script text after [${input_files}]`
     })
     .option('bind-import', {
         alias: 'b',
@@ -56,6 +60,7 @@ const options: Options = {
 };
 
 const evaluateScript = args.evaluate;
+const postEvaluateScript = args.postEvaluate;
 const inputFiles = args._;
 const isInteractive = args.interactive;
 const bindImports = args.bindImport;
@@ -83,16 +88,26 @@ const getSectionHeading = (label: string) => {
     return line;
 }
 
-const prompt = (details: string = '') => {
+const printOutput = (output: string) => {
+    let result = options.outputFormat === OutputFormat.GeoJSON ? getJsonString(output) : output;
+    console.log(subtleText(result));
+};
+
+const prompt = (details: string = '', script = '') => {
     const line = getSectionHeading(` [${wael.getEvaluationCount()}] ${details}`);
     console.log(highlightText(line))
+    if (!!script) {
+        console.log(script);
+    }
 }
 
 const evaluate = (script: string, heading: string) => {
+    if (isInteractive) {
+        prompt(heading, script);
+    }
     let result = wael.evaluate(script);
     if (isInteractive) {
-        prompt(heading);
-        console.log(subtleText(result));
+        printOutput(result);
     }
     return result;
 }
@@ -131,9 +146,9 @@ if (bindImports) {
 // Evaluate initial script
 if (evaluateScript) {
     try {
-        result = evaluate(evaluateScript, `evaluate argument`);
+        result = evaluate(evaluateScript, `pre-evaluate`);
     } catch (err: any) {
-        errorExit(`Unable to evaluate script: \n\t${err}`);
+        errorExit(`Unable to evaluate pre-evaluate script: \n\t${err}`);
     }
     hasEvaluated = true;
 }
@@ -146,11 +161,21 @@ if (inputFiles && inputFiles.length > 0) {
         if (options.outputFormat === OutputFormat.GeoJSON) {
             try {
                 result = getJsonString(result);
+                hasEvaluated = true;
             } catch(err) {
                 // return raw output
             }
         }
     });
+}
+
+// Evaluate initial script
+if (postEvaluateScript) {
+    try {
+        result = evaluate(postEvaluateScript, `post-evaluate`);
+    } catch (err: any) {
+        errorExit(`Unable to evaluate 'post-evaluate' script: \n\t${err}`);
+    }
     hasEvaluated = true;
 }
 
@@ -176,13 +201,11 @@ if (isInteractive) {
             if (inputEndIndex >= 0) {
                 try {
                     let result = wael.evaluate(currentInput.substring(0, inputEndIndex), options);
-                    result = options.outputFormat === OutputFormat.GeoJSON ? getJsonString(result) : result;
-                    console.log(chalk.grey(result));
-                    prompt();
+                    printOutput(result);
                 } catch (err) {
                     console.error(errorText(err));
-                    prompt();
                 }
+                prompt();
                 currentInput = '';
             }
         }
