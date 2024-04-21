@@ -2,7 +2,7 @@
 
 WAEL is a domain-specific language for generating and manipulating geometry patterns. The language syntax aims to be a superset of [Well-Known Text (WKT)](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) with added support for programming features like variables, basic arithmetic, functions and comments. Geometries can be transformed using [array programming](https://en.wikipedia.org/wiki/Array_programming) features like geometry arithmetic and pipe transformations (see the [Syntax](#syntax) section below for details).
 
-Basic support is currently available for the following 2D geometries: `POINT`, `LINESTRING`, `POLYGON`, `MULTIPOINT`, `MULTILINESTRING`, `GEOMETRYCOLLECTION`.
+Basic support is currently available for the following 2D geometries: `POINT`, `LINESTRING`, `POLYGON`, `MULTIPOINT`, `MULTILINESTRING`, `GEOMETRYCOLLECTION`. Sections with an `⚠ experimental feature` label indicate features that could be updated or modified in future versions.
 
 **Try out the language at [geojsonscript.io](https://geojsonscript.io?lang=WAEL) with the `WAEL` code editor option selected.**
 
@@ -188,6 +188,8 @@ LineString(1 1, 2 2, 3 3) - Point(10 10); # LINESTRING (-9 -9, -8 -8, -7 -7)
 
 ### Concatenation
 
+`⚠ experimental feature`
+
 Array-like geometries can be combined using the concatenate (`++`) operator:
 ```
 LineString(1 1, 2 2) ++ LineString(3 3, 4 4); # LINESTRING (1 1, 2 2, 3 3, 4 4)
@@ -323,6 +325,8 @@ If (points:numGeometries > 3) Then (
 
 ### Generate Expressions
 
+`⚠ experimental feature`
+
 Multiple geometries can be generated using the `Generate` expression by specifying an iteration count and either a geometry or a function that returns a geometry. The set of all geometries returned from a `Generate` expression are collected into a `GEOMETRYCOLLECTION`.
 ```
 Generate 3 Point(0 0); # GEOMETRYCOLLECTION(POINT (0 0),POINT (0 0),POINT (0 0))
@@ -338,6 +342,8 @@ Generate count Point(0 0) # GEOMETRYCOLLECTION(POINT (0 0),POINT (0 0),POINT (0 
 ### Pipe Transformations
 
 #### Mapping
+
+`⚠ experimental feature`
 
 The output from any expression can be used as the input to another function with the pipe (`|`) operator:
 ```
@@ -361,6 +367,8 @@ LineString(1.4325 1.5325, 2.23525 2.7453, 3.26474 3.34643) |* Round:bind(1) # LI
 
 #### Filtering
 
+`⚠ experimental feature`
+
 Array-like geometries can be filtered using the filter (`|~`) operator:
 ```
 LineString(1 1, 2 2, 3 3) |~ Function((p, i) => p:x <= 2) # LINESTRING (1 1, 2 2)
@@ -368,12 +376,17 @@ LineString(1 1, 2 2, 3 3) |~ Function((p, i) => p:x <= 2) # LINESTRING (1 1, 2 2
 
 #### Reducing
 
+`⚠ experimental feature`
+
 Array-like geometries can be reduced using the reduce (`|>`) operator:
 ```
 LineString(1 1, 2 2, 3 3) |> Function((total, current, index) => total + current) # Point(6 6)
 ```
 
 ### Importing
+
+`⚠ experimental feature`
+
 Data can be imported using `Import` expressions. For example, if the file `etna.wael` contains `Point(14.99 37.75)`, it can be imported using:
 ```
 data = Import('etna.wael');
@@ -384,7 +397,13 @@ Supported data formats include WKT, GeoJSON, and WAEL.
 
 ### Built-In Functions
 
-Several built-in functions are provided to support geometry generation and transformation. Additionally, all JavaScript `Math` [static properties](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math#static_properties) and [static functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math#static_methods) are accessible from the `Math` variable:
+`⚠ experimental feature`
+
+Several built-in functions are provided to support geometry generation and transformation. 
+
+#### `Math` proerties and methods
+
+All JavaScript `Math` [static properties](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math#static_properties) and [static functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math#static_methods) are accessible from the `Math` variable:
 
 ```
 pi = Math:PI;   # 3.141592653589793
