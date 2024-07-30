@@ -247,6 +247,14 @@ myFn = Function((x, y, last) => {
 myFn(1, 2, Point(3 4)) # LINESTRING (1 2, 3 4)
 ```
 
+Functions can have parameters bound using the `bind()` method:
+```
+Generate 10 Function(i => { x = Math:random() * 100; Point(x x) }) 
+    || Round:bind(2)   
+
+# GEOMETRYCOLLECTION (POINT (18.98 18.98), POINT (14.26 14.26), ...)
+```
+
 ### Properties and Methods
 
 Geometry properties and methods can be accessed using the accessor (`:`) operator:
@@ -273,14 +281,6 @@ p = Point(3 4);
 p:x(5); # POINT (5 4)
 p:y(6); # POINT (3 6)
 p # POINT (3 4)
-```
-
-Functions can have parameters bound using the `bind()` method:
-```
-Generate 10 Function(i => { x = Math:random() * 100; Point(x x) }) 
-    || Round:bind(2)   
-
-# GEOMETRYCOLLECTION (POINT (18.98 18.98), POINT (14.26 14.26), ...)
 ```
 
 ### Conditional Expressions
