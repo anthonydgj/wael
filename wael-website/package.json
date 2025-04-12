@@ -35,5 +35,8 @@
 		"vite": "^5.4.4",
 		"vitest": "^1.2.0"
 	},
-	"type": "module"
+	"type": "module",
+	"dependencies": {
+		"@xterm/xterm": "^5.5.0"
+	}
 }
