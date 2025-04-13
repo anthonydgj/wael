@@ -1,6 +1,7 @@
 import * as turf from '@turf/turf';
 
 import { GeometryType } from "./types";
+import { Point } from 'geojson';
 
 export const isAnyGeometryType = (value: any) => {
     const types = Object.values(GeometryType);
@@ -159,7 +160,7 @@ export function toString(value: any) {
     }
 }
 
-export function transformPoints(coords: any[], coordsMapFn: (g: turf.Point) => any): any {
+export function transformPoints(coords: any[], coordsMapFn: (g: Point) => any): any {
     if (!!coords) {
         if (Array.isArray(coords)) {
             if (coords.length > 0) {
@@ -178,7 +179,7 @@ export function transformPoints(coords: any[], coordsMapFn: (g: turf.Point) => a
     return coords
 }
 
-export function transform(geoJson: any, coordsMapFn: (g: turf.Point) => any): any {    
+export function transform(geoJson: any, coordsMapFn: (g: Point) => any): any {    
     if (!!geoJson) {
 
         if (!!geoJson.features) {

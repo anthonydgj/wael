@@ -3,6 +3,7 @@ import * as turf from '@turf/turf';
 import { OperationNotSupported, isGeometryType, toString, transform } from './helpers';
 
 import { GeometryType } from './types';
+import { Point } from 'geojson';
 import booleanEqual from "@turf/boolean-equal"
 
 export namespace BuiltInFunctions {
@@ -96,8 +97,8 @@ export namespace BuiltInFunctions {
         return turf.geometryCollection(pointsList.map((p: any) => turf.point(p).geometry)).geometry;
     };
 
-    export const Rotate = (angleDegrees: number, origin: turf.Point, geometry: any) => {
-        return transform(geometry, (p: turf.helpers.Point) => {
+    export const Rotate = (angleDegrees: number, origin: Point, geometry: any) => {
+        return transform(geometry, (p: Point) => {
             // Convert angle from degrees to radians
             const angleRadians = (angleDegrees * Math.PI) / -180;
             const originX = origin.coordinates[0];
