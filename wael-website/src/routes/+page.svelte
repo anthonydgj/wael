@@ -1,35 +1,61 @@
 <script lang="ts">
+    import { onMount } from 'svelte';
 	import { Xterm, XtermAddon } from '@battlefieldduck/xterm-svelte';
 	import type {
 		ITerminalOptions,
 		ITerminalInitOnlyOptions,
 		Terminal
 	} from '@battlefieldduck/xterm-svelte';
+    import { Readline } from "xterm-readline";
 
 	let terminal: Terminal;
+    const PROMPT = '> '
+    const END_TEXT = ';;'
+    let rl: Readline | undefined = undefined;
 
 	let options: ITerminalOptions & ITerminalInitOnlyOptions = {
-		fontFamily: 'Consolas'
+        cursorBlink: true
 	};
 
-	async function onLoad() {
-		console.log('Child component has loaded');
+    onMount(async () => {
+        rl = new Readline();
+    });
 
-		// FitAddon Usage
+	async function onLoad() {
+
 		const fitAddon = new (await XtermAddon.FitAddon()).FitAddon();
 		terminal.loadAddon(fitAddon);
 		fitAddon.fit();
 
-		terminal.write('Hello World');
-	}
 
-	function onData(data: string) {
-		console.log('onData()', data);
-	}
+        if (rl) {
+            terminal.loadAddon(rl);
 
-	function onKey(data: { key: string; domEvent: KeyboardEvent }) {
-		console.log('onKey()', data);
+            rl.setCheckHandler((text) => {
+                let trimmedText = text.trimEnd();
+                if (trimmedText.endsWith(END_TEXT)) {
+                    return true;
+                }
+                return false;
+            });
+
+            function readLine() {
+                if (rl) {
+                    rl.read(PROMPT).then(processLine);
+                }
+            }
+
+            function processLine(text: string) {
+                if (rl) {
+                    setTimeout(readLine);
+                }
+            }
+
+            readLine();
+
+        }
+
 	}
 </script>
 
-<Xterm bind:terminal {options} {onLoad} {onData} {onKey} />
+<Xterm bind:terminal {options} {onLoad} />
