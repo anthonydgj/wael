@@ -10,14 +10,15 @@
     import { Wael } from 'wael-lib';
 
 	let terminal: Terminal;
-    const INTRO = '# WAEL Interpreter'
+    const INTRO = `# WAEL Interpreter`
     const PROMPT = '> '
     const END_TEXT = ';;'
     let rl: Readline | undefined = undefined;
     const interpreter = new Wael();
 
 	let options: ITerminalOptions & ITerminalInitOnlyOptions = {
-        cursorBlink: true
+        cursorBlink: true,
+        
 	};
 
     onMount(async () => {
@@ -33,9 +34,6 @@
 
         if (rl) {
             terminal.loadAddon(rl);
-
-            // rl.read(PROMPT)
-            rl.println(PROMPT + INTRO)
 
             rl.setCheckHandler((text) => {
                 let trimmedText = text.trimEnd();
@@ -72,4 +70,5 @@
 	}
 </script>
 
-<Xterm bind:terminal {options} {onLoad} />
+
+<Xterm bind:terminal style="height:100%" {options} {onLoad} />
