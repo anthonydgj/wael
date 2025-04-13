@@ -37,7 +37,8 @@
     "build-all": "npm run build && npm run build-binary && npm run build-release-binaries",
     "build-binary": "pkg ./dist/wael/wael.cjs -t=latest --no-bytecode --public-packages \"*\" --public --out-path dist/bin/",
     "build-release-binaries": "pkg ./dist/wael/wael.cjs -t=latest,latest-macos-arm64,latest-linuxstatic-x64,latest-win-x64 --no-bytecode --public-packages \"*\" --public --out-path dist/bin/release/",
-    "test": "jest"
+    "test": "jest",
+    "publish-lib": "npm run build && npm publish"
   },
   "author": "AnthonyDGJ",
   "license": "MIT",
