@@ -2,6 +2,7 @@
 https://svelte.dev/e/block_unexpected_character -->
 <script lang="ts">
 	let { children } = $props();
+	export const prerender = true;
 </script>
 
 <style>
