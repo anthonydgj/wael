@@ -7,11 +7,14 @@
 		Terminal
 	} from '@battlefieldduck/xterm-svelte';
     import { Readline } from "xterm-readline";
+    import { Wael } from 'wael-lib';
 
 	let terminal: Terminal;
+    const INTRO = '# WAEL Interpreter'
     const PROMPT = '> '
     const END_TEXT = ';;'
     let rl: Readline | undefined = undefined;
+    const interpreter = new Wael();
 
 	let options: ITerminalOptions & ITerminalInitOnlyOptions = {
         cursorBlink: true
@@ -31,6 +34,9 @@
         if (rl) {
             terminal.loadAddon(rl);
 
+            // rl.read(PROMPT)
+            rl.println(PROMPT + INTRO)
+
             rl.setCheckHandler((text) => {
                 let trimmedText = text.trimEnd();
                 if (trimmedText.endsWith(END_TEXT)) {
@@ -47,6 +53,14 @@
 
             function processLine(text: string) {
                 if (rl) {
+                    const trimmed = text.trim();
+                    try {
+                        const result = interpreter.evaluate(trimmed.slice(0, trimmed.length - 2))
+                        rl.println(result)
+                    } catch(err: any) {
+                        console.log(err)
+                        rl.println(err.message)
+                    }
                     setTimeout(readLine);
                 }
             }

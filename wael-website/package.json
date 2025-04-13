@@ -39,6 +39,7 @@
 	"dependencies": {
 		"@battlefieldduck/xterm-svelte": "^2.1.0",
 		"@xterm/xterm": "^5.5.0",
+		"wael-lib": "0.0.3",
 		"xterm-readline": "^1.1.2"
 	}
 }
