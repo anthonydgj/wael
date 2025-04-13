@@ -26,6 +26,7 @@
 		"eslint": "^8.56.0",
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-svelte": "^2.45.1",
+		"memfs": "^4.17.0",
 		"prettier": "^3.1.1",
 		"prettier-plugin-svelte": "^3.2.6",
 		"svelte": "^5.0.0",
@@ -39,6 +40,7 @@
 	"dependencies": {
 		"@battlefieldduck/xterm-svelte": "^2.1.0",
 		"@xterm/xterm": "^5.5.0",
+		"vite-plugin-node-polyfills": "^0.23.0",
 		"wael-lib": "0.0.3",
 		"xterm-readline": "^1.1.2"
 	}
