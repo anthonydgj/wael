@@ -11,9 +11,13 @@ https://svelte.dev/e/block_unexpected_character -->
 		display: flex;
 		flex-direction: column;
 		justify-content: stretch;
-		background-color: #434a60;
-		color: #e3e5eb;
+		background-color: #2b2e37;
+		color: #bbbcc0;
 
+		a {
+			color: #a0a0ff;
+			text-decoration: none;
+		}
 		a:visited {
 			color: #a4abee;
 		}
