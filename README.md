@@ -4,7 +4,9 @@ The Well-Known Text Arithmetic Expression Language (WAEL) is an experimental, do
 
 Basic support is currently available for the following 2D geometries: `POINT`, `LINESTRING`, `POLYGON`, `MULTIPOINT`, `MULTILINESTRING`, `GEOMETRYCOLLECTION`. Sections with an `⚠ experimental feature` label indicate features that could be updated or modified in future versions.
 
-**Try out the language at [geojsonscript.io](https://geojsonscript.io?lang=WAEL) with the `WAEL` code editor option selected.**
+**Try out the language in a CLI interpreter at [anthonydgj.github.io/wael](https://anthonydgj.github.io/wael/)**
+
+**Use the language with an interactive map view at [geojsonscript.io](https://geojsonscript.io?lang=WAEL) with the `WAEL` code editor option selected.**
 
 
 ## Usage
