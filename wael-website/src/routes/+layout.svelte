@@ -37,7 +37,7 @@ https://svelte.dev/e/block_unexpected_character -->
 	<div class="header">
 		<h2>Well-Known Text Arithmetic Language (WAEL) Interpreter</h2>
 		<div>
-			The terminal below can be used to evaluate WAEL expressions. See the project 
+			The terminal below can be used to evaluate WAEL expressions. Type <pre style="display: inline;">&semi;&semi;</pre> then press Enter to evaluate expresions. See the project 
 			<a href="https://github.com/anthonydgj/wael/blob/main/README.md" target="_blank">README</a> 
 			for details about the language syntax.
 		</div>
