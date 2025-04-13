@@ -20,7 +20,7 @@ Evaluate code using the `evaluate()` method:
 ```
 import { Wael } from 'wael-lib';
 
-const result = Wael.evaluate(`Point(1 1) + Point(2 2)`);
+const result = Wael.evaluate(`Point(1 1) + Point(2 2)`); // POINT(3 3)
 ```
 
 See the [Terminal Usage](#terminal-usage) section for instructions using the CLI program.
