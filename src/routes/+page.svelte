@@ -54,7 +54,7 @@
                     const trimmed = text.trim();
                     try {
                         const result = interpreter.evaluate(trimmed.slice(0, trimmed.length - 2))
-                        rl.println(result)
+                        rl.println(result + '\n')
                     } catch(err: any) {
                         console.log(err)
                         rl.println(err.message)
@@ -71,4 +71,4 @@
 </script>
 
 
-<Xterm bind:terminal style="height:100%" {options} {onLoad} />
+<Xterm bind:terminal style="height:100%; opacity: 0.6;" {options} {onLoad} />
