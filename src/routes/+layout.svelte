@@ -1,5 +1,3 @@
-<!-- @migration-task Error while migrating Svelte code: Expected a `@` character immediately following the opening bracket
-https://svelte.dev/e/block_unexpected_character -->
 <script lang="ts">
 	let { children } = $props();
 </script>
@@ -10,8 +8,8 @@ https://svelte.dev/e/block_unexpected_character -->
 		display: flex;
 		flex-direction: column;
 		justify-content: stretch;
-		background-color: #2b2e37;
-		color: #bbbcc0;
+		background-color: #222225;
+		color: #adaeb3;
 
 		a {
 			color: #a0a0ff;
@@ -22,7 +20,11 @@ https://svelte.dev/e/block_unexpected_character -->
 		}
 
 		.header {
-			padding: 0 0.5rem
+			padding: 0 0.5rem;
+
+			.intro-text {
+				max-width: 70rem;
+			}
 		}
 
 		.content-container {
@@ -34,9 +36,10 @@ https://svelte.dev/e/block_unexpected_character -->
 
 <div class="container">
 	<div class="header">
-		<h2>Well-Known Text Arithmetic Language (WAEL) Interpreter</h2>
-		<div>
-			The terminal below can be used to evaluate WAEL expressions. Type <pre style="display: inline;">&semi;&semi;</pre> then press Enter to evaluate expresions. See the project 
+		<h2>WAEL Interpreter</h2>
+		<div class="intro-text">
+			Type <pre style="display: inline;">&semi;&semi;</pre> then Enter 
+			to evaluate WAEL expressions. See the project 
 			<a href="https://github.com/anthonydgj/wael/blob/main/README.md" target="_blank">README</a> 
 			for details about the language syntax.
 		</div>
