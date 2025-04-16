@@ -57,6 +57,9 @@ test('should filter array-like geometries', () => {
     expect(result).toBeTruthy();
     expect(result.geometry.coordinates).toStrictEqual([[1, 1], [2, 2]]);
 
+    result = defaultEval(`GeometryCollection(Point(1 1), Point(2 2), Point(3 3)) |~ Function((x, i) => i < 2)`);
+    expect(result).toBeTruthy();
+    expect(result.geometry.geometries).toStrictEqual([{"type":"Point","coordinates":[1,1]},{"type":"Point","coordinates":[2,2]}]);
 });
 
 test('should error when attempting to generate non-geometries', () => {
