@@ -12,7 +12,7 @@ const packageJson = require('../package.json')
 
 const input_files = 'input_files';
 const version = packageJson.version;
-const args = yargs.command('$0', `${packageJson.description}\nVersion: ${version}`)
+const args = (yargs as any).command('$0', `${packageJson.description}\nVersion: ${version}`)
     .positional(input_files, {
         array: true,
         description: 'List of 1 or more input files'
