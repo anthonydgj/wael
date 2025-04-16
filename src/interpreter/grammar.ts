@@ -128,12 +128,13 @@ WAEL {
     FunctionParameters = LeftParen ListOf<Identifier, Comma> RightParen --multipleParams
         | Identifier --single
     FunctionBody =  OptionallyParen<ScopedExpressions>
-    FunctionCallExp = Callable Invocation
+    FunctionCallExp = FunctionCallExp Invocation | Callable Invocation
     Invocation = LeftParen ListOf<GeneralExpression, Comma> RightParen
    	functionKeyword = caseInsensitive<"Function">
     Callable = 
-    	| AccessibleExp<Callable>
     	| FunctionTextExp
+        | FunctionCallExp
+    	| AccessibleExp<Callable>
         | Identifier
     
     // If-Then-Else expressions

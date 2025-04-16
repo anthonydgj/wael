@@ -105,3 +105,8 @@ it('should handle recursion', () => {
     expect(result?.geometry.geometries?.map((f: any) => f.coordinates))
         .toStrictEqual([[1, 1], [2, 2], [3, 3]]);
 });
+
+it('should handle immediately invoked function expressions', () => {
+    let result = defaultEval(`Function(a => a + 1)(2)`);
+    expect(result).toBe(3);
+})
