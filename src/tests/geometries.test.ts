@@ -88,3 +88,23 @@ test('should handle empty geometries', () => {
     expect(result).toBeTruthy();
     expect(result.geometry.geometries.map((f: any) => f.coordinates)).toStrictEqual(([[1, 1]]))
 });
+
+test('should handle computed coordinate values', () => {
+    let result
+
+    result = defaultEval(`x=1;y=2;Point(x y)`)
+    expect(result).toBeTruthy();
+    expect(result.geometry.coordinates).toStrictEqual([1, 2]);
+
+    result = defaultEval(`p=Point(1 2);Point(p:x p:y)`)
+    expect(result).toBeTruthy();
+    expect(result.geometry.coordinates).toStrictEqual([1, 2]);
+
+    result = defaultEval(`p=Point(1 2);Point((p:x) (p:y))`)
+    expect(result).toBeTruthy();
+    expect(result.geometry.coordinates).toStrictEqual([1, 2]);
+
+    result = defaultEval(`x=Function(() => 1);y=Function(() => 2);Point(x() y())`)
+    expect(result).toBeTruthy();
+    expect(result.geometry.coordinates).toStrictEqual([1, 2]);
+})

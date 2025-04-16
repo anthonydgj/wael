@@ -425,9 +425,6 @@ export namespace Interpreter {
             Point(x, y) {
                 return turf.point([x.eval(), y.eval()]).geometry;
             },
-            PointNumberValue_expression(_leftParen, exp, _rightParen) {
-                return exp.eval();
-            },
             ArithmeticAdd_plus(a, _, b) {
                 const result = arithmeticOperationExp(a, b, (a, b) => a + b);
                 if (result !== undefined) {

@@ -260,8 +260,8 @@ WAEL {
 
     // Numeric value
 	PointNumberValue = signedNumericLiteral
+    	| OptionallyParen<ComputedValue<NumberExp>> 
     	| ComputedPrimitive
-    	| LeftParen ComputedValue<NumberExp> RightParen --expression
     NumberExp = Arithmetic<ComputedValue<signedNumericLiteral>>
 
 	// Boolean value
