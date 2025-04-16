@@ -155,7 +155,7 @@ if (evaluateScript) {
 
 // Evaluate files
 if (inputFiles && inputFiles.length > 0) {
-    inputFiles.forEach(inputFile => {
+    inputFiles.forEach((inputFile: any) => {
         const input = fs.readFileSync(inputFile, 'utf-8');
         result = evaluate(input, inputFile.toString())
         if (options.outputFormat === OutputFormat.GeoJSON) {
