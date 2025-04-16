@@ -52,7 +52,8 @@
 			Type <pre style="display: inline;">&semi;&semi;</pre> then Enter 
 			to evaluate 
 			<a href="https://github.com/anthonydgj/wael" target="_blank">WAEL</a>
-			expressions.
+			(v{PKG?.dependencies['wael-lib']})
+			expressions
 		</div>
 	</div>
 

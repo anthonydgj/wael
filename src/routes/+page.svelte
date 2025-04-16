@@ -10,7 +10,7 @@
     import { Wael } from 'wael-lib';
 
 	let terminal: Terminal;
-    const PROMPT = '> '
+    const PROMPT = `> `
     const END_TEXT = ';;'
     let rl: Readline | undefined = undefined;
     const interpreter = new Wael();
