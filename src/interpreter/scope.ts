@@ -21,16 +21,21 @@ export class Scope {
         return this.bindings[identifier] = value;
     };
 
-    resolve(identifier: string): any {
-        const value = this.bindings[identifier];
-        if (value !== undefined) {
-            return value;
+    resolveScope(identifier: string): Scope | undefined {
+        if (this.bindings.hasOwnProperty(identifier)) {
+            return this;
         }
-        if (this.parent !== undefined) {
-            return this.parent.resolve(identifier);
+
+        if (this.parent) {
+            return this.parent.resolveScope(identifier)
         }
 
         return undefined;
+    }
+
+    resolve(identifier: string): any {
+        const scope = this.resolveScope(identifier) ?? this
+        return scope.bindings[identifier];
     };
 
     push(): Scope {
