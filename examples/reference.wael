@@ -42,18 +42,18 @@ createPointTwoArgs = Function((x, y) => Point(x y));
 otherLine = LineString(createPointOneArg(10), createPointTwoArgs(20, 55)); # LINESTRING(10 55, 20 55)
 
 # Define multi-line functions
-myFunction = Function(a => {
+myFunction = Function(a => (
     b = 2;
     Point(a b)
-});
+));
 myPoint = myFunction(1); # POINT(1 2)
 
 # Variables are function-scoped
 x = 1;
-createPointScopedVariables = Function(() => {
+createPointScopedVariables = Function(() => (
     x = 2;
     Point(x x)
-});
+));
 LineString(Point(x x), createPointScopedVariables()); # LINESTRING(1 1, 2 2)
 
 # Execute anonymous functions
@@ -73,11 +73,11 @@ grid = Generate size Function(x =>
 );
 
 # Create multiple rings of points
-Circles = Function((numRings, radius, count) => {
-    Generate numRings Function(x => {
+Circles = Function((numRings, radius, count) => (
+    Generate numRings Function(x => (
         PointCircle((radius * (x + 1)), count)
-    })
-});
+    ))
+));
 
 # the final expression is returned from the script
 GeometryCollection(

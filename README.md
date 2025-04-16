@@ -20,7 +20,7 @@ Evaluate code using the `evaluate()` method:
 ```
 import { Wael } from 'wael-lib';
 
-const result = Wael.evaluate(`Point(1 1) + Point(2 2)`); // POINT(3 3)
+const result = Wael.evaluate(`Point(1 1) + Point(2 2)`); // POINT (3 3)
 ```
 
 See the [Terminal Usage](#terminal-usage) section for instructions using the CLI program.
@@ -41,11 +41,11 @@ Point(-110 38) + PointGrid(20, 10, 2)
 **Create the same grid and introduce random offsets:**
 ```
 Point(-110 38) + PointGrid(20, 10, 2)
-    || Function(p => {
+    || Function(p => (
         xOffset = 1 - Math:random() * 2;
         yOffset = 1 - Math:random() * 2;
         p + Point(xOffset yOffset)
-    })
+    ))
 ```
 <image src="examples/grid_random.jpg" alt="Randomized point grid" width="700px" />
 
@@ -63,10 +63,10 @@ PointGrid(20, 10, 4) | Rotate:bind(23, Point(0 0))
 **Create several nested circle polygons:**
 ```
 numRings = 5;
-Generate numRings Function(i => {
+Generate numRings Function(i => (
     ring = numRings - i;
     PointCircle((ring * 2), (ring * 10)) | ToPolygon
-})
+))
 ```
 <image src="examples/circles.jpg" alt="Nested circular polygons" width="700px" />
 
@@ -241,17 +241,17 @@ getEquatorPoint(14.19) # POINT (14.19 0)
 
 Functions can also accept multiple parameters and have function bodies spanning multiple lines. Similar to top-level expressions outside of a function, the last expression in the function body is used as the return value.
 ```
-myFn = Function((x, y, last) => {
+myFn = Function((x, y, last) => (
     first = Point(x y);
     LineString(first, last)
-});
+));
 
 myFn(1, 2, Point(3 4)) # LINESTRING (1 2, 3 4)
 ```
 
 Functions can have parameters bound using the `bind()` method:
 ```
-Generate 10 Function(i => { x = Math:random() * 100; Point(x x) }) 
+Generate 10 Function(i => ( x = Math:random() * 100; Point(x x) )) 
     || Round:bind(2)   
 
 # GEOMETRYCOLLECTION (POINT (18.98 18.98), POINT (14.26 14.26), ...)

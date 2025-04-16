@@ -127,7 +127,7 @@ WAEL {
     FunctionExp = FunctionParameters "=>" FunctionBody
     FunctionParameters = LeftParen ListOf<Identifier, Comma> RightParen --multipleParams
         | Identifier --single
-    FunctionBody =  OptionallyBraced<ScopedExpressions>
+    FunctionBody =  OptionallyParen<ScopedExpressions>
     FunctionCallExp = Callable Invocation
     Invocation = LeftParen ListOf<GeneralExpression, Comma> RightParen
    	functionKeyword = caseInsensitive<"Function">

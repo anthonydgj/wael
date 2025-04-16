@@ -31,23 +31,23 @@ test('should evaluate functions with parameters', () => {
     expect(result).toBe(3);
 
     result = defaultEval(`
-        fn1 = Function(a => {
+        fn1 = Function(a => (
             a + 1;
             fn2 = Function(b => a + b);
             fn2(3)
-        });
+        ));
         fn1(2)
     `);
     expect(result).toBe(5);    
 
     result = defaultEval(`
         x = 2;
-        fn1 = Function(a => {
+        fn1 = Function(a => (
             x = 5;
             a = a + x;
             fn2 = Function(b => a + b);
             fn2(3)
-        });
+        ));
         y = fn1(x);
         Point(x y)
     `);
@@ -56,12 +56,12 @@ test('should evaluate functions with parameters', () => {
 
     result = defaultEval(`
         x = 2;
-        fn1 = Function((a, c) => {
+        fn1 = Function((a, c) => (
             x = 5;
             a = a + x;
             fn2 = Function(b => a + b);
             fn2(3)
-        });
+        ));
         y = fn1(x, 5);
         Point(x y)
     `);
@@ -85,7 +85,7 @@ test('should evaluate functions with parameters', () => {
 
 it('should handle recursion', () => {
     let result = defaultEval(`
-        build_list = Function(n => {
+        build_list = Function(n => (
             # Base case
             if (n == 0) then (
                 GeometryCollection()
@@ -99,7 +99,7 @@ it('should handle recursion', () => {
                 # Combine the current element with the rest of the list
                 rest_of_list ++ GeometryCollection(current_element)
             )
-        });
+        ));
         build_list(3)
     `);
     expect(result?.geometry.geometries?.map((f: any) => f.coordinates))

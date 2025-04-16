@@ -13,7 +13,7 @@ test('should map array-like geometries', () => {
     expect(result).toBeTruthy();
     expect(result.geometry.geometries.map((f: any) => f.coordinates)).toStrictEqual([[2, 2], [3, 3], [4, 4]]);
 
-    result = defaultEval(`Generate 3 Function(x => {x = x+1; Point(x x)}) || Function(x => LineString(x, (x + Point(1 1))))`);
+    result = defaultEval(`Generate 3 Function(x => (x = x+1; Point(x x))) || Function(x => LineString(x, (x + Point(1 1))))`);
     expect(result).toBeTruthy();
     expect(result.geometry.geometries.map((f: any) => f.coordinates)).toStrictEqual([
         [[1, 1], [2, 2]],
@@ -32,12 +32,12 @@ test('should map array-like geometries', () => {
     expect(result.geometry.coordinates).toStrictEqual([[1, 2], [3, 3], [5, 4]]);
 
     result = defaultEval(`
-        CreateCircles = Function(() => {
-            Generate 5 Function(i => {
+        CreateCircles = Function(() => (
+            Generate 5 Function(i => (
                 ring = i + 1;
                 PointCircle((ring * 2), (ring * 10))
-            }) | Flatten        
-        });
+            )) | Flatten        
+        ));
         CreateCircles()
             || Function(x => If (x:x() <= 0) Then (x + Point(0 10)) Else (x - Point(0 10)))
             || Function(x => GeometryCollection(x, (x + Point(11 0))))
@@ -122,10 +122,10 @@ test('should bind parameters to functions', () => {
     expect(result).toBe(9);
 
     result = defaultEval(`
-        myFn = Function((x, y, last) => {
+        myFn = Function((x, y, last) => (
             first = Point(x y);
             LineString(first, last)
-        });
+        ));
         myFnPartial = myFn:bind(1, 2);
         myFnPartial(Point(3 4))
     `);
