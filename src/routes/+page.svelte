@@ -10,7 +10,6 @@
     import { Wael } from 'wael-lib';
 
 	let terminal: Terminal;
-    const INTRO = `# WAEL Interpreter`
     const PROMPT = '> '
     const END_TEXT = ';;'
     let rl: Readline | undefined = undefined;
@@ -23,6 +22,9 @@
 
     onMount(async () => {
         rl = new Readline();
+        rl.setCtrlCHandler(() => {
+            // Do nothing
+        });
     });
 
 	async function onLoad() {
