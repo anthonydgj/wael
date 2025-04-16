@@ -50,7 +50,9 @@
 		</h2>
 		<div class="intro-text">
 			Type <pre style="display: inline;">&semi;&semi;</pre> then Enter 
-			to evaluate WAEL expressions.
+			to evaluate 
+			<a href="https://github.com/anthonydgj/wael" target="_blank">WAEL</a>
+			expressions.
 		</div>
 	</div>
 
