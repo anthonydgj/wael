@@ -5,7 +5,8 @@ import { Wael } from "../main";
 
 test('should declare variables', () => {
     let result = defaultEval(`a = Point(1 2)`);
-    expect(result).toBeUndefined();
+    expect(result).toBeTruthy();
+    expect(result.geometry.coordinates).toStrictEqual([1, 2]);
 
     // support valid variable name characters
     result = defaultEval(`

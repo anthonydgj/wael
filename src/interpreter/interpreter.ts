@@ -364,8 +364,7 @@ export namespace Interpreter {
                 const variableName = identifier.sourceString;
                 const variableValue = value.eval();
                 const scope = currentScope;
-                scope.store(variableName, variableValue);
-                return UNIT;
+                return scope.store(variableName, variableValue);
             },
             ScopedExpressions_list(list) {
                 const expressions = list.asIteration().children.map(c => c.eval());
