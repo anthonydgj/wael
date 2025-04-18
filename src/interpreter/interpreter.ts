@@ -354,7 +354,7 @@ export namespace Interpreter {
             FunctionParameters_single(identifier) {
                 return [identifier.sourceString];
             },
-            FunctionTextExp(_keyword, _leftParen, exp, _rightParen) {
+            FunctionTextExp_keyword(_keyword, _leftParen, exp, _rightParen) {
                 return exp.eval();
             },
             id(first, rest) {

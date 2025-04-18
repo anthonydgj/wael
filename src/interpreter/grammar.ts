@@ -123,11 +123,12 @@ WAEL {
     accessorOperator = ":"
         
     // Function expressions
-    FunctionTextExp = functionKeyword LeftParen FunctionExp RightParen
-    FunctionExp = FunctionParameters "=>" FunctionBody
+    FunctionTextExp = functionKeyword LeftParen FunctionExp RightParen --keyword
+     | Paren<FunctionExp>
+    FunctionExp = FunctionParameters "=>" OptionallyParen<FunctionBody>
     FunctionParameters = LeftParen ListOf<Identifier, Comma> RightParen --multipleParams
         | Identifier --single
-    FunctionBody =  OptionallyParen<ScopedExpressions>
+    FunctionBody =  ScopedExpressions
     FunctionCallExp = FunctionCallExp Invocation | Callable Invocation
     Invocation = LeftParen ListOf<GeneralExpression, Comma> RightParen
    	functionKeyword = caseInsensitive<"Function">

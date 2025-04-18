@@ -1,7 +1,8 @@
 import { defaultEval } from "./test-utils";
 
-test('should evaluate functions', () => {
-    let result = defaultEval(`
+test('should evaluate functions with keyword', () => {
+    let result;
+    result = defaultEval(`
         fn = Function(() => 3);
         fn()
     `);
@@ -15,6 +16,28 @@ test('should evaluate functions', () => {
 
     result = defaultEval(`
         createPoint = Function(() => Point(2 3));
+        LineString(createPoint(), createPoint())
+    `);
+    expect(result).toBeTruthy();
+    expect(result.geometry.coordinates).toStrictEqual([[2, 3], [2, 3]]);
+});
+
+test('should evaluate functions without keyword', () => {
+    let result;
+    result = defaultEval(`
+        fn = (() => (3));
+        fn()
+    `);
+    expect(result).toBe(3);
+
+    result = defaultEval(`
+        (() => (3 ;
+        4 ; 6))()
+    `);
+    expect(result).toBe(6);
+
+    result = defaultEval(`
+        createPoint = (() => (Point(2 3)));
         LineString(createPoint(), createPoint())
     `);
     expect(result).toBeTruthy();
