@@ -333,10 +333,9 @@ export namespace Interpreter {
             FunctionExp(p, _, body) {
                 let params = p.eval();
                 params = Array.isArray(params) ? params : [params];
-                const fn = (...values: any[]) => {
+                const fn = function(...values: any[]) {
                     // Create new scope per function call.
                     currentScope = currentScope.push();
-                    const _this = this;
                     params.forEach((paramName: any, index: number) => {
                         currentScope.store(paramName, values[index])
                     });
@@ -344,7 +343,9 @@ export namespace Interpreter {
                     currentScope = currentScope.pop() || GLOBAL_SCOPE;
                     return ret;
                 };
-                return fn.bind(currentScope);
+                const boundFn = fn.bind(currentScope);
+                boundFn.toString = function() { return `Function(${p.sourceString} => ${body.sourceString})` }
+                return boundFn;
             },
             FunctionParameters_multipleParams(_leftParen, identifierList, _rightParen) {
                 const params = identifierList.asIteration().children.map(c => c.sourceString);

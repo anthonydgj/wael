@@ -90,7 +90,7 @@ const getSectionHeading = (label: string) => {
 
 const printOutput = (output: string) => {
     let result = options.outputFormat === OutputFormat.GeoJSON ? getJsonString(output) : output;
-    console.log(subtleText(result));
+    console.log(subtleText(`${result}`));
 };
 
 const prompt = (details: string = '', script = '') => {
@@ -158,10 +158,10 @@ if (inputFiles && inputFiles.length > 0) {
     inputFiles.forEach((inputFile: any) => {
         const input = fs.readFileSync(inputFile, 'utf-8');
         result = evaluate(input, inputFile.toString())
+        hasEvaluated = true;
         if (options.outputFormat === OutputFormat.GeoJSON) {
             try {
                 result = getJsonString(result);
-                hasEvaluated = true;
             } catch(err) {
                 // return raw output
             }

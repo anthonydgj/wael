@@ -154,9 +154,9 @@ export class OperationNotSupported extends Error {
 
 export function toString(value: any) {
     try {
-        return JSON.stringify(value);
+        return `${JSON.stringify(value)}`;
     } catch (err) {
-        return value;
+        return `${value}`;
     }
 }
 
