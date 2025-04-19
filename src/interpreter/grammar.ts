@@ -8,7 +8,7 @@ WAEL {
     // Top-level expressions
     TopLevel = ScopedExpressions TopLevelEnd
     TopLevelEnd = ExpressionDelimiter | end 
-    
+
     // Comments
     comment = "#" commentSpace* commentText* commentSpace* commentEnd
     commentText = ~commentEnd any
@@ -25,24 +25,30 @@ WAEL {
         | comment    
     ExpressionDelimiter = expressionDelimiter
     expressionDelimiter = ";"
-    
+
     // Imports
-    ImportExpression = importKeyword LeftParen stringLiteralExp RightParen
+    ImportExpression = ImportExternalExp | ImportFunctionExp
+    ImportExternalExp = importKeyword Paren<stringLiteralExp>
+    ImportFunctionExp = importKeyword Paren<FunctionCallExp>
     importKeyword = caseInsensitive<"import">
 
+    // Exports
+    exportKeyword = caseInsensitive<"export">
+
     // Variables
-    Declaration = Identifier assignmentOperator AssignableExpression 
+    Declaration = Identifier assignmentOperator AssignableExpression --private
+        | exportKeyword Declaration --public
     AssignableExpression = 
         | ImportExpression
-    	| NonArithmeticAssignableExpression
-    	| ArithmeticAssignableExpression
+        | NonArithmeticAssignableExpression
+        | ArithmeticAssignableExpression
     NonArithmeticAssignableExpression = 
-    	| OperationExp
+        | OperationExp
     ArithmeticAssignableExpression = Arithmetic<AssignableExpressionForArithmetic>
     AssignableExpressionForArithmetic = 
         | BooleanResultExp
         | IfThenElseExp
-    	| NumberExp
+        | NumberExp
         | AccessibleExp<GeometryExp>
         | FunctionTextExp
         | BooleanValue
@@ -54,13 +60,13 @@ WAEL {
     ComputedPrimitive = FunctionCallExp | Identifier
 
     AccessibleExp<Type> = 
-    	| Type accessorOperator Identifier Invocation? --method
-    	| Type
+        | Type accessorOperator Identifier Invocation? --method
+        | Type
 
     // Additional operation expressions
     OperationExp =  PipeExp | GenerateExp | ConcatExp
     PipeExp = MappableValue anyPipeOperator Callable
-    GenerateExp = generateKeyword ComputedValue<NumberExp> GenerateValue
+    GenerateExp = generateKeyword ComputedValue<NumberExp> ComputedValue<GenerateValue> 
     ConcatExp = MappableValue concatOperator MappableValue
     GenerateValue = GeometryExp | FunctionTextExp
     generateKeyword = caseInsensitive<"Generate">
@@ -71,7 +77,7 @@ WAEL {
     OptionallyParen<type> = LeftParen type RightParen --paren
         | type --noParen
     OptionallyBraced<type> = LeftBrace type RightBrace --brace
-    	| type
+        | type
         
     // Arithmetic expressions
     Arithmetic<Type> = ArithmeticAdd<Type>
@@ -91,9 +97,9 @@ WAEL {
             | Type
             | leftParen Arithmetic<Type> rightParen  -- paren
             
-   	// Operators
-   	operator = 
-   		| expressionDelimiter
+    // Operators
+    operator = 
+        | expressionDelimiter
         | anyPipeOperator
         | plusOperator
         | minusOperator
@@ -124,28 +130,28 @@ WAEL {
         
     // Function expressions
     FunctionTextExp = functionKeyword LeftParen FunctionExp RightParen --keyword
-     | Paren<FunctionExp>
+    | Paren<FunctionExp>
     FunctionExp = FunctionParameters "=>" OptionallyParen<FunctionBody>
     FunctionParameters = LeftParen ListOf<Identifier, Comma> RightParen --multipleParams
         | Identifier --single
     FunctionBody =  ScopedExpressions
     FunctionCallExp = FunctionCallExp Invocation | Callable Invocation
     Invocation = LeftParen ListOf<GeneralExpression, Comma> RightParen
-   	functionKeyword = caseInsensitive<"Function">
+    functionKeyword = caseInsensitive<"Function">
     Callable = 
-    	| FunctionTextExp
+        | FunctionTextExp
         | FunctionCallExp
-    	| AccessibleExp<Callable>
+        | AccessibleExp<Callable>
         | Identifier
-    
+
     // If-Then-Else expressions
     IfThenElseExp = ifKeyword Paren<BooleanResultExp> thenKeyword
-    	Paren<ScopedExpressions> elseKeyword 
+        Paren<ScopedExpressions> elseKeyword 
         Paren<ScopedExpressions>
     ifKeyword = caseInsensitive<"if">
     thenKeyword = caseInsensitive<"then">
     elseKeyword = caseInsensitive<"else">
-    
+
     // Conditional expressions
     BooleanResultExp = EqualityExp | CompareExp | NotExp | booleanValue
     EqualityExp = ComparePrimitive equalityOperatorPrimitive ComparePrimitive
@@ -165,7 +171,7 @@ WAEL {
     id = firstIdCharacter idCharacter*
     firstIdCharacter = simpleLatinLetter | "$"
     idCharacter = simpleLatinLetter | digit | "_" | "?" | "'"
-	nonAllowedIdentifiers = keyword identifierEnd
+    nonAllowedIdentifiers = keyword identifierEnd
     identifierEnd = end | comma | leftParen | rightParen | operator | wktSpace
 
     /*************************************
@@ -174,68 +180,68 @@ WAEL {
 
     // Based on WKT Syntax: https://www.ogc.org/standard/sfa/
 
-	GeometrySyntaxExp<GeometryTypeExp, geometryKeyword> = Arithmetic<GeometryArithmetic<GeometryTypeExp, geometryKeyword>>
+    GeometrySyntaxExp<GeometryTypeExp, geometryKeyword> = Arithmetic<GeometryArithmetic<GeometryTypeExp, geometryKeyword>>
     GeometryArithmetic<GeometryTypeExp, geometryKeyword> = GeometryPrimitive<GeometryTypeExp, geometryKeyword>
-	GeometryPrimitive<GeometryTypeExp, geometryKeyword> = GeometryTaggedText<GeometryTypeExp, geometryKeyword>
+    GeometryPrimitive<GeometryTypeExp, geometryKeyword> = GeometryTaggedText<GeometryTypeExp, geometryKeyword>
     GeometryTaggedText<GeometryTypeExp, geometryKeyword> = geometryKeyword GeometryTypeExp
 
-	GeometryCollectionExp = GeometrySyntaxExp<GeometryCollectionText, geometryCollectionKeyword>
+    GeometryCollectionExp = GeometrySyntaxExp<GeometryCollectionText, geometryCollectionKeyword>
     GeometryCollectionText = emptySet --empty
         | LeftParen ListOf<GeometryExp, Comma> RightParen --present
     geometryCollectionKeyword = caseInsensitive<"GEOMETRYCOLLECTION">
 
-	GeometryExp =  
+    GeometryExp =  
         | PointExp
         | MultiPointExp
-       	| LineStringExp
+        | LineStringExp
         | MultiLineStringExp
         | PolygonExp
         | MultiPolygonExp
-    	| GeometryCollectionExp 
+        | GeometryCollectionExp 
 
     // TODO -- support POLYHEDRALSURFACE geometry
- 	//PolyhedralSurfaceExp = GeometrySyntaxExp<PolyhedralSurfaceText, polyhedralSurfaceKeyword>
+    //PolyhedralSurfaceExp = GeometrySyntaxExp<PolyhedralSurfaceText, polyhedralSurfaceKeyword>
     //PolyhedralSurfaceText = emptySet --empty
     //    | LeftParen NonemptyListOf<PolygonText, Comma> RightParen --present
     //polyhedralSurfaceKeyword = caseInsensitive<"PolyhedralSurface">
-    
-	MultiPolygonExp = GeometrySyntaxExp<MultiPolygonText, multiPolygonKeyword>
+
+    MultiPolygonExp = GeometrySyntaxExp<MultiPolygonText, multiPolygonKeyword>
     MultiPolygonText = emptySet --empty
         | LeftParen NonemptyListOf<PolygonText, Comma> RightParen --present
     multiPolygonKeyword = caseInsensitive<"MULTIPOLYGON">
-    
-	PolygonExp = GeometrySyntaxExp<PolygonText, polygonKeyword>
+
+    PolygonExp = GeometrySyntaxExp<PolygonText, polygonKeyword>
     PolygonText = emptySet --empty
         | LeftParen NonemptyListOf<LineStringText, Comma> RightParen --present
     polygonKeyword = caseInsensitive<"POLYGON">
 
-	MultiLineStringExp = GeometrySyntaxExp<MultiLineStringText, multiLineStringKeyword>
+    MultiLineStringExp = GeometrySyntaxExp<MultiLineStringText, multiLineStringKeyword>
     MultiLineStringText = emptySet --empty
         | LeftParen NonemptyListOf<LineStringText, Comma> RightParen --present
     multiLineStringKeyword = caseInsensitive<"MULTILINESTRING">
-    
-	LineStringExp = GeometrySyntaxExp<LineStringText, lineStringKeyword>
+
+    LineStringExp = GeometrySyntaxExp<LineStringText, lineStringKeyword>
     LineStringText = emptySet --empty
         | LeftParen PointList RightParen --present
     lineStringKeyword = caseInsensitive<"LINESTRING">
-    
-	MultiPointExp = GeometrySyntaxExp<MultiPointText, multiPointKeyword>
+
+    MultiPointExp = GeometrySyntaxExp<MultiPointText, multiPointKeyword>
     MultiPointText = emptySet --empty
         | LeftParen PointList RightParen --present
     multiPointKeyword = caseInsensitive<"MULTIPOINT">
 
-	// Base point type helpers
+    // Base point type helpers
     PointList = NonemptyListOf<PointListArgument, Comma>
     PointListArgument = Point | ComputedValue<PointExp>
     PointExp = Arithmetic<PointArithmetic>
     PointArithmetic = PointPrimitive | ComputedExp
-	PointPrimitive = PointTaggedText | PointText | Point
+    PointPrimitive = PointTaggedText | PointText | Point
     PointTaggedText = pointKeyword PointText
     PointText = emptySet --empty
         | LeftParen Point RightParen --present
     Point = X Y
-   	pointKeyword = caseInsensitive<"POINT">
-    
+    pointKeyword = caseInsensitive<"POINT">
+
     // Keywords
     keyword = geometryKeyword
         | functionKeyword
@@ -245,12 +251,13 @@ WAEL {
         | thenKeyword
         | elseKeyword
         | importKeyword
+        | exportKeyword
     geometryKeyword = pointKeyword
         | multiPointKeyword
-    	| lineStringKeyword
-    	| multiLineStringKeyword
+        | lineStringKeyword
+        | multiLineStringKeyword
         | polygonKeyword
-	    | multiPolygonKeyword
+        | multiPolygonKeyword
         | geometryCollectionKeyword
 
     // Coordinate values
@@ -260,12 +267,12 @@ WAEL {
     M = PointNumberValue
 
     // Numeric value
-	PointNumberValue = signedNumericLiteral
-    	| OptionallyParen<ComputedValue<NumberExp>> 
-    	| ComputedPrimitive
+    PointNumberValue = signedNumericLiteral
+        | OptionallyParen<ComputedValue<NumberExp>> 
+        | ComputedPrimitive
     NumberExp = Arithmetic<ComputedValue<signedNumericLiteral>>
 
-	// Boolean value
+    // Boolean value
     BooleanValue = ComputedValue<booleanValue>
     booleanValue = caseInsensitive<"true"> | caseInsensitive<"false">
 
@@ -321,5 +328,6 @@ WAEL {
     simpleLatinLowerCaseLetter = lower // a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z
     simpleLatinUpperCaseLetter = upper // A|B|C|D|E|F|G|H|I|J|K|L|M|N|O|P|Q|R|S|T|U|V|W|X|Y|Z
     wktSpace = " " // unicode "U+0020" (space) // provided by default
+
 }
 `

@@ -53,7 +53,7 @@ export namespace Interpreter {
             stringLiteral(_leftQuote, str, _rightQuote) {
                 return str.sourceString;
             },
-            ImportExpression(_keyword, _lp, importUri, _rp) {
+            ImportExternalExp(_keyword, importUri) {
                 const uri = importUri.eval();
                 const file = readFileSync(uri, 'utf8');
                 try {
@@ -63,6 +63,12 @@ export namespace Interpreter {
                     return evaluateInput(file);
                 } catch { }
                 throw new Error(`Unable to import file: ${uri}`);
+            },
+            ImportFunctionExp(_keyword, importFn) {
+                const fn = importFn.eval();
+                const ret = fn();
+                // TODO -- handle scope lifting
+                return ret;
             },
             IfThenElseExp(_if, c, _then, exp1, _else, exp2) {
                 const condition = c.eval();
@@ -361,11 +367,16 @@ export namespace Interpreter {
                 const key = first.sourceString + rest.sourceString;
                 return currentScope.resolve(key);
             },
-            Declaration(identifier, _, value) {
+            Declaration_private(identifier, _, value) {
                 const variableName = identifier.sourceString;
                 const variableValue = value.eval();
                 const scope = currentScope;
                 return scope.store(variableName, variableValue);
+            },
+            Declaration_public(_keyword, value) {
+                const val = value.eval();
+                // TODO -- add metadata
+                return val;
             },
             ScopedExpressions_list(list) {
                 const expressions = list.asIteration().children.map(c => c.eval());
