@@ -27,10 +27,14 @@ WAEL {
     expressionDelimiter = ";"
 
     // Imports
-    ImportExpression = ImportExternalExp | ImportFunctionExp
+    ImportExpression = ImportUsingExpression | ImportAllExpression
+    ImportUsingExpression = ImportEitherExpression usingKeyword FunctionParameters
+    ImportAllExpression = ImportEitherExpression
+    ImportEitherExpression = ImportExternalExp | ImportFunctionExp
     ImportExternalExp = importKeyword Paren<stringLiteralExp>
     ImportFunctionExp = importKeyword Paren<FunctionCallExp>
     importKeyword = caseInsensitive<"import">
+    usingKeyword = caseInsensitive<"using">
 
     // Exports
     exportKeyword = caseInsensitive<"export">
@@ -252,6 +256,7 @@ WAEL {
         | elseKeyword
         | importKeyword
         | exportKeyword
+        | usingKeyword
     geometryKeyword = pointKeyword
         | multiPointKeyword
         | lineStringKeyword

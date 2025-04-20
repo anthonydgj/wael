@@ -17,7 +17,6 @@ export interface Options {
 
 export const DEFAULT_OPTIONS: Options = {
     outputFormat: OutputFormat.WKT,
-    scope: Interpreter.createGlobalScope(),
     storeHistoricalEvaluations: true
 }
 
@@ -31,7 +30,8 @@ export class Wael {
     ) {
         this.options = {
             ...DEFAULT_OPTIONS,
-            ...initialOptions
+            ...initialOptions,
+            scope: Interpreter.createGlobalScope()
         };
     }
 

@@ -53,6 +53,17 @@ export namespace Interpreter {
             stringLiteral(_leftQuote, str, _rightQuote) {
                 return str.sourceString;
             },
+            ImportAllExpression(importAllExp) {
+                const ret = importAllExp.eval();
+                currentScope.useImports();
+                return ret;
+            },
+            ImportUsingExpression(importAllExp, _keyword, identifierList) {
+                const ret = importAllExp.eval();
+                const identifiers = identifierList.eval();
+                currentScope.useImports(identifiers);
+                return ret;
+            },
             ImportExternalExp(_keyword, importUri) {
                 const uri = importUri.eval();
                 const file = readFileSync(uri, 'utf8');
@@ -65,10 +76,7 @@ export namespace Interpreter {
                 throw new Error(`Unable to import file: ${uri}`);
             },
             ImportFunctionExp(_keyword, importFn) {
-                const val = importFn.eval();
-                // TODO -- handle selected scope lifting
-                currentScope.useImports()
-                return val;
+                return importFn.eval();
             },
             IfThenElseExp(_if, c, _then, exp1, _else, exp2) {
                 const condition = c.eval();

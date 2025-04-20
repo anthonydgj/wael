@@ -99,7 +99,18 @@ test('should support imports', () => {
 
 });
 
+
 it('should support function scope import/export', () => {
-    let result = defaultEval(`Import(Function(() => (export a = 3))()); a`)
+    let result;
+    const importAllExp = `Import(Function(() => (export a = 3; export b = 4))())`;
+    result = defaultEval(`${importAllExp}; a`)
     expect(result).toBe(3);
+    result = defaultEval(`${importAllExp}; b`)
+    expect(result).toBe(4);
+    const importUsingExp = `Import(Function(() => (export a = 3; export b = 4))()) Using (a)`;
+    result = defaultEval(`${importUsingExp}; a`)
+    expect(result).toBe(3);
+    result = defaultEval(`${importUsingExp}; b`)
+    expect(result).toBe(undefined);
+    
 });

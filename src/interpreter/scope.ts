@@ -76,10 +76,18 @@ export class Scope {
         };
     }
 
-    useImports() {
+    useImports(selectedIdentifiers?: string[]) {
+        let selectedBindings: ScopeBindings = {};
+        if (selectedIdentifiers) {
+            selectedIdentifiers.forEach(selectedIdentifier => {
+                selectedBindings[selectedIdentifier] = this.availableBindings[selectedIdentifier]
+            })
+        } else {
+            selectedBindings = this.availableBindings
+        }
         this.bindings = {
             ...this.bindings,
-            ...this.availableBindings
+            ...selectedBindings
         }
     }
 }

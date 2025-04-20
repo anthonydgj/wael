@@ -91,8 +91,7 @@ test('should return indexed evaluated values', () => {
     result = wael.evaluate(`$0`);
     expect(result).toBeTruthy();
     expect(result.geometry.coordinates).toStrictEqual([2, 3]);
-    result = defaultEval(`$0 + 2`);
+    result = wael.evaluate(`$0 + 2`);
     expect(result).toBeTruthy();
     expect(result.geometry.coordinates).toStrictEqual([4, 5]);
-
 });
