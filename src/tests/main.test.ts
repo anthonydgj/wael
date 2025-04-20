@@ -98,3 +98,8 @@ test('should support imports', () => {
     }
 
 });
+
+it('should support function scope import/export', () => {
+    let result = defaultEval(`Import(Function(() => (export a = 3))()); a`)
+    expect(result).toBe(3);
+});

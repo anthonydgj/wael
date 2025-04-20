@@ -65,10 +65,10 @@ export namespace Interpreter {
                 throw new Error(`Unable to import file: ${uri}`);
             },
             ImportFunctionExp(_keyword, importFn) {
-                const fn = importFn.eval();
-                const ret = fn();
-                // TODO -- handle scope lifting
-                return ret;
+                const val = importFn.eval();
+                // TODO -- handle selected scope lifting
+                currentScope.useImports()
+                return val;
             },
             IfThenElseExp(_if, c, _then, exp1, _else, exp2) {
                 const condition = c.eval();
@@ -371,12 +371,15 @@ export namespace Interpreter {
                 const variableName = identifier.sourceString;
                 const variableValue = value.eval();
                 const scope = currentScope;
-                return scope.store(variableName, variableValue);
+                scope.store(variableName, variableValue);
+                return variableValue;
             },
-            Declaration_public(_keyword, value) {
-                const val = value.eval();
-                // TODO -- add metadata
-                return val;
+            Declaration_public(_keyword, identifier, _, value) {
+                const variableName = identifier.sourceString;
+                const variableValue = value.eval();
+                const scope = currentScope;
+                scope.store(variableName, variableValue, { public: true });
+                return variableValue;
             },
             ScopedExpressions_list(list) {
                 const expressions = list.asIteration().children.map(c => c.eval());

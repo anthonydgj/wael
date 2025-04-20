@@ -2,9 +2,21 @@ export interface ScopeBindings  {
     [identifier: string]: any;
 }
 
+export interface Metadata {
+    public: boolean;
+}
+
+export interface ScopeBindingMetadata {
+    [identifier: string]: {
+        public?: boolean
+    };
+}
+
 export class Scope {
 
     private bindings: ScopeBindings = {};
+    private metadata: ScopeBindingMetadata = {};
+    private availableBindings: ScopeBindings = {};
     constructor(
         private parent?: Scope,
         private level = 0,
@@ -17,8 +29,11 @@ export class Scope {
         }
     }
 
-    store(identifier: string, value: any) {
-        return this.bindings[identifier] = value;
+    store(identifier: string, value: any, metadata?: Metadata) {
+        this.bindings[identifier] = value;
+        if (metadata) {
+            this.metadata[identifier] = metadata;
+        }
     };
 
     resolveScope(identifier: string): Scope | undefined {
@@ -43,6 +58,28 @@ export class Scope {
     }
 
     pop(): Scope | undefined {
+        const exportedBindings: ScopeBindings = {};
+        for (const identifier in this.metadata) {
+            const metadata = this.metadata[identifier];
+            if (metadata) {
+                exportedBindings[identifier] = this.bindings[identifier]
+            }
+        }
+        this.parent?.import(exportedBindings)
         return this.parent;
+    }
+
+    import(scopeBindings: ScopeBindings) {
+        this.availableBindings = {
+            ...this.availableBindings,
+            ...scopeBindings
+        };
+    }
+
+    useImports() {
+        this.bindings = {
+            ...this.bindings,
+            ...this.availableBindings
+        }
     }
 }

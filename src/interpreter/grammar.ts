@@ -37,7 +37,7 @@ WAEL {
 
     // Variables
     Declaration = Identifier assignmentOperator AssignableExpression --private
-        | exportKeyword Declaration --public
+    	| exportKeyword Identifier assignmentOperator AssignableExpression --public
     AssignableExpression = 
         | ImportExpression
         | NonArithmeticAssignableExpression
