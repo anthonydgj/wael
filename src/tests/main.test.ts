@@ -107,9 +107,9 @@ it('should support function scope import/export', () => {
     result = defaultEval(`${importAllExp}; Lib:b`)
     expect(result).toBe(4);
     const importUsingExp = `Lib = Import(Function(() => (export a = 3; export b = 4))()) Using (a)`;
-    result = defaultEval(`${importUsingExp}; Lib:a`)
+    result = defaultEval(`${importUsingExp}; a`)
     expect(result).toBe(3);
-    result = defaultEval(`${importUsingExp}; Lib:b`)
+    result = defaultEval(`${importUsingExp}; b`)
     expect(result).toBe(undefined);
     
 });

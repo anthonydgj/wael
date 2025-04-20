@@ -61,10 +61,10 @@ export namespace Interpreter {
                 return importObj;
             },
             ImportUsingExpression(importAllExp, _keyword, identifierList) {
-                importAllExp.eval();
+                const ret = importAllExp.eval();
                 const identifiers = identifierList.eval();
-                const importObj = currentScope.useImports(identifiers);
-                return importObj;
+                currentScope.useNamedImports(identifiers);
+                return ret;
             },
             ImportExternalExp(_keyword, importUri) {
                 const uri = importUri.eval();

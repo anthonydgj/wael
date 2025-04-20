@@ -14,7 +14,7 @@ export interface ScopeBindingMetadata {
 
 export class Scope {
 
-    readonly bindings: ScopeBindings = {};
+    bindings: ScopeBindings = {};
     private metadata: ScopeBindingMetadata = {};
     private availableBindings: ScopeBindings = {};
     constructor(
@@ -83,11 +83,25 @@ export class Scope {
         if (selectedIdentifiers) {
             selectedIdentifiers.forEach(selectedIdentifier => {
                 selectedBindings[selectedIdentifier] = this.availableBindings[selectedIdentifier]
-            })
+            });
         } else {
             selectedBindings = this.availableBindings
         }
         this.availableBindings = {};
+        return selectedBindings;
+    }
+
+    useNamedImports(selectedIdentifiers: string[]) {
+        let selectedBindings: ScopeBindings = {};
+        if (selectedIdentifiers) {
+            selectedIdentifiers.forEach(selectedIdentifier => {
+                selectedBindings[selectedIdentifier] = this.availableBindings[selectedIdentifier]
+            });
+        }
+        this.bindings = {
+            ...this.bindings,
+            ...selectedBindings,
+        };
         return selectedBindings;
     }
 }
