@@ -25,6 +25,8 @@ import { readFileSync } from 'fs';
 const grammarString = GRAMMAR;
 
 export namespace Interpreter {
+
+    export const IMPORT_DEFAULT_IDENTIFIER = 'Default';
     
     export const STANDARD_LIBRARY: ScopeBindings = {};
     const math: { [prop: string]: any } = {};
@@ -54,29 +56,38 @@ export namespace Interpreter {
                 return str.sourceString;
             },
             ImportAllExpression(importAllExp) {
-                const ret = importAllExp.eval();
-                currentScope.useImports();
-                return ret;
+                importAllExp.eval();
+                const importObj = currentScope.useImports();
+                return importObj;
             },
             ImportUsingExpression(importAllExp, _keyword, identifierList) {
-                const ret = importAllExp.eval();
+                importAllExp.eval();
                 const identifiers = identifierList.eval();
-                currentScope.useImports(identifiers);
-                return ret;
+                const importObj = currentScope.useImports(identifiers);
+                return importObj;
             },
             ImportExternalExp(_keyword, importUri) {
                 const uri = importUri.eval();
                 const file = readFileSync(uri, 'utf8');
+                currentScope = currentScope.push();
+                let ret;
                 try {
-                    return convertToGeometry(JSON.parse(file));
-                } catch { }
-                try {
-                    return evaluateInput(file);
-                } catch { }
-                throw new Error(`Unable to import file: ${uri}`);
+                    ret = convertToGeometry(JSON.parse(file));
+                } catch {
+                    try {
+                        ret = evaluateInput(file, currentScope);
+                    } catch {
+                        throw new Error(`Unable to import file: ${uri}`);
+                    }
+                }
+                const bindings: ScopeBindings = {};
+                bindings[IMPORT_DEFAULT_IDENTIFIER] = ret;
+                currentScope = currentScope.pop(bindings) || GLOBAL_SCOPE;
+                return ret;
             },
             ImportFunctionExp(_keyword, importFn) {
-                return importFn.eval();
+                const ret = importFn.eval();
+                return ret;
             },
             IfThenElseExp(_if, c, _then, exp1, _else, exp2) {
                 const condition = c.eval();
@@ -354,7 +365,9 @@ export namespace Interpreter {
                         currentScope.store(paramName, values[index])
                     });
                     const ret = body.eval();
-                    currentScope = currentScope.pop() || GLOBAL_SCOPE;
+                    const defaultBindings: ScopeBindings = {};
+                    defaultBindings[IMPORT_DEFAULT_IDENTIFIER] = ret;
+                    currentScope = currentScope.pop(defaultBindings) || GLOBAL_SCOPE;
                     return ret;
                 };
                 const boundFn = fn.bind(currentScope);

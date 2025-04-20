@@ -57,11 +57,13 @@ export class Scope {
         return new Scope(this, this.level + 1);
     }
 
-    pop(): Scope | undefined {
-        const exportedBindings: ScopeBindings = {};
+    pop(additionalBindings?: ScopeBindings): Scope | undefined {
+        const exportedBindings: ScopeBindings = {
+            ...additionalBindings
+        };
         for (const identifier in this.metadata) {
             const metadata = this.metadata[identifier];
-            if (metadata) {
+            if (metadata && metadata.public) {
                 exportedBindings[identifier] = this.bindings[identifier]
             }
         }
@@ -85,9 +87,7 @@ export class Scope {
         } else {
             selectedBindings = this.availableBindings
         }
-        this.bindings = {
-            ...this.bindings,
-            ...selectedBindings
-        }
+        this.availableBindings = {};
+        return selectedBindings;
     }
 }

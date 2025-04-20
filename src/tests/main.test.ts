@@ -74,24 +74,24 @@ test('should return last value', () => {
 });
 
 test('should support imports', () => {
-    let result = defaultEval(`Import("./src/tests/test.wael")`);
+    let result = defaultEval(`Import("./src/tests/test.wael"):Default`);
     expect(result).toBeTruthy();
     expect(result.geometry.coordinates).toStrictEqual([1, 1]);
 
-    result = defaultEval(`a = Import("./src/tests/test.wael"); a + Point(1 1)`);
+    result = defaultEval(`a = Import("./src/tests/test.wael"):Default; a + Point(1 1)`);
     expect(result).toBeTruthy();
     expect(result.geometry.coordinates).toStrictEqual([2, 2]);
 
-    result = defaultEval(`a = Import("./src/tests/test.json"); a + Point(1 1)`);
+    result = defaultEval(`a = Import("./src/tests/test.json"):Default; a + Point(1 1)`);
     expect(result).toBeTruthy();
     expect(result.geometry.coordinates).toStrictEqual([2, 2]);
 
-    result = defaultEval(`a = Import("./src/tests/test.geojson"); a + Point(1 1)`);
+    result = defaultEval(`a = Import("./src/tests/test.geojson"):Default; a + Point(1 1)`);
     expect(result).toBeTruthy();
     expect(result.geometry.coordinates).toStrictEqual([2, 2]);
 
     try {
-        defaultEval(`a = Import("./src/tests/test-invalid.wael"); a + Point(1 1)`);
+        defaultEval(`a = Import("./src/tests/test-invalid.wael"):Default; a + Point(1 1)`);
         fail(`Expected an error.`);
     } catch(err) {
         // pass
@@ -99,18 +99,17 @@ test('should support imports', () => {
 
 });
 
-
 it('should support function scope import/export', () => {
     let result;
-    const importAllExp = `Import(Function(() => (export a = 3; export b = 4))())`;
-    result = defaultEval(`${importAllExp}; a`)
+    const importAllExp = `Lib = Import(Function(() => (export a = 3; export b = 4))())`;
+    result = defaultEval(`${importAllExp}; Lib:a`)
     expect(result).toBe(3);
-    result = defaultEval(`${importAllExp}; b`)
+    result = defaultEval(`${importAllExp}; Lib:b`)
     expect(result).toBe(4);
-    const importUsingExp = `Import(Function(() => (export a = 3; export b = 4))()) Using (a)`;
-    result = defaultEval(`${importUsingExp}; a`)
+    const importUsingExp = `Lib = Import(Function(() => (export a = 3; export b = 4))()) Using (a)`;
+    result = defaultEval(`${importUsingExp}; Lib:a`)
     expect(result).toBe(3);
-    result = defaultEval(`${importUsingExp}; b`)
+    result = defaultEval(`${importUsingExp}; Lib:b`)
     expect(result).toBe(undefined);
     
 });

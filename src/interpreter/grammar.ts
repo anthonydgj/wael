@@ -27,7 +27,8 @@ WAEL {
     expressionDelimiter = ";"
 
     // Imports
-    ImportExpression = ImportUsingExpression | ImportAllExpression
+    ImportExpression = AccessibleExp<ImportExpressionType>
+    ImportExpressionType = ImportUsingExpression | ImportAllExpression
     ImportUsingExpression = ImportEitherExpression usingKeyword FunctionParameters
     ImportAllExpression = ImportEitherExpression
     ImportEitherExpression = ImportExternalExp | ImportFunctionExp

@@ -391,7 +391,7 @@ LineString(1 1, 2 2, 3 3) |> Function((total, current, index) => total + current
 
 Data can be imported using `Import` expressions. For example, if the file `etna.wael` contains `Point(14.99 37.75)`, it can be imported using:
 ```
-data = Import('etna.wael');
+data = Import('etna.wael'):Default;
 data # POINT (14.99 37.75)
 ```
 
