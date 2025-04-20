@@ -15,8 +15,8 @@ export interface ScopeBindingMetadata {
 export class Scope {
 
     bindings: ScopeBindings = {};
+    availableBindings: ScopeBindings = {};
     private metadata: ScopeBindingMetadata = {};
-    private availableBindings: ScopeBindings = {};
     constructor(
         private parent?: Scope,
         private level = 0,

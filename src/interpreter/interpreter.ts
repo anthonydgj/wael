@@ -27,6 +27,7 @@ const grammarString = GRAMMAR;
 export namespace Interpreter {
 
     export const IMPORT_DEFAULT_IDENTIFIER = 'Default';
+    export const IMPORT_USING_ALL = '*';
     
     export const STANDARD_LIBRARY: ScopeBindings = {};
     const math: { [prop: string]: any } = {};
@@ -63,8 +64,15 @@ export namespace Interpreter {
             ImportUsingExpression(importAllExp, _keyword, identifierList) {
                 const ret = importAllExp.eval();
                 const identifiers = identifierList.eval();
-                currentScope.useNamedImports(identifiers);
+                if (identifiers === IMPORT_USING_ALL) {
+                    currentScope.useNamedImports(Object.keys(currentScope.availableBindings));
+                } else {
+                    currentScope.useNamedImports(identifiers);
+                }
                 return ret;
+            },
+            ImportUsingAllParams(_) {
+                return IMPORT_USING_ALL;
             },
             ImportExternalExp(_keyword, importUri) {
                 const uri = importUri.eval();

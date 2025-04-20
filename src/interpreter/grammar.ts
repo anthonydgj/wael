@@ -29,7 +29,9 @@ WAEL {
     // Imports
     ImportExpression = AccessibleExp<ImportExpressionType>
     ImportExpressionType = ImportUsingExpression | ImportAllExpression
-    ImportUsingExpression = ImportEitherExpression usingKeyword FunctionParameters
+    ImportUsingExpression = ImportEitherExpression usingKeyword ImportUsingParameters
+    ImportUsingParameters = FunctionParameters | ImportUsingAllParams
+    ImportUsingAllParams = Paren<"*">
     ImportAllExpression = ImportEitherExpression
     ImportEitherExpression = ImportExternalExp | ImportFunctionExp
     ImportExternalExp = importKeyword Paren<stringLiteralExp>
