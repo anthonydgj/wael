@@ -14,7 +14,7 @@ export interface ScopeBindingMetadata {
 
 export class Scope {
 
-    private bindings: ScopeBindings = {};
+    readonly bindings: ScopeBindings = {};
     private metadata: ScopeBindingMetadata = {};
     private availableBindings: ScopeBindings = {};
     constructor(
@@ -53,8 +53,8 @@ export class Scope {
         return scope.bindings[identifier];
     };
 
-    push(): Scope {
-        return new Scope(this, this.level + 1);
+    push(extraBindings?: ScopeBindings): Scope {
+        return new Scope(this, this.level + 1, extraBindings);
     }
 
     pop(additionalBindings?: ScopeBindings): Scope | undefined {

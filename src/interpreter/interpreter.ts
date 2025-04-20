@@ -358,9 +358,10 @@ export namespace Interpreter {
             FunctionExp(p, _, body) {
                 let params = p.eval();
                 params = Array.isArray(params) ? params : [params];
+                let fnScope = currentScope;
                 const fn = function(...values: any[]) {
                     // Create new scope per function call.
-                    currentScope = currentScope.push();
+                    currentScope = currentScope.push({...fnScope.bindings});
                     params.forEach((paramName: any, index: number) => {
                         currentScope.store(paramName, values[index])
                     });
