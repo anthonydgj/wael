@@ -166,5 +166,9 @@ it('should support network imports', () => {
     let result;
     result = defaultEval(`Import("https://raw.githubusercontent.com/anthonydgj/wael/refs/heads/main/src/tests/test.wael"):Default`)
     expect(result).toBeTruthy();
-    expect(result.geometry.coordinates).toStrictEqual([1, 1])
+    expect(result.geometry.coordinates).toStrictEqual([1, 1]);
+
+    result = defaultEval(`Import("https://gist.githubusercontent.com/anthonydgj/29dd64c93e0656475e01bf228f117144/raw/905511d67bbe5e401c6ee34efbe5b737c7f20831/gistfile1.txt") Using (Num); Num(2)`)
+    expect(result).toBeTruthy();
+    expect(result.geometry.coordinates).toStrictEqual([2, 2]);
 });
