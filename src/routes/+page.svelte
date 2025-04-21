@@ -59,7 +59,7 @@
                     const trimmed = text.trim();
                     try {
                         const result = interpreter.evaluate(trimmed.slice(0, trimmed.length - 2))
-                        rl.println(c.blueBright(result) + '\n')
+                        rl.println(`${c.blueBright(result + '')}` + '\n')
                     } catch(err: any) {
                         console.log(err)
                         rl.println(err.message)
