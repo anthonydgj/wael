@@ -160,4 +160,11 @@ it('should require explicit scope binding export', () => {
     // Explicit export
     result = defaultEval(`Import(Function(() => (Import(Function(() => (export a = 4))()) Using (a); export a=a))()) Using (a); a`);
     expect(result).toBe(4);
-})
+});
+
+it('should support network imports', () => {
+    let result;
+    result = defaultEval(`Import("https://raw.githubusercontent.com/anthonydgj/wael/refs/heads/main/src/tests/test.wael"):Default`)
+    expect(result).toBeTruthy();
+    expect(result.geometry.coordinates).toStrictEqual([1, 1])
+});

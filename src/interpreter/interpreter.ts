@@ -22,6 +22,8 @@ import { BuiltInFunctions } from './built-in-functions';
 import { GRAMMAR } from './grammar';
 import { readFileSync } from 'fs';
 
+const fetch = require('sync-fetch')
+
 const grammarString = GRAMMAR;
 
 export namespace Interpreter {
@@ -80,16 +82,22 @@ export namespace Interpreter {
                 return IMPORT_USING_ALL;
             },
             ImportExternalExp(_keyword, importUri) {
-                const uri = importUri.eval();
-                const file = readFileSync(uri, 'utf8');
+                const uri:string  = importUri.eval();
+
+                let data: string;
+                if (uri.startsWith('http://') || uri.startsWith('https://')) {
+                    data = fetch(uri).text();
+                } else {
+                    data = readFileSync(uri, 'utf8');
+                }
                 currentScope = currentScope.push();
                 let ret = undefined;
                 let bindings: ScopeBindings | undefined = undefined;
                 try {
-                    ret = convertToGeometry(JSON.parse(file));
+                    ret = convertToGeometry(JSON.parse(data));
                 } catch {
                     try {
-                        const libRet = evaluateInput(file, currentScope);
+                        const libRet = evaluateInput(data, currentScope);
                         bindings = {};
                         bindings[IMPORT_DEFAULT_IDENTIFIER] = libRet;
                     } catch {
