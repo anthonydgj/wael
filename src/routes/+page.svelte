@@ -9,6 +9,9 @@
     import { Readline } from "xterm-readline";
     import { Wael } from 'wael-lib';
 
+    // const c = require('ansi-colors');
+    import * as c from 'ansi-colors';
+
 	let terminal: Terminal;
     const PROMPT = `> `
     const END_TEXT = ';;'
@@ -56,7 +59,7 @@
                     const trimmed = text.trim();
                     try {
                         const result = interpreter.evaluate(trimmed.slice(0, trimmed.length - 2))
-                        rl.println(result + '\n')
+                        rl.println(c.blueBright(result) + '\n')
                     } catch(err: any) {
                         console.log(err)
                         rl.println(err.message)
