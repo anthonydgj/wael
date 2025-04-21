@@ -56,20 +56,25 @@ export namespace Interpreter {
             stringLiteral(_leftQuote, str, _rightQuote) {
                 return str.sourceString;
             },
-            ImportAllExpression(importAllExp) {
-                importAllExp.eval();
+            ImportAllExpression(exp) {
+                const ret = exp.eval();
+                if (ret) {
+                    // Return data import
+                    return ret;
+                }
+
+                // Return function import object
                 const importObj = currentScope.useImports();
                 return importObj;
             },
             ImportUsingExpression(importAllExp, _keyword, identifierList) {
-                const ret = importAllExp.eval();
+                importAllExp.eval();
                 const identifiers = identifierList.eval();
                 if (identifiers === IMPORT_USING_ALL) {
                     currentScope.useNamedImports(Object.keys(currentScope.availableBindings));
                 } else {
                     currentScope.useNamedImports(identifiers);
                 }
-                return ret;
             },
             ImportUsingAllParams(_) {
                 return IMPORT_USING_ALL;
@@ -78,24 +83,24 @@ export namespace Interpreter {
                 const uri = importUri.eval();
                 const file = readFileSync(uri, 'utf8');
                 currentScope = currentScope.push();
-                let ret;
+                let ret = undefined;
+                let bindings: ScopeBindings | undefined = undefined;
                 try {
                     ret = convertToGeometry(JSON.parse(file));
                 } catch {
                     try {
-                        ret = evaluateInput(file, currentScope);
+                        const libRet = evaluateInput(file, currentScope);
+                        bindings = {};
+                        bindings[IMPORT_DEFAULT_IDENTIFIER] = libRet;
                     } catch {
                         throw new Error(`Unable to import file: ${uri}`);
                     }
                 }
-                const bindings: ScopeBindings = {};
-                bindings[IMPORT_DEFAULT_IDENTIFIER] = ret;
                 currentScope = currentScope.pop(bindings) || GLOBAL_SCOPE;
                 return ret;
             },
             ImportFunctionExp(_keyword, importFn) {
-                const ret = importFn.eval();
-                return ret;
+                importFn.eval();
             },
             IfThenElseExp(_if, c, _then, exp1, _else, exp2) {
                 const condition = c.eval();

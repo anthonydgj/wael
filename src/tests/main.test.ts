@@ -82,11 +82,11 @@ test('should support imports', () => {
     expect(result).toBeTruthy();
     expect(result.geometry.coordinates).toStrictEqual([2, 2]);
 
-    result = defaultEval(`a = Import("./src/tests/test.json"):Default; a + Point(1 1)`);
+    result = defaultEval(`a = Import("./src/tests/test.json"); a + Point(1 1)`);
     expect(result).toBeTruthy();
     expect(result.geometry.coordinates).toStrictEqual([2, 2]);
 
-    result = defaultEval(`a = Import("./src/tests/test.geojson"):Default; a + Point(1 1)`);
+    result = defaultEval(`a = Import("./src/tests/test.geojson"); a + Point(1 1)`);
     expect(result).toBeTruthy();
     expect(result.geometry.coordinates).toStrictEqual([2, 2]);
 
