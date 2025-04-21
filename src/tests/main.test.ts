@@ -149,3 +149,15 @@ it('should allow closures', () => {
     result = defaultEval(`${exp} Lib:Stack; stack`);
     expect(result.geometry.geometries).toStrictEqual([ { type: 'Point', coordinates: [ 2, 2 ] } ]);
 });
+
+it('should require explicit scope binding export', () => {
+    let result;
+
+    // No explicit export
+    result = defaultEval(`Import(Function(() => (Import(Function(() => (export a = 4))()) Using (a)))()) Using (a); a`);
+    expect(result).toBe(undefined);
+
+    // Explicit export
+    result = defaultEval(`Import(Function(() => (Import(Function(() => (export a = 4))()) Using (a); export a=a))()) Using (a); a`);
+    expect(result).toBe(4);
+})
