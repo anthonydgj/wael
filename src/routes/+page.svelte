@@ -62,7 +62,7 @@
                         rl.println(`${c.blueBright(result + '')}` + '\n')
                     } catch(err: any) {
                         console.log(err)
-                        rl.println(err.message)
+                        rl.println(`${c.redBright(err.message + '')}` + '\n')
                     }
                     setTimeout(readLine);
                 }
