@@ -21,8 +21,7 @@ import { Scope, ScopeBindings } from './scope';
 import { BuiltInFunctions } from './built-in-functions';
 import { GRAMMAR } from './grammar';
 import { readFileSync } from 'fs';
-
-const fetch = require('sync-fetch')
+import syncFetch from 'sync-fetch'
 
 const grammarString = GRAMMAR;
 
@@ -86,7 +85,7 @@ export namespace Interpreter {
 
                 let data: string;
                 if (uri.startsWith('http://') || uri.startsWith('https://')) {
-                    data = fetch(uri).text();
+                    data = syncFetch(uri).text();
                 } else {
                     data = readFileSync(uri, 'utf8');
                 }
