@@ -97,7 +97,7 @@ export namespace BuiltInFunctions {
         return turf.geometryCollection(pointsList.map((p: any) => turf.point(p).geometry)).geometry;
     };
 
-    export const Rotate = (angleDegrees: number, origin: Point, geometry: any) => {
+    export const Rotate = (angleDegrees: number, origin: Point = turf.point([0, 0]).geometry, geometry: any) => {
         return transform(geometry, (p: Point) => {
             // Convert angle from degrees to radians
             const angleRadians = (angleDegrees * Math.PI) / -180;

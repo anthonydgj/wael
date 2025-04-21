@@ -63,6 +63,13 @@ test('should rotate points', () => {
         [615.469388601123, 353.6531358523772]
     ]);
 
+    result = defaultEval(`Rotate(23, undefined, MultiPoint(1 1, 2 2, 3 3))`);
+    expect(result).toBeTruthy();
+    expect(result.geometry.coordinates).toStrictEqual([
+        [1.311235981941714, 0.5297737249631667],
+        [2.622471963883428, 1.0595474499263333],
+        [3.9337079458251423, 1.5893211748894998]
+    ]);
 });
 
 test('should round number values', () => {
