@@ -16,7 +16,9 @@
     const PROMPT = `> `
     const END_TEXT = ';;'
     let rl: Readline | undefined = undefined;
-    const interpreter = new Wael();
+    const interpreter = new Wael({
+        outputNonGeoJSON: true
+    });
 
 	let options: ITerminalOptions & ITerminalInitOnlyOptions = {
         cursorBlink: true,
