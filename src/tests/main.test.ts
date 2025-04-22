@@ -1,3 +1,4 @@
+import { OutputFormat } from '../main';
 import { defaultEval } from './test-utils';
 
 const fs = require('fs');
@@ -102,6 +103,11 @@ test('should support imports', () => {
 it('should support function scope import/export', () => {
     let result;
     const importAllExp = `Lib = Import(Function(() => (export a = 3; export b = 4))())`;
+    result = defaultEval(`${importAllExp}; Lib`, {outputNonGeoJSON: true})
+    expect(result).toBeTruthy();
+    expect(result['Default']).toBe(4);
+    expect(result['a']).toBe(3);
+    expect(result['b']).toBe(4);
     result = defaultEval(`${importAllExp}; Lib:a`)
     expect(result).toBe(3);
     result = defaultEval(`${importAllExp}; Lib:b`)

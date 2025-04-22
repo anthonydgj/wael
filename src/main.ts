@@ -11,6 +11,7 @@ export enum OutputFormat {
 
 export interface Options {
     outputFormat?: OutputFormat,
+    outputNonGeoJSON?: boolean;
     scope?: Scope;
     storeHistoricalEvaluations?: boolean;
 }
@@ -59,20 +60,43 @@ export class Wael {
             return undefined;
         }
         if (typeof result === 'object') {
-            switch(options?.outputFormat) {
-                case OutputFormat.WKT:
-                    return wellknown.stringify(result);
-                case OutputFormat.GeoJSON:
-                    return turf.feature(result) as any;
-                default:
-                    break;
+            if (typeof result.type === 'string') {
+                switch(options?.outputFormat) {
+                    case OutputFormat.WKT:
+                        return wellknown.stringify(result);
+                    case OutputFormat.GeoJSON:
+                        return turf.feature(result) as any;
+                    default:
+                        break;
+                }
+            } else {
+                const output = Wael.getOutputString(result, options.outputFormat);
+                if (options.outputNonGeoJSON) {
+                    return output;
+                } else {
+                    const outputString = typeof output === 'string' ? output : JSON.stringify(output, undefined, 2)
+                    throw new Error(`Invalid '${options.outputFormat}' evaluation result: ${outputString}`)
+                }
             }
         }
-
         return result;
     }
 
     static evaluate(input: string, options?: Partial<Options>) {
         return new Wael(options).evaluate(input);
     }
+
+    private static getOutputString(result: any, outputFormat?: OutputFormat) {
+        if (outputFormat === OutputFormat.WKT) {
+            const properties = Object.keys(result).map(key => {
+                return `  ${key} = ${result[key]?.toString()}`
+            });
+return `(
+${properties.join(';\n')}
+)`
+        } else {    
+            return result;
+        }
+    }
 }
+

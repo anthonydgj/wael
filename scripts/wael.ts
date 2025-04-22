@@ -22,8 +22,14 @@ const args = (yargs as any).command('$0', `${packageJson.description}\nVersion: 
         description: 'Output format'
     })
     .option('geojson', {
+        alias: 'g',
         boolean: true,
         description: 'Output as GeoJSON'
+    })
+    .option('outputNonGeoJSON', {
+        alias: 'a',
+        boolean: true,
+        description: 'Output non-GeoJSON results'
     })
     .option('interactive', {
         alias: 'i',
@@ -56,7 +62,8 @@ const outputFormat = args.geojson ? OutputFormat.GeoJSON :
     args.format ? args.format : OutputFormat.WKT;
 const options: Options = {
     outputFormat: outputFormat,
-    scope: Interpreter.createGlobalScope()
+    scope: Interpreter.createGlobalScope(),
+    outputNonGeoJSON: args.outputNonGeoJSON
 };
 
 const evaluateScript = args.evaluate;
