@@ -24,6 +24,7 @@ test('should evaluate functions with keyword', () => {
 
 test('should evaluate functions without keyword', () => {
     let result;
+    
     result = defaultEval(`
         fn = (() => (3));
         fn()
@@ -31,8 +32,20 @@ test('should evaluate functions without keyword', () => {
     expect(result).toBe(3);
 
     result = defaultEval(`
+        fn = () => (3);
+        fn()
+    `);
+    expect(result).toBe(3);
+
+    result = defaultEval(`
         (() => (3 ;
         4 ; 6))()
+    `);
+    expect(result).toBe(6);
+
+    result = defaultEval(`
+        () => (3 ;
+        4 ; 6)()
     `);
     expect(result).toBe(6);
 
@@ -133,3 +146,18 @@ it('should handle immediately invoked function expressions', () => {
     let result = defaultEval(`Function(a => a + 1)(2)`);
     expect(result).toBe(3);
 })
+
+it('should handle function calls of function calls', () => {
+    let result;
+    result = defaultEval(`(() => 3 ; 4 ; 5)()`);
+    expect(result).toBe(5);
+
+    result = defaultEval(`(() => 3 ; 4 ; 5)()`);
+    expect(result).toBe(5);
+    
+    result = defaultEval(`fn = (a) => (a); fn(fn(fn(3)))`);
+    expect(result).toBe(3);
+
+    result = defaultEval(`f = () => (() => (() => 3)); f()()()`);
+    expect(result).toBe(3);
+});
