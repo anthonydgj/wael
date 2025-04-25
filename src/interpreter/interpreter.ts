@@ -71,11 +71,13 @@ export namespace Interpreter {
             ImportUsingExpression(importAllExp, _keyword, identifierList) {
                 importAllExp.eval();
                 const identifiers = identifierList.eval();
+                let importObj;
                 if (identifiers === IMPORT_USING_ALL) {
-                    currentScope.useNamedImports(Object.keys(currentScope.availableBindings));
+                    importObj = currentScope.useNamedImports(Object.keys(currentScope.availableBindings));
                 } else {
-                    currentScope.useNamedImports(identifiers);
+                    importObj = currentScope.useNamedImports(identifiers);
                 }
+                return importObj;
             },
             ImportUsingAllParams(_) {
                 return IMPORT_USING_ALL;
