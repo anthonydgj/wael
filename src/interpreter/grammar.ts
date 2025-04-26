@@ -72,7 +72,8 @@ AccessibleExp<Type> =
 
 // Additional operation expressions
 OperationExp =  PipeExp | GenerateExp | ConcatExp
-PipeExp = MappableValue anyPipeOperator Callable
+PipeExp = MappableValue anyPipeOperator Pipeable //Callable
+Pipeable = FunctionCallExp | Callable
 GenerateExp = generateKeyword ComputedValue<NumberExp> ComputedValue<GenerateValue> 
 ConcatExp = MappableValue concatOperator MappableValue
 GenerateValue = GeometryExp | FunctionTextExp

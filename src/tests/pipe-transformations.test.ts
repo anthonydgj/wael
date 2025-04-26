@@ -165,3 +165,9 @@ test('should support reduce operator', () => {
     expect(result).toBeTruthy();
     expect(result.geometry.coordinates).toStrictEqual([4, 4]);
 });
+
+it('should support piping with callables', () => {
+    let result;
+    result = defaultEval(`Adder = ((i) => (a => a+i)); 1 | Adder(2)`);
+    expect(result).toBe(3);
+});
