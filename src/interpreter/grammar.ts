@@ -34,7 +34,8 @@ ImportUsingParameters = FunctionParameters | ImportUsingAllParams
 ImportUsingAllParams = Paren<"*">
 ImportAllExpression = ImportEitherExpression
 ImportEitherExpression = ImportExternalExp | ImportFunctionExp
-ImportExternalExp = importKeyword Paren<stringLiteralExp>
+ImportExternalExp = importKeyword Paren<ImportExternalParamExp>
+ImportExternalParamExp = stringLiteralExp | Identifier
 ImportFunctionExp = importKeyword Paren<FunctionCallExp>
 importKeyword = caseInsensitive<"import">
 usingKeyword = caseInsensitive<"using">
@@ -51,6 +52,7 @@ AssignableExpression =
     | ArithmeticAssignableExpression
 NonArithmeticAssignableExpression = 
     | OperationExp
+    | stringLiteralExp
 ArithmeticAssignableExpression = Arithmetic<AssignableExpressionForArithmetic>
 AssignableExpressionForArithmetic = 
     | BooleanResultExp
