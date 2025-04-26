@@ -55,31 +55,27 @@ export class Wael {
         }
         this.evaluationCount++;
 
-        // Return result
-        if (result === null) {
-            return undefined;
-        }
-        if (typeof result === 'object') {
-            if (typeof result.type === 'string') {
-                switch(options?.outputFormat) {
-                    case OutputFormat.WKT:
-                        return wellknown.stringify(result);
-                    case OutputFormat.GeoJSON:
-                        return turf.feature(result) as any;
-                    default:
-                        break;
-                }
-            } else {
-                const output = Wael.getOutputString(result, options.outputFormat);
-                if (options.outputNonGeoJSON) {
-                    return output;
-                } else {
-                    const outputString = typeof output === 'string' ? output : JSON.stringify(output, undefined, 2)
-                    throw new Error(`Invalid '${options.outputFormat}' evaluation result: ${outputString}`)
-                }
+        if (typeof result === 'object' && typeof result?.type === 'string') {
+            switch(options?.outputFormat) {
+                case OutputFormat.WKT:
+                    return wellknown.stringify(result);
+                case OutputFormat.GeoJSON:
+                    return turf.feature(result) as any;
+                default:
+                    break;
             }
         }
-        return result;
+        
+        const output = Wael.getOutputString(result, options.outputFormat);
+        if (options.outputNonGeoJSON) {
+            if (options.outputFormat === OutputFormat.GeoJSON) {
+                return result ?? undefined;
+            }
+            return output;
+        } else {
+            const outputString = typeof output === 'string' ? output : JSON.stringify(output, undefined, 2)
+            throw new Error(`Invalid '${options.outputFormat}' evaluation result: ${outputString}`)
+        }
     }
 
     static evaluate(input: string, options?: Partial<Options>) {
@@ -87,16 +83,17 @@ export class Wael {
     }
 
     private static getOutputString(result: any, outputFormat?: OutputFormat) {
-        if (outputFormat === OutputFormat.WKT) {
-            const properties = Object.keys(result).map(key => {
-                return `  ${key} = ${result[key]?.toString()}`
-            });
+        if (typeof result === 'object') {
+            if (outputFormat === OutputFormat.WKT) {
+                const properties = Object.keys(result).map(key => {
+                    return `  ${key} = ${result[key]?.toString()}`
+                });
 return `(
 ${properties.join(';\n')}
 )`
-        } else {    
-            return result;
+            } 
         }
+        return `${result}`
     }
 }
 
