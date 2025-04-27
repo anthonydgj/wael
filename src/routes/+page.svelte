@@ -17,7 +17,8 @@
     const END_TEXT = ';;'
     let rl: Readline | undefined = undefined;
     const interpreter = new Wael({
-        outputNonGeoJSON: true
+        outputNonGeoJSON: true,
+        storeHistoricalEvaluations: true
     });
 
 	let options: ITerminalOptions & ITerminalInitOnlyOptions = {
@@ -52,7 +53,7 @@
 
             function readLine() {
                 if (rl) {
-                    rl.read(PROMPT).then(processLine);
+                    rl.read(`[${interpreter.getEvaluationCount()}]${PROMPT}`).then(processLine);
                 }
             }
 
