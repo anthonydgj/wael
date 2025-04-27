@@ -58,13 +58,6 @@ const getJsonString = (json: any) => {
     return JSON.stringify(json);
 }
 
-const outputFormat = args.geojson ? OutputFormat.GeoJSON : 
-    args.format ? args.format : OutputFormat.WKT;
-const options: Options = {
-    outputFormat: outputFormat,
-    scope: Interpreter.createGlobalScope(),
-    outputNonGeoJSON: args.outputNonGeoJSON
-};
 
 const evaluateScript = args.evaluate;
 const postEvaluateScript = args.postEvaluate;
@@ -74,6 +67,20 @@ const bindImports = args.bindImport;
 const highlightText = chalk.hex(`#1f91cf`);
 const errorText = chalk.hex(`#bd3131`);
 const subtleText = chalk.hex(`#777`);
+
+const outputFormat = args.geojson ? OutputFormat.GeoJSON : 
+    args.format ? args.format : OutputFormat.WKT;
+
+let outputNonGeoJSON = args.outputNonGeoJSON;
+if (outputNonGeoJSON === undefined && isInteractive) {
+    outputNonGeoJSON = true;
+}
+const options: Options = {
+    outputFormat,
+    scope: Interpreter.createGlobalScope(),
+    outputNonGeoJSON
+};
+
 const wael = new Wael(options);
 let result: any;
 let hasEvaluated = false;
