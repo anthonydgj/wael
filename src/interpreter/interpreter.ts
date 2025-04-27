@@ -43,8 +43,8 @@ export namespace Interpreter {
     STANDARD_LIBRARY['ToMultiPoint'] = BuiltInFunctions.ToMultiPoint;
     STANDARD_LIBRARY['ToPolygon'] = BuiltInFunctions.ToPolygon;
     STANDARD_LIBRARY['ToGeometryCollection'] = BuiltInFunctions.ToGeometryCollection;
-    STANDARD_LIBRARY['Rotate'] = BuiltInFunctions.Rotate;
-    STANDARD_LIBRARY['Round'] = BuiltInFunctions.Round;
+    STANDARD_LIBRARY['_Rotate'] = BuiltInFunctions.Rotate;
+    STANDARD_LIBRARY['_Round'] = BuiltInFunctions.Round;
 
     export const createGlobalScope = () => new Scope(undefined, undefined, STANDARD_LIBRARY);
         

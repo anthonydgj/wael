@@ -53,7 +53,7 @@ Point(-110 38) + PointGrid(20, 10, 2)
 
 **Rotate a 20x10 grid of points around origin by 23 degrees:**
 ```
-PointGrid(20, 10, 4) | Rotate:bind(23, Point(0 0))
+PointGrid(20, 10, 4) | Rotate(23)
 ```
 
 <image src="examples/grid_rotated.jpg" alt="Rotated point grid" width="700px" />
@@ -252,7 +252,7 @@ myFn(1, 2, Point(3 4)) # LINESTRING (1 2, 3 4)
 Functions can have parameters bound using the `bind()` method:
 ```
 Generate 10 Function(i => ( x = Math:random() * 100; Point(x x) )) 
-    || Round:bind(2)   
+    || _Round:bind(2)   
 
 # GEOMETRYCOLLECTION (POINT (18.98 18.98), POINT (14.26 14.26), ...)
 ```
@@ -364,7 +364,7 @@ LineString(1 1, 2 2, 3 3) || Function((x, i) => x * i) # LINESTRING (0 0, 2 2, 6
 
 Each point in a geometry can be transformed using the pipe-all (`|*`) operator:
 ```
-LineString(1.4325 1.5325, 2.23525 2.7453, 3.26474 3.34643) |* Round:bind(1) # LINESTRING (1.4 1.5, 2.2 2.7, 3.3 3.3)
+LineString(1.4325 1.5325, 2.23525 2.7453, 3.26474 3.34643) |* Round(1) # LINESTRING (1.4 1.5, 2.2 2.7, 3.3 3.3)
 ```
 
 #### Filtering
@@ -431,15 +431,26 @@ PointCircle(5, 50) # GEOMETRYCOLLECTION(POINT (5 0),POINT (4.9605735065723895 0.
 ```
 
 #### Rotate
-`Rotate(angleDegrees, originPoint, geometry)` - rotate a geometry by the specified degrees around an origin point
+
+`Rotate(angleDegrees, originPoint)` - get function to rotate a geometry by the specified degrees around an origin point
 ```
-Rotate(23, Point(0 0), MultiPoint(1 1, 2 2, 3 3)) # MULTIPOINT (1.3112079320509338 0.5297935627181312, ... )
+MultiPoint(1 1, 2 2, 3 3) | Rotate(23, Point(0 0)) # MULTIPOINT (1.3112079320509338 0.5297935627181312, ... )
+```
+
+`_Rotate(angleDegrees, originPoint, geometry)` - non-pipe version
+```
+_Rotate(23, Point(0 0), MultiPoint(1 1, 2 2, 3 3)) # MULTIPOINT (1.3112079320509338 0.5297935627181312, ... )
 ```
 
 #### Round
-`Round(precision, val)` - round a number or `Point` coordinates with a given precision (defaults to 0)
+`Round(precision)` - get a function to round a number or `Point` coordinates with a given precision (defaults to 0)
 ```
-Round(1, 1.255) # 1.3
+1.255 | Round(1) # 1.3
+```
+
+`_Round(precision, val)` - non-pipe version
+```
+_Round(1, 1.255) # 1.3
 ```
 
 #### ToX

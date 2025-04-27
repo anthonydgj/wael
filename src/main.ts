@@ -2,6 +2,7 @@ import * as turf from '@turf/turf';
 import * as wellknown from 'wellknown';
 
 import { Interpreter } from "./interpreter/interpreter";
+import { STD_LIB } from './lib';
 import { Scope } from "./interpreter/scope";
 
 export enum OutputFormat {
@@ -32,8 +33,11 @@ export class Wael {
         this.options = {
             ...DEFAULT_OPTIONS,
             ...initialOptions,
-            scope: Interpreter.createGlobalScope()
+            scope: initialOptions?.scope ?? Interpreter.createGlobalScope(),
         };
+        
+        // Import standard library
+        Interpreter.evaluateInput(`StdLib = ${STD_LIB}; Import(StdLib()) Using (*)`, this.options.scope)
     }
 
     getEvaluationCount(): number {
@@ -45,6 +49,7 @@ export class Wael {
             ...this.options,
             ...overrideOptions
         };
+
         const result = Interpreter.evaluateInput(input, options.scope);
 
         // Track evaluations

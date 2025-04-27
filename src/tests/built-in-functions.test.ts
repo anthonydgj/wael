@@ -46,7 +46,7 @@ test('should convert from multi point', () => {
 });
 
 test('should rotate points', () => {
-    let result = defaultEval(`Rotate(23, Point(0 0), MultiPoint(1 1, 2 2, 3 3))`);
+    let result = defaultEval(`_Rotate(23, Point(0 0), MultiPoint(1 1, 2 2, 3 3))`);
     expect(result).toBeTruthy();
     expect(result.geometry.coordinates).toStrictEqual([
         [1.311235981941714, 0.5297737249631667],
@@ -54,7 +54,7 @@ test('should rotate points', () => {
         [3.9337079458251423, 1.5893211748894998]
     ]);
 
-    result = defaultEval(`LINESTRING (210 210, 311 310, 412 410, 513 510) |* Rotate:bind(23, Point(180 180))`);
+    result = defaultEval(`LINESTRING (210 210, 311 310, 412 410, 513 510) |* Rotate(23, Point(180 180))`);
     expect(result).toBeTruthy();
     expect(result.geometry.coordinates).toStrictEqual([
         [219.33707945825142, 195.893211748895],
@@ -63,7 +63,7 @@ test('should rotate points', () => {
         [615.469388601123, 353.6531358523772]
     ]);
 
-    result = defaultEval(`Rotate(23, undefined, MultiPoint(1 1, 2 2, 3 3))`);
+    result = defaultEval(`_Rotate(23, undefined, MultiPoint(1 1, 2 2, 3 3))`);
     expect(result).toBeTruthy();
     expect(result.geometry.coordinates).toStrictEqual([
         [1.311235981941714, 0.5297737249631667],
@@ -73,9 +73,9 @@ test('should rotate points', () => {
 });
 
 test('should round number values', () => {
-    let result = defaultEval(`Round(0, 1.255)`);
+    let result = defaultEval(`_Round(0, 1.255)`);
     expect(result).toBe(1);
-    result = defaultEval(`Round(1, 1.255)`);
+    result = defaultEval(`_Round(1, 1.255)`);
     expect(result).toBe(1.3);
 });
 

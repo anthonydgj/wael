@@ -114,7 +114,7 @@ test('should map coordinates', () => {
 
 test('should bind parameters to functions', () => {
     let result = defaultEval(`
-        2.345325 | Round:bind(2)
+        2.345325 | Round(2)
     `);
     expect(result).toBe(2.35);
 
