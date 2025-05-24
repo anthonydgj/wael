@@ -35,3 +35,15 @@ test('should generate geometries', () => {
     expect(result.geometry.geometries.map((f: any) => f.coordinates)).toStrictEqual([[1, 1], [2, 2], [3, 3]]);
 
 });
+
+test('should generate with function count provider', () => {
+    let result;
+    result = defaultEval(`Generate (i => i < 3) Point(1 1)`)
+    expect(result).toBeTruthy();
+    expect(result.geometry.geometries.map((f: any) => f.coordinates)).toStrictEqual([[1, 1], [1, 1], [1, 1]]);
+
+    result = defaultEval(`Generate (i => i < 3) (i => Point(i i))`)
+    expect(result).toBeTruthy();
+    expect(result.geometry.geometries.map((f: any) => f.coordinates)).toStrictEqual([[0, 0], [1, 1], [2, 2]]);
+
+})
