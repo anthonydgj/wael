@@ -424,14 +424,14 @@ export namespace Interpreter {
                 const key = first.sourceString + rest.sourceString;
                 return currentScope.resolve(key);
             },
-            Declaration_private(identifier, _, value) {
+            Assignment_private(identifier, _, value) {
                 const variableName = identifier.sourceString;
                 const variableValue = value.eval();
                 const scope = currentScope;
                 scope.store(variableName, variableValue);
                 return variableValue;
             },
-            Declaration_public(_keyword, identifier, _, value) {
+            Assignment_public(_keyword, identifier, _, value) {
                 const variableName = identifier.sourceString;
                 const variableValue = value.eval();
                 const scope = currentScope;

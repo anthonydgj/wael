@@ -20,7 +20,7 @@ ScopedExpressions = ListOf<GeneralExpression, ExpressionDelimiter> --list
     | GeneralExpression
 GeneralExpression =  GeneralExpression comment --rightComment
     | comment GeneralExpression --leftComment
-    | Declaration
+    | Assignment
     | AssignableExpression 
     | comment    
 ExpressionDelimiter = expressionDelimiter
@@ -44,7 +44,7 @@ usingKeyword = caseInsensitive<"using">
 exportKeyword = caseInsensitive<"export">
 
 // Variables
-Declaration = Identifier assignmentOperator AssignableExpression --private
+Assignment = Identifier assignmentOperator AssignableExpression --private
     | exportKeyword Identifier assignmentOperator AssignableExpression --public
 AssignableExpression = 
     | ImportExpression
