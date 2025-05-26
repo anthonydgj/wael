@@ -20,7 +20,7 @@ ScopedExpressions = ListOf<GeneralExpression, ExpressionDelimiter> --list
     | GeneralExpression
 GeneralExpression =  GeneralExpression comment --rightComment
     | comment GeneralExpression --leftComment
-    | Assignment
+    | AssignmentExp
     | AssignableExpression 
     | comment    
 ExpressionDelimiter = expressionDelimiter
@@ -44,8 +44,8 @@ usingKeyword = caseInsensitive<"using">
 exportKeyword = caseInsensitive<"export">
 
 // Variables
-Assignment = Identifier assignmentOperator AssignableExpression --private
-    | exportKeyword Identifier assignmentOperator AssignableExpression --public
+letKeyword = caseInsensitive<"let">
+AssignmentExp = exportKeyword? letKeyword? Identifier assignmentOperator AssignableExpression 
 AssignableExpression = 
     | ImportExpression
     | NonArithmeticAssignableExpression
@@ -263,6 +263,7 @@ keyword = geometryKeyword
     | elseKeyword
     | importKeyword
     | exportKeyword
+    | letKeyword
 geometryKeyword = pointKeyword
     | multiPointKeyword
     | lineStringKeyword

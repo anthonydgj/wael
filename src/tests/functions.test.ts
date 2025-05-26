@@ -79,7 +79,7 @@ test('should evaluate functions with parameters', () => {
     result = defaultEval(`
         x = 2;
         fn1 = Function(a => (
-            x = 5;
+            let x = 5;
             a = a + x;
             fn2 = Function(b => a + b);
             fn2(3)
@@ -93,7 +93,7 @@ test('should evaluate functions with parameters', () => {
     result = defaultEval(`
         x = 2;
         fn1 = Function((a, c) => (
-            x = 5;
+            let x = 5;
             a = a + x;
             fn2 = Function(b => a + b);
             fn2(3)

@@ -4,6 +4,7 @@ import { defaultEval } from './test-utils';
 const fs = require('fs');
 
 // Example files
+
 test('should evaluate reference programs', () => {
     let content = fs.readFileSync('./examples/reference.wael', 'utf-8');
     let result = defaultEval(content);
@@ -184,3 +185,29 @@ it('should support network imports', () => {
     expect(result).toBeTruthy();
     expect(result.geometry.coordinates).toStrictEqual([2, 2]);
 });
+
+// Variables 
+
+it('should support variable declaration and assignment', () => {
+    let result;
+
+    // Global scope
+    result = defaultEval(`a = 1`);
+    expect(result).toBe(1)
+    result = defaultEval(`a = 1; a`);
+    expect(result).toBe(1)
+    result = defaultEval(`let a = 1`);
+    expect(result).toBe(1)
+    result = defaultEval(`let a = 1; a`);
+    expect(result).toBe(1)
+
+    // Function scope
+    result = defaultEval(`a = 1; (() => a)()`);
+    expect(result).toBe(1)
+    result = defaultEval(`a = 1; (() => a = 2; a)()`);
+    expect(result).toBe(2)
+    result = defaultEval(`a = 1; (() => a = 2; a)(); a`);
+    expect(result).toBe(2)
+    result = defaultEval(`a = 1; (() => let a = 2; a)(); a`);
+    expect(result).toBe(1)
+})

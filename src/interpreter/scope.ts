@@ -19,7 +19,7 @@ export class Scope {
     private metadata: ScopeBindingMetadata = {};
     constructor(
         private parent?: Scope,
-        private level = 0,
+        public readonly level = 0,
         defaultBindings: ScopeBindings = {}
     ) {
         for (const identifier in defaultBindings) {
@@ -29,7 +29,16 @@ export class Scope {
         }
     }
 
-    store(identifier: string, value: any, metadata?: Metadata) {
+    store(identifier: string, value: any, metadata?: Metadata, searchParentChain = true) {
+        let scope: Scope = this;
+        if (searchParentChain) {
+            const resolvedScope = this.resolveScope(identifier);
+            if (resolvedScope) {
+                scope = resolvedScope;
+            }
+            scope.store(identifier, value, metadata, false);
+            return;
+        }
         this.bindings[identifier] = value;
         if (metadata) {
             this.metadata[identifier] = metadata;

@@ -398,7 +398,7 @@ export namespace Interpreter {
                     // Create new scope per function call.
                     currentScope = currentScope.push({...fnScope.bindings});
                     params.forEach((paramName: any, index: number) => {
-                        currentScope.store(paramName, values[index])
+                        currentScope.store(paramName, values[index], undefined, false)
                     });
                     const ret = body.eval();
                     const defaultBindings: ScopeBindings = {};
@@ -424,19 +424,14 @@ export namespace Interpreter {
                 const key = first.sourceString + rest.sourceString;
                 return currentScope.resolve(key);
             },
-            Assignment_private(identifier, _, value) {
+            AssignmentExp(exportKeyword, letKeyword, identifier, _operator, value) {
+                const isPublic = !!(exportKeyword?.children?.length);
+                const isLet = !!(letKeyword?.children?.length);
                 const variableName = identifier.sourceString;
                 const variableValue = value.eval();
-                const scope = currentScope;
-                scope.store(variableName, variableValue);
+                currentScope.store(variableName, variableValue, { public: isPublic }, !isLet);
                 return variableValue;
-            },
-            Assignment_public(_keyword, identifier, _, value) {
-                const variableName = identifier.sourceString;
-                const variableValue = value.eval();
-                const scope = currentScope;
-                scope.store(variableName, variableValue, { public: true });
-                return variableValue;
+
             },
             ScopedExpressions_list(list) {
                 const expressions = list.asIteration().children.map(c => c.eval());
