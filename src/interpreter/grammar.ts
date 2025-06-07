@@ -59,8 +59,8 @@ AssignableExpressionForArithmetic =
     | IfThenElseExp
     | ComputedExp
     | FunctionTextExp
-    | NumberExp
     | AccessibleExp<GeometryExp>
+    | NumberExp
     | BooleanValue
     | Paren<OperationExp> 
 assignmentOperator = "="

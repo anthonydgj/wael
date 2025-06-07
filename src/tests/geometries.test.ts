@@ -108,3 +108,12 @@ test('should handle computed coordinate values', () => {
     expect(result).toBeTruthy();
     expect(result.geometry.coordinates).toStrictEqual([1, 2]);
 })
+
+test('should support point literal', () => {
+    let result;
+    result = defaultEval(`1 2`);
+    expect(result.geometry.coordinates).toStrictEqual([1, 2])
+
+    result = defaultEval(`((p) => (Point(1 2) + p))(2 1)`)
+    expect(result.geometry.coordinates).toStrictEqual([3, 3])
+})
