@@ -117,3 +117,19 @@ test('should support point literal', () => {
     result = defaultEval(`((p) => (Point(1 2) + p))(2 1)`)
     expect(result.geometry.coordinates).toStrictEqual([3, 3])
 })
+
+test('should support GeometryCollection literal', () => {
+    let result;
+    result = defaultEval(`(1 2, 3 4)`);
+    expect(result.geometry.geometries?.map((f: any) => f.coordinates)).toStrictEqual([[1, 2], [3, 4]]);
+
+    result = defaultEval(`(LineString(1 1, 2 2), (3 3, 4 5))`);
+    expect(result.geometry.geometries.length).toBe(2);
+    expect(result.geometry.geometries[0].coordinates).toStrictEqual([[1, 1], [2, 2]]);
+    expect(result.geometry.geometries[1].geometries[0].coordinates).toStrictEqual([3, 3]);
+    expect(result.geometry.geometries[1].geometries[1].coordinates).toStrictEqual([4, 5]);
+
+    result = defaultEval(`((p) => (p + Point(1 2)))((2 1, 3 4))`);
+    expect(result.geometry.geometries?.map((f: any) => f.coordinates)).toStrictEqual([[3, 3], [4, 6]]);
+
+})

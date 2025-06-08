@@ -459,6 +459,10 @@ export namespace Interpreter {
                 const geometries = ((list || []) as any).asIteration().children.map((c: any) => c.eval());
                 return turf.geometryCollection(geometries).geometry;
             },
+            GeometryCollectionParameters(list) {
+                const geometries = ((list || []) as any).asIteration().children.map((c: any) => c.eval());
+                return turf.geometryCollection(geometries).geometry;
+            },
             MultiPolygonText_present(_leftParen, list, _rightParen) {
                 const polygons = list.asIteration().children.map(c => c.eval());
                 return turf.multiPolygon(polygons.map(p => p.coordinates)).geometry;
@@ -467,7 +471,10 @@ export namespace Interpreter {
                 const lineStrings = list.asIteration().children.map(c => c.eval());
                 return turf.multiLineString(lineStrings.map(p => p.coordinates)).geometry;
             },
-            MultiPointText_present(_leftParen, list, _rightParen) {
+            MultiPointText(multiPoint) {
+                return multiPoint.eval();
+            },
+            MultiPoint(list) {
                 const points = list.eval();
                 return turf.multiPoint(points.map((p: any) => p.coordinates)).geometry;
             },

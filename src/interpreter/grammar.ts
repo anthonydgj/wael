@@ -196,10 +196,13 @@ GeometryArithmetic<GeometryTypeExp, geometryKeyword> = GeometryPrimitive<Geometr
 GeometryPrimitive<GeometryTypeExp, geometryKeyword> = GeometryTaggedText<GeometryTypeExp, geometryKeyword>
 GeometryTaggedText<GeometryTypeExp, geometryKeyword> = geometryKeyword GeometryTypeExp
 
-GeometryCollectionExp = GeometrySyntaxExp<GeometryCollectionText, geometryCollectionKeyword>
+GeometryCollectionExp = GeometrySyntaxExp<GeometryCollectionText, geometryCollectionKeyword> 
+	| GeometryCollectionLiteral
 GeometryCollectionText = emptySet --empty
     | LeftParen ListOf<GeometryExp, Comma> RightParen --present
 geometryCollectionKeyword = caseInsensitive<"GEOMETRYCOLLECTION">
+GeometryCollectionLiteral = Paren<GeometryCollectionParameters>
+GeometryCollectionParameters = ListOf<GeometryExp, Comma>
 
 GeometryExp =  
     | PointExp
@@ -237,8 +240,8 @@ LineStringText = emptySet --empty
 lineStringKeyword = caseInsensitive<"LINESTRING">
 
 MultiPointExp = GeometrySyntaxExp<MultiPointText, multiPointKeyword>
-MultiPointText = emptySet --empty
-    | LeftParen PointList RightParen --present
+MultiPointText = emptySet | MultiPoint
+MultiPoint = Paren<PointList>
 multiPointKeyword = caseInsensitive<"MULTIPOINT">
 
 // Base point type helpers
