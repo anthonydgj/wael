@@ -161,3 +161,10 @@ it('should handle function calls of function calls', () => {
     result = defaultEval(`f = () => (() => (() => 3)); f()()()`);
     expect(result).toBe(3);
 });
+
+it('should handle the spread operator parameter', () => {
+    let result;
+    result = defaultEval(`((...g) => g)(1 1, 2 2, 3 3)`)
+    expect(result?.geometry.geometries?.map((f: any) => f.coordinates))
+        .toStrictEqual([[1, 1], [2, 2], [3, 3]])
+});

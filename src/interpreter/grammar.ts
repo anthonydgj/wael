@@ -122,6 +122,7 @@ operator =
     | conditionalOperator
     | assignmentOperator
     | notOperator
+    | spreadOperator
 
 anyPipeOperator = doublePipeOperator | coordinatesPipeOperator | filterOperator | reduceOperator | pipeOperator
 
@@ -138,12 +139,15 @@ divideOperator = "/"
 powerOperator = "^"
 modOperator = "%"
 accessorOperator = ":"
-    
+spreadOperator = "..."
+   
 // Function expressions
 FunctionTextExp = functionKeyword LeftParen FunctionExp RightParen --keyword
 	| OptionallyParen<FunctionExp>
 FunctionExp = FunctionParameters "=>" OptionallyParen<FunctionBody>
-FunctionParameters = LeftParen ListOf<Identifier, Comma> RightParen --multipleParams
+FunctionParameters = 
+    | LeftParen spreadOperator Identifier RightParen --spread
+    | LeftParen ListOf<Identifier, Comma> RightParen --multipleParams
     | Identifier --single
 FunctionBody =  OptionallyParen<ScopedExpressions> | AssignableExpression
 FunctionCallExp = FunctionCallExp Invocation | Callable Invocation

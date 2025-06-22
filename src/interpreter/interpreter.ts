@@ -392,14 +392,24 @@ export namespace Interpreter {
             },
             FunctionExp(p, _, body) {
                 let params = p.eval();
+                let isSpread = false;
+                if (!Array.isArray(params)) {
+                    isSpread = params?.isSpread
+                }
                 params = Array.isArray(params) ? params : [params];
                 let fnScope = currentScope;
                 const fn = function(...values: any[]) {
                     // Create new scope per function call.
                     currentScope = currentScope.push({...fnScope.bindings});
-                    params.forEach((paramName: any, index: number) => {
-                        currentScope.store(paramName, values[index], undefined, false)
-                    });
+
+                    if (isSpread) {
+                        const geometries = turf.geometryCollection(values).geometry
+                        currentScope.store(params[0].identifier, geometries, undefined, false)
+                    } else {
+                        params.forEach((paramName: any, index: number) => {
+                            currentScope.store(paramName, values[index], undefined, false)
+                        });
+                    }
                     const ret = body.eval();
                     const defaultBindings: ScopeBindings = {};
                     defaultBindings[IMPORT_DEFAULT_IDENTIFIER] = ret;
@@ -409,6 +419,12 @@ export namespace Interpreter {
                 const boundFn = fn.bind(currentScope);
                 boundFn.toString = function() { return `Function(${p.sourceString} => ${body.sourceString})` }
                 return boundFn;
+            },
+            FunctionParameters_spread(_leftParen, _operator, identifier, _rightParen) {
+                return {
+                    identifier: identifier.sourceString,
+                    isSpread: true
+                };
             },
             FunctionParameters_multipleParams(_leftParen, identifierList, _rightParen) {
                 const params = identifierList.asIteration().children.map(c => c.sourceString);
