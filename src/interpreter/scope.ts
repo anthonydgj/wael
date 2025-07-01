@@ -82,7 +82,6 @@ export class Scope {
 
     import(scopeBindings: ScopeBindings) {
         this.availableBindings = {
-            ...this.availableBindings,
             ...scopeBindings
         };
     }
