@@ -221,11 +221,40 @@ Variables are defined using the equal (`=`) operator. Supported data types inclu
 * Function
 
 ```
-longitude = 2;              # number
-bool = True;                # boolean
-p = Point(longitude 3);     # geometry
-fn = Function(p => p + 1);  # function
+longitude = 2;              # Number
+bool = True;                # Boolean
+p = Point(longitude 3);     # Geometry
+fn = Function(p => p + 1);  # Function
+path = "./my-lib.wael";     # String
 ```
+
+#### Geometry Literals
+
+The `GEOMETRYCOLLECTION` and `POINT` geometry types can be created without keywords.
+```
+1 1 # POINT (1 1)
+```
+
+```
+(1 1, 2 2, 3 3) # GEOMETRYCOLLECTION (POINT (1 1), POINT (2 2), POINT (3 3))
+```
+
+#### Variable Scope
+
+By default, variables have function scope can can be accessed or re-assigned from any nested functions:
+```
+a = 1;
+() => (a  = 2)();
+a ## 2
+```
+
+To shadow an existing variable, the `let` keyword can be used:
+```
+a = 1;
+() => (let a  = 2)();
+a ## 1
+```
+
 
 ### Functions
 
@@ -255,6 +284,12 @@ Generate 10 Function(i => ( x = Math:random() * 100; Point(x x) ))
     || _Round:bind(2)   
 
 # GEOMETRYCOLLECTION (POINT (18.98 18.98), POINT (14.26 14.26), ...)
+```
+
+The spread operator `...` can be used to destructure a geometry collection from function parameters:
+```
+Offset = (...g) => (g + 1);
+Offset(1 1, 2 2, 3 3) # GEOMETRYCOLLECTION (POINT (2 2), POINT (3 3), POINT (4 4))
 ```
 
 ### Properties and Methods
@@ -325,7 +360,7 @@ If (points:numGeometries > 3) Then (
 ) # POINT (4 6)
 ```
 
-### Generate Expressions
+### Iteration
 
 `⚠ experimental feature`
 
@@ -339,6 +374,11 @@ The iteration count can also be specified as a variable:
 ```
 count = 3;
 Generate count Point(0 0) # GEOMETRYCOLLECTION(POINT (0 0),POINT (0 0),POINT (0 0))
+```
+
+A predicate function can be provided to generate geometries while a condition holds:
+```
+a = 0; Generate ((i) => a < 3) (i => (a = a + 1; Point(i i))) # GEOMETRYCOLLECTION (POINT (0 0), POINT (1 1), POINT (2 2))
 ```
 
 ### Pipe Transformations
@@ -385,7 +425,7 @@ Array-like geometries can be reduced using the reduce (`|>`) operator:
 LineString(1 1, 2 2, 3 3) |> Function((total, current, index) => total + current) # Point(6 6)
 ```
 
-### Importing
+### Importing and Exporting
 
 `⚠ experimental feature`
 
@@ -396,6 +436,33 @@ data # POINT (14.99 37.75)
 ```
 
 Supported data formats include WKT, GeoJSON, and WAEL.
+
+Data or code can also be imported from network locations:
+```
+Lib = Import("https://gist.githubusercontent.com/anthonydgj/29dd64c93e0656475e01bf228f117144/raw/7b65273fab38af5b9793d1bade7a6afd5ff5d021/ext.wael")
+```
+
+To provide variables that can imported, the `export` keyword can be used with variable declarations and accessed using the accessor `:` operator:
+```
+MyLib = () => (
+    export let p = Point(2 2)
+);
+
+Lib = Import(MyLib());
+Lib:p # POINT (2 2)
+```
+
+The `Using` syntax allows importing specific variables:
+```
+MyLib = () => (
+    export let p = Point(2 2);
+    export let l = LineString(1 1, 2 2, 3 3)
+);
+
+Import(MyLib()) Using (l);
+l # LINESTRING (1 1, 2 2, 3 3)
+```
+
 
 ### Built-In Functions
 
