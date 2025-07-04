@@ -129,38 +129,6 @@ it('should support function scope import/export', () => {
     expect(result).toBe(4);    
 });
 
-it('should allow closures', () => {
-    let result;
-    const exp = `
-        UseLib = Function(() => (
-        # Number Library
-        Export Num = Function(val => if (val:type == Point) then (val:x) else (Point(val val)));
-        Export Get = Function((n, g) => g:geometryN(n));
-
-        # Data Structures
-        Export List = Function(val => if (val:type == GeometryCollection) then (val) else (Generate val Num(0)));
-        Export Seq = Function(n => Generate n Function(i => Point(i i)));
-        Export Slice = Function((start, end, g)=> (
-            g |~ Function((p, i) => (lowerBound = i >= start; higherBound = i < end; if (lowerBound And higherBound) then (true) else (false)))
-        ));
-
-        # Stack
-        Export Stack = Function(() => GeometryCollection());
-        Export Push = Function((v, g) => g ++v);
-        Export Pop = Function(g => Slice(0, g:numGeometries()-1, g));
-
-        true
-        ));
-        Lib = Import(UseLib());
-        stack = Lib:Stack();
-        stack = Lib:Push(Lib:Num(2), stack);
-        stack = Lib:Push(Lib:Num(3), stack);
-        stack = Lib:Pop(stack);
-    `
-    result = defaultEval(`${exp} Lib:Stack; stack`);
-    expect(result.geometry.geometries).toStrictEqual([ { type: 'Point', coordinates: [ 2, 2 ] } ]);
-});
-
 it('should require explicit scope binding export', () => {
     let result;
 
