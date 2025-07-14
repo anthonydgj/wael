@@ -400,7 +400,8 @@ export namespace Interpreter {
                 let fnScope = currentScope;
                 const fn = function(...values: any[]) {
                     // Create new scope per function call.
-                    currentScope = currentScope.push({...fnScope.bindings});
+                    currentScope = currentScope.push();
+                    currentScope.capture(fnScope);
 
                     if (isSpread) {
                         const geometries = turf.geometryCollection(values).geometry
@@ -414,6 +415,7 @@ export namespace Interpreter {
                     const defaultBindings: ScopeBindings = {};
                     defaultBindings[IMPORT_DEFAULT_IDENTIFIER] = ret;
                     currentScope = currentScope.pop(defaultBindings) || GLOBAL_SCOPE;
+                    currentScope.release()
                     return ret;
                 };
                 const boundFn = fn.bind(currentScope);

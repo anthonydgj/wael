@@ -57,7 +57,7 @@ test('should evaluate functions without keyword', () => {
     expect(result.geometry.coordinates).toStrictEqual([[2, 3], [2, 3]]);
 });
 
-test('should evaluate functions with parameters', () => {
+it('should evaluate functions with parameters', () => {
     let result;
     
     result = defaultEval(`
@@ -174,23 +174,23 @@ it('should allow closures', () => {
     let result;
     const exp = `
         UseLib = Function(() => (
-        # Number Library
-        Export Num = Function(val => if (val:type == Point) then (val:x) else (Point(val val)));
-        Export Get = Function((n, g) => g:geometryN(n));
+            # Number Library
+            Export Num = Function(val => if (val:type == Point) then (val:x) else (Point(val val)));
+            Export Get = Function((n, g) => g:geometryN(n));
 
-        # Data Structures
-        Export List = Function(val => if (val:type == GeometryCollection) then (val) else (Generate val Num(0)));
-        Export Seq = Function(n => Generate n Function(i => Point(i i)));
-        Export Slice = Function((start, end, g)=> (
-            g |~ Function((p, i) => (lowerBound = i >= start; higherBound = i < end; if (lowerBound And higherBound) then (true) else (false)))
-        ));
+            # Data Structures
+            Export List = Function(val => if (val:type == GeometryCollection) then (val) else (Generate val Num(0)));
+            Export Seq = Function(n => Generate n Function(i => Point(i i)));
+            Export Slice = Function((start, end, g)=> (
+                g |~ Function((p, i) => (lowerBound = i >= start; higherBound = i < end; if (lowerBound And higherBound) then (true) else (false)))
+            ));
 
-        # Stack
-        Export Stack = Function(() => GeometryCollection());
-        Export Push = Function((v, g) => g ++v);
-        Export Pop = Function(g => Slice(0, g:numGeometries()-1, g));
+            # Stack
+            Export Stack = Function(() => GeometryCollection());
+            Export Push = Function((v, g) => g ++v);
+            Export Pop = Function(g => Slice(0, g:numGeometries()-1, g));
 
-        true
+            true
         ));
         Lib = Import(UseLib());
         stack = Lib:Stack();
@@ -201,3 +201,9 @@ it('should allow closures', () => {
     result = defaultEval(`${exp} Lib:Stack; stack`);
     expect(result.geometry.geometries).toStrictEqual([ { type: 'Point', coordinates: [ 2, 2 ] } ]);
 });
+
+it('should support closure state', () => {
+    let result;
+    result = defaultEval(`Counter = () => (let count = 0; () => count = count + 1); counter = Counter(); counter(); counter()`)
+    expect(result).toBe(2)
+})

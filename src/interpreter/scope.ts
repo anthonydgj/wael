@@ -17,6 +17,7 @@ export class Scope {
     bindings: ScopeBindings = {};
     availableBindings: ScopeBindings = {};
     private metadata: ScopeBindingMetadata = {};
+    private closures: Scope[] = [];
     constructor(
         private parent?: Scope,
         public readonly level = 0,
@@ -48,6 +49,12 @@ export class Scope {
     resolveScope(identifier: string): Scope | undefined {
         if (this.bindings.hasOwnProperty(identifier)) {
             return this;
+        }
+
+        for (const closure of this.closures) {
+            if (closure.bindings.hasOwnProperty(identifier)) {
+                return closure;
+            }
         }
 
         if (this.parent) {
@@ -111,5 +118,12 @@ export class Scope {
             ...selectedBindings,
         };
         return selectedBindings;
+    }
+
+    capture(capturedScope: Scope) {
+        this.closures.push(capturedScope)
+    }
+    release() {
+        this.closures.pop()
     }
 }
