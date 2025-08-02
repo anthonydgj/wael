@@ -102,7 +102,6 @@ export class Scope {
         } else {
             selectedBindings = this.availableBindings
         }
-        this.availableBindings = {};
         return selectedBindings;
     }
 
