@@ -353,10 +353,18 @@ export namespace Interpreter {
                 return turf.geometryCollection(items).geometry;
             },
             FunctionCallExp(callable, p) {
-                const fn = callable.eval();
+                let fn = callable.eval();
                 const params = p.eval();
                 if (!fn) {
                     throw new Error(`${callable.sourceString} is: ${fn}`);
+                }
+                if (typeof fn === 'object' && fn?.hasOwnProperty(IMPORT_DEFAULT_IDENTIFIER)) {
+                    const defaultValue = fn[IMPORT_DEFAULT_IDENTIFIER];
+                    if (typeof defaultValue === 'function') {
+                        fn = defaultValue
+                    } else {
+                        fn = () => defaultValue
+                    }
                 }
                 const value = fn(...params);
                 return value;

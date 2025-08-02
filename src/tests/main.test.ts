@@ -109,6 +109,8 @@ it('should support function scope import/export', () => {
     expect(result['Default']).toBe(4);
     expect(result['a']).toBe(3);
     expect(result['b']).toBe(4);
+    result = defaultEval(`${importAllExp}; Lib()`)
+    expect(result).toBe(4);
     result = defaultEval(`${importAllExp}; Lib:a`)
     expect(result).toBe(3);
     result = defaultEval(`${importAllExp}; Lib:b`)
@@ -128,6 +130,23 @@ it('should support function scope import/export', () => {
     result = defaultEval(`${importUsingAllExp}; b`)
     expect(result).toBe(4);    
 });
+
+it('should return default values', () => {
+    let result;
+    result = defaultEval(`
+        Lib = (() => let a = 1; let b = 2; a);
+        lib = Import(Lib());
+        lib()
+    `);
+    expect(result).toBe(1);
+
+    result = defaultEval(`
+        Lib = (() => let a = 1; let b = 2; () => a);
+        lib = Import(Lib());
+        lib()
+    `);
+    expect(result).toBe(1);
+})
 
 it('should require explicit scope binding export', () => {
     let result;
