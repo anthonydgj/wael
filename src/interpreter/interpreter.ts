@@ -415,7 +415,6 @@ export namespace Interpreter {
                     const defaultBindings: ScopeBindings = {};
                     defaultBindings[IMPORT_DEFAULT_IDENTIFIER] = ret;
                     currentScope = currentScope.pop(defaultBindings) || GLOBAL_SCOPE;
-                    currentScope.release()
                     return ret;
                 };
                 const boundFn = fn.bind(currentScope);

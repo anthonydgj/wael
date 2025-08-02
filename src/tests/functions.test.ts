@@ -204,6 +204,26 @@ it('should allow closures', () => {
 
 it('should support closure state', () => {
     let result;
-    result = defaultEval(`Counter = () => (let count = 0; () => count = count + 1); counter = Counter(); counter(); counter()`)
-    expect(result).toBe(2)
+    result = defaultEval(`Counter = () => (let count = 0; () => count = count + 1); counter = Counter(); counter(); counter()`);
+    expect(result).toBe(2);
+})
+
+it('should support imports with state', () => {
+    let result;
+    result = defaultEval(`
+        List = () => (
+            let _value = GeometryCollection();
+            export let value = () => (_value);
+            export let append = (g) => (_value = _value ++ g);
+            export let remove = (index) => (_value = value() |~ (v, i) => (i != index));
+            value 
+        );
+        list = Import(List());
+        list:append(1 1);
+        list:append(2 2);
+        list:append(3 3);
+        list:remove(1);
+        list:value()
+    `);
+    expect(result.geometry.geometries.map((p: any) => p.coordinates)).toStrictEqual([[1, 1], [3, 3]]);
 })
