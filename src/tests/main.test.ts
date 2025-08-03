@@ -131,6 +131,21 @@ it('should support function scope import/export', () => {
     expect(result).toBe(4);    
 });
 
+it('should import embedded modules', () => {
+    let result;
+    result = defaultEval(`
+        Lib = () => (
+            export let a = () => (
+                export let b = 4
+            )
+        );
+        MyLib = Import(Lib());
+        lib = Import(MyLib:a());
+        lib()
+    `)
+    expect(result).toBe(4)
+});
+
 it('should return default values', () => {
     let result;
     result = defaultEval(`

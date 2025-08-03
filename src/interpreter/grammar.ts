@@ -36,7 +36,7 @@ ImportAllExpression = ImportEitherExpression
 ImportEitherExpression = ImportExternalExp | ImportFunctionExp
 ImportExternalExp = importKeyword Paren<ImportExternalParamExp>
 ImportExternalParamExp = stringLiteralExp | Identifier
-ImportFunctionExp = importKeyword Paren<FunctionCallExp>
+ImportFunctionExp = importKeyword Paren<ComputedValue<FunctionCallExp>>
 importKeyword = caseInsensitive<"import">
 usingKeyword = caseInsensitive<"using">
 
