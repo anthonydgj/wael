@@ -596,7 +596,7 @@ export namespace Interpreter {
     
         const matchResult = grammar.match(input);
         if (matchResult.message) {
-            console.error(`Message: ${matchResult.message}`)
+            throw new Error(matchResult.message)
         }
         const sem = semantics(matchResult);
         const result = sem.eval();
