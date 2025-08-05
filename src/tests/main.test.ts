@@ -214,4 +214,55 @@ it('should support variable declaration and assignment', () => {
     expect(result).toBe(2)
     result = defaultEval(`a = 1; (() => let a = 2; a)(); a`);
     expect(result).toBe(1)
-})
+});
+
+it('should support example data structures', () => {
+    let result;
+    result = defaultEval(`
+        Stack = () => (
+            let value = GeometryCollection();
+            let size = 0;
+
+            export let push = (n) => (
+                let num = n;
+                value = if (size % 2 == 0) then (
+                    value ++ (n 0)
+                ) else (
+                    value || (p, i) => (if (i == (size - 1) / 2) then (p:y(num)) else (p))
+                );
+                size = size + 1;
+                undefined
+            );
+
+            export let pop = () => (
+                let popVal = undefined;
+                value = if (size % 2 == 0) then (
+                    value || (v, i) => (if (i == (size / 2) - 1) then (
+                        popVal = v:y;
+                        v:y(0)
+                    ) else (v))
+                ) else (
+                    value |~ (v, i) => (if (i == value:numGeometries() - 1) then (
+                        popVal = v:x;
+                        false
+                    ) else (true))
+                );
+                size = size - 1;
+                popVal
+            );
+            
+            () => (value)
+        );
+        stack = Import(Stack());
+        stack:push(1);
+        stack:push(2);
+        stack:push(3);
+        stack:push(4);
+        stack:push(5);
+        stack:pop();
+        stack:pop()
+    `, {
+        outputNonGeoJSON: true
+    });
+    expect(result).toBe(4)
+});
