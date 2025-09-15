@@ -425,41 +425,41 @@ Array-like geometries can be reduced using the reduce (`|>`) operator:
 LineString(1 1, 2 2, 3 3) |> Function((total, current, index) => total + current) # Point(6 6)
 ```
 
-### Importing and Exporting
+### Module System
 
 `⚠ experimental feature`
 
-Data can be imported using `Import` expressions. For example, if the file `etna.wael` contains `Point(14.99 37.75)`, it can be imported using:
+Data can be imported with `Use` expressions. For example, if the file `etna.wael` contains `Point(14.99 37.75)`, it can be used in another script with:
 ```
-data = Import('etna.wael'):Default;
+data = Use('etna.wael');
 data # POINT (14.99 37.75)
 ```
 
-Supported data formats include WKT, GeoJSON, and WAEL.
+Supported data formats include WKT, GeoJSON and WAEL.
 
-Data or code can also be imported from network locations:
+Data or code can also be used from network locations:
 ```
-Lib = Import("https://gist.githubusercontent.com/anthonydgj/29dd64c93e0656475e01bf228f117144/raw/7b65273fab38af5b9793d1bade7a6afd5ff5d021/ext.wael")
+Lib = Use("https://gist.githubusercontent.com/anthonydgj/29dd64c93e0656475e01bf228f117144/raw/7b65273fab38af5b9793d1bade7a6afd5ff5d021/ext.wael")
 ```
 
-To provide variables that can imported, the `export` keyword can be used with variable declarations and accessed using the accessor `:` operator:
+By default, the last expression in a WAEL script will be returned from a `Use` expression. To provide one or more named variables in a module, the `export` keyword can be used with variable declarations and accessed using the accessor `:` operator:
 ```
 MyLib = () => (
     export let p = Point(2 2)
 );
 
-Lib = Import(MyLib());
+Lib = Use(MyLib());
 Lib:p # POINT (2 2)
 ```
 
-The `Using` syntax allows importing specific variables:
+The `With` syntax allows bringing specific variables into scope:
 ```
 MyLib = () => (
     export let p = Point(2 2);
     export let l = LineString(1 1, 2 2, 3 3)
 );
 
-Import(MyLib()) Using (l);
+Use(MyLib()) With (l);
 l # LINESTRING (1 1, 2 2, 3 3)
 ```
 
