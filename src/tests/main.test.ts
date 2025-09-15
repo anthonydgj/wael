@@ -76,11 +76,11 @@ test('should return last value', () => {
 });
 
 test('should support imports', () => {
-    let result = defaultEval(`Import("./src/tests/test.wael"):Default`);
+    let result = defaultEval(`Import("./src/tests/test.wael")`);
     expect(result).toBeTruthy();
     expect(result.geometry.coordinates).toStrictEqual([1, 1]);
 
-    result = defaultEval(`a = Import("./src/tests/test.wael"):Default; a + Point(1 1)`);
+    result = defaultEval(`a = Import("./src/tests/test.wael"); a + Point(1 1)`);
     expect(result).toBeTruthy();
     expect(result.geometry.coordinates).toStrictEqual([2, 2]);
 
@@ -93,7 +93,7 @@ test('should support imports', () => {
     expect(result.geometry.coordinates).toStrictEqual([2, 2]);
 
     try {
-        defaultEval(`a = Import("./src/tests/test-invalid.wael"):Default; a + Point(1 1)`);
+        defaultEval(`a = Import("./src/tests/test-invalid.wael"); a + Point(1 1)`);
         fail(`Expected an error.`);
     } catch (err) {
         // pass
@@ -106,7 +106,6 @@ it('should support function scope import/export', () => {
     const importAllExp = `Lib = Import(Function(() => (export a = 3; export b = 4))())`;
     result = defaultEval(`${importAllExp}; Lib`, { outputNonGeoJSON: true })
     expect(result).toBeTruthy();
-    expect(result['Default']).toBe(4);
     expect(result['a']).toBe(3);
     expect(result['b']).toBe(4);
     result = defaultEval(`${importAllExp}; Lib()`)
@@ -149,7 +148,7 @@ it('should import embedded modules', () => {
 it('should return default values', () => {
     let result;
     result = defaultEval(`
-        Lib = (() => let a = 1; let b = 2; a);
+        Lib = () => (let a = 1; let b = 2; a);
         lib = Import(Lib());
         lib()
     `);
@@ -177,11 +176,11 @@ it('should require explicit scope binding export', () => {
 
 it('should support network imports', () => {
     let result;
-    result = defaultEval(`Import("https://raw.githubusercontent.com/anthonydgj/wael/refs/heads/main/src/tests/test.wael"):Default`)
+    result = defaultEval(`Import("https://raw.githubusercontent.com/anthonydgj/wael/refs/heads/main/src/tests/test.wael")`)
     expect(result).toBeTruthy();
     expect(result.geometry.coordinates).toStrictEqual([1, 1]);
 
-    result = defaultEval(`path = "https://raw.githubusercontent.com/anthonydgj/wael/refs/heads/main/src/tests/test.wael"; Import(path):Default`)
+    result = defaultEval(`path = "https://raw.githubusercontent.com/anthonydgj/wael/refs/heads/main/src/tests/test.wael"; Import(path)`)
     expect(result).toBeTruthy();
     expect(result.geometry.coordinates).toStrictEqual([1, 1]);
 

@@ -27,7 +27,6 @@ const grammarString = GRAMMAR;
 
 export namespace Interpreter {
 
-    export const IMPORT_DEFAULT_IDENTIFIER = 'Default';
     export const IMPORT_USING_ALL = '*';
 
     export const STANDARD_LIBRARY: ScopeBindings = {};
@@ -94,19 +93,19 @@ export namespace Interpreter {
                 }
                 currentScope = currentScope.push();
                 let ret = undefined;
-                let bindings: ScopeBindings | undefined = undefined;
                 try {
                     ret = convertToGeometry(JSON.parse(data));
                 } catch {
                     try {
                         const libRet = evaluateInput(data, currentScope);
-                        bindings = {};
-                        bindings[IMPORT_DEFAULT_IDENTIFIER] = libRet;
+                        if (libRet) {
+                            ret = libRet
+                        }
                     } catch {
                         throw new Error(`Unable to import file: ${uri}`);
                     }
                 }
-                currentScope = currentScope.pop(bindings) || GLOBAL_SCOPE;
+                currentScope = currentScope.pop() || GLOBAL_SCOPE;
                 return ret;
             },
             ImportFunctionExp(_keyword, importFn) {
@@ -359,16 +358,17 @@ export namespace Interpreter {
                 if (!fn) {
                     throw new Error(`${callable.sourceString} is: ${fn}`);
                 }
-                if (typeof fn === 'object' && fn?.hasOwnProperty(IMPORT_DEFAULT_IDENTIFIER)) {
-                    const defaultValue = fn[IMPORT_DEFAULT_IDENTIFIER];
-                    if (typeof defaultValue === 'function') {
-                        fn = defaultValue
-                    } else {
-                        fn = () => defaultValue
+                if (typeof fn === 'object') {
+                    const keys = Object.keys(fn);
+                    if (keys.length > 0) {
+                        const lastValueIndex = keys[keys.length - 1];
+                        fn = fn[lastValueIndex];
                     }
                 }
-                const value = fn(...params);
-                return value;
+                if (typeof fn !== 'function') {
+                    return fn;
+                }
+                return fn(...params);
             },
             AccessibleExp_method(val, _accessOp, prop, optionalParams: ohm.Node) {
                 const value = val.eval();
@@ -421,9 +421,7 @@ export namespace Interpreter {
                         });
                     }
                     const ret = body.eval();
-                    const defaultBindings: ScopeBindings = {};
-                    defaultBindings[IMPORT_DEFAULT_IDENTIFIER] = ret;
-                    currentScope = currentScope.pop(defaultBindings) || GLOBAL_SCOPE;
+                    currentScope = currentScope.pop() || GLOBAL_SCOPE;
                     return ret;
                 };
                 const boundFn = fn.bind(currentScope);

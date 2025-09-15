@@ -228,7 +228,7 @@ it('should support imports with state', () => {
     expect(result.geometry.geometries.map((p: any) => p.coordinates)).toStrictEqual([[1, 1], [3, 3]]);
 })
 
-fit('should support multiple imports', () => {
+it('should support multiple imports', () => {
     let result = defaultEval(`
         let e1 = () => (export let a = 4);
         let e2 = () => (export let b = 5);
