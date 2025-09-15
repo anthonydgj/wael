@@ -95,7 +95,7 @@ test('should support imports', () => {
     try {
         defaultEval(`a = Import("./src/tests/test-invalid.wael"):Default; a + Point(1 1)`);
         fail(`Expected an error.`);
-    } catch(err) {
+    } catch (err) {
         // pass
     }
 
@@ -104,7 +104,7 @@ test('should support imports', () => {
 it('should support function scope import/export', () => {
     let result;
     const importAllExp = `Lib = Import(Function(() => (export a = 3; export b = 4))())`;
-    result = defaultEval(`${importAllExp}; Lib`, {outputNonGeoJSON: true})
+    result = defaultEval(`${importAllExp}; Lib`, { outputNonGeoJSON: true })
     expect(result).toBeTruthy();
     expect(result['Default']).toBe(4);
     expect(result['a']).toBe(3);
@@ -128,7 +128,7 @@ it('should support function scope import/export', () => {
     result = defaultEval(`${importUsingAllExp}; a`)
     expect(result).toBe(3);
     result = defaultEval(`${importUsingAllExp}; b`)
-    expect(result).toBe(4);    
+    expect(result).toBe(4);
 });
 
 it('should import embedded modules', () => {

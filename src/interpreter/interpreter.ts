@@ -29,7 +29,7 @@ export namespace Interpreter {
 
     export const IMPORT_DEFAULT_IDENTIFIER = 'Default';
     export const IMPORT_USING_ALL = '*';
-    
+
     export const STANDARD_LIBRARY: ScopeBindings = {};
     const math: { [prop: string]: any } = {};
     Object.getOwnPropertyNames(Math).forEach(prop => {
@@ -47,7 +47,7 @@ export namespace Interpreter {
     STANDARD_LIBRARY['_Round'] = BuiltInFunctions.Round;
 
     export const createGlobalScope = () => new Scope(undefined, undefined, STANDARD_LIBRARY);
-        
+
     export function evaluateInput(input: string, initialScope?: Scope): any {
         const GLOBAL_SCOPE = createGlobalScope();
         let currentScope = initialScope || GLOBAL_SCOPE;
@@ -59,14 +59,15 @@ export namespace Interpreter {
             },
             ImportAllExpression(exp) {
                 const ret = exp.eval();
-                if (ret) {
-                    // Return data import
-                    return ret;
+
+                // Return function import object if populated
+                const importObj = currentScope.useImports();
+                if (importObj && Object.keys(importObj).length > 0) {
+                    return importObj;
                 }
 
-                // Return function import object
-                const importObj = currentScope.useImports();
-                return importObj;
+                // Otherwise return evaluation value
+                return ret
             },
             ImportUsingExpression(importAllExp, _keyword, identifierList) {
                 importAllExp.eval();
@@ -83,7 +84,7 @@ export namespace Interpreter {
                 return IMPORT_USING_ALL;
             },
             ImportExternalExp(_keyword, importUri) {
-                const uri:string  = importUri.eval();
+                const uri: string = importUri.eval();
 
                 let data: string;
                 if (uri.startsWith('http://') || uri.startsWith('https://')) {
@@ -109,7 +110,7 @@ export namespace Interpreter {
                 return ret;
             },
             ImportFunctionExp(_keyword, importFn) {
-                importFn.eval();
+                return importFn.eval();
             },
             IfThenElseExp(_if, c, _then, exp1, _else, exp2) {
                 const condition = c.eval();
@@ -181,17 +182,17 @@ export namespace Interpreter {
                 if (!type1 || !type2) {
                     throw new Error(`Expected geometry types for concatenation but found geom1: ${toString(geom1)} and geom2: ${toString(geom2)}`);
                 }
-                
+
                 if (type1 === type2) {
 
                     const list1: any[] = getArrayLikeItems(geom1);
                     const list2: any[] = getArrayLikeItems(geom2);
-                    
+
                     // Point collections
                     if (
-                        type1 === GeometryType.LineString || 
-                        type1 === GeometryType.MultiPoint || 
-                        type1 === GeometryType.GeometryCollection     
+                        type1 === GeometryType.LineString ||
+                        type1 === GeometryType.MultiPoint ||
+                        type1 === GeometryType.GeometryCollection
                     ) {
                         const combined = list1.concat(list2);
                         if (type1 === GeometryType.LineString) {
@@ -205,16 +206,16 @@ export namespace Interpreter {
                         }
                     }
                 }
-                
+
                 if (
-                    type1 === GeometryType.LineString || 
-                    type1 === GeometryType.MultiPoint   
+                    type1 === GeometryType.LineString ||
+                    type1 === GeometryType.MultiPoint
                 ) {
                     const list1: any[] = getArrayLikeItems(geom1);
                     let list2: any;
                     if (
-                        type2 === GeometryType.LineString || 
-                        type2 === GeometryType.MultiPoint   
+                        type2 === GeometryType.LineString ||
+                        type2 === GeometryType.MultiPoint
                     ) {
                         list2 = getArrayLikeItems(geom2);
                     } else {
@@ -330,10 +331,10 @@ export namespace Interpreter {
                     throw new Error(`Expected geometry type or function but got: ${toString(value)}`);
                 }
                 const items: any[] = [];
-                if (typeof num === 'function') { 
+                if (typeof num === 'function') {
                     let i = 0;
                     let condition = num(i);
-                    while(condition) {
+                    while (condition) {
                         const result = mapFn(i);
                         if (!isAnyGeometryType(result)) {
                             throw new Error(`Expected geometry type return value but got: ${toString(result)}`);
@@ -342,7 +343,7 @@ export namespace Interpreter {
                         condition = num(++i);
                     }
                 } else {
-                    for (let i=0; i<num; i++) {
+                    for (let i = 0; i < num; i++) {
                         const result = mapFn(i);
                         if (!isAnyGeometryType(result)) {
                             throw new Error(`Expected geometry type return value but got: ${toString(result)}`);
@@ -382,7 +383,7 @@ export namespace Interpreter {
                     }
                     throw new OperationNotSupported(`Method ${identifier} not supported on function type`);
                 }
-                
+
                 // Geometry type accessor
                 if (isAnyGeometryType(value)) {
                     return geometryAccessor(val, prop, parameters);
@@ -406,7 +407,7 @@ export namespace Interpreter {
                 }
                 params = Array.isArray(params) ? params : [params];
                 let fnScope = currentScope;
-                const fn = function(...values: any[]) {
+                const fn = function (...values: any[]) {
                     // Create new scope per function call.
                     currentScope = currentScope.push();
                     currentScope.capture(fnScope);
@@ -426,7 +427,7 @@ export namespace Interpreter {
                     return ret;
                 };
                 const boundFn = fn.bind(currentScope);
-                boundFn.toString = function() { return `Function(${p.sourceString} => ${body.sourceString})` }
+                boundFn.toString = function () { return `Function(${p.sourceString} => ${body.sourceString})` }
                 return boundFn;
             },
             FunctionParameters_spread(_leftParen, _operator, identifier, _rightParen) {
@@ -593,7 +594,7 @@ export namespace Interpreter {
                 return UNIT;
             }
         });
-    
+
         const matchResult = grammar.match(input);
         if (matchResult.message) {
             throw new Error(matchResult.message)
@@ -602,5 +603,5 @@ export namespace Interpreter {
         const result = sem.eval();
         return result;
     }
-    
+
 }

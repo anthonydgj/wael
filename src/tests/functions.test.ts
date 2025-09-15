@@ -24,7 +24,7 @@ test('should evaluate functions with keyword', () => {
 
 test('should evaluate functions without keyword', () => {
     let result;
-    
+
     result = defaultEval(`
         fn = (() => (3));
         fn()
@@ -59,7 +59,7 @@ test('should evaluate functions without keyword', () => {
 
 it('should evaluate functions with parameters', () => {
     let result;
-    
+
     result = defaultEval(`
         fn = Function(a => a + 1);
         fn(2)
@@ -74,7 +74,7 @@ it('should evaluate functions with parameters', () => {
         ));
         fn1(2)
     `);
-    expect(result).toBe(5);    
+    expect(result).toBe(5);
 
     result = defaultEval(`
         x = 2;
@@ -87,7 +87,7 @@ it('should evaluate functions with parameters', () => {
         y = fn1(x);
         Point(x y)
     `);
-    expect(result).toBeTruthy(); 
+    expect(result).toBeTruthy();
     expect(result.geometry.coordinates).toStrictEqual([2, 10]);
 
     result = defaultEval(`
@@ -101,7 +101,7 @@ it('should evaluate functions with parameters', () => {
         y = fn1(x, 5);
         Point(x y)
     `);
-    expect(result).toBeTruthy(); 
+    expect(result).toBeTruthy();
     expect(result.geometry.coordinates).toStrictEqual([2, 10]);
 
     result = defaultEval(`
@@ -114,7 +114,7 @@ it('should evaluate functions with parameters', () => {
         );
         otherLine # LINESTRING(10 55, 20 55)
     `);
-    expect(result).toBeTruthy(); 
+    expect(result).toBeTruthy();
     expect(result.geometry.coordinates).toStrictEqual([[10, 55], [20, 55]]);
 
 });
@@ -154,7 +154,7 @@ it('should handle function calls of function calls', () => {
 
     result = defaultEval(`(() => 3 ; 4 ; 5)()`);
     expect(result).toBe(5);
-    
+
     result = defaultEval(`fn = (a) => (a); fn(fn(fn(3)))`);
     expect(result).toBe(3);
 
@@ -181,7 +181,7 @@ it('should allow closures', () => {
             # Data Structures
             Export List = Function(val => if (val:type == GeometryCollection) then (val) else (Generate val Num(0)));
             Export Seq = Function(n => Generate n Function(i => Point(i i)));
-            Export Slice = Function((start, end, g)=> (
+            Export Slice = Function((start, end, g) => (
                 g |~ Function((p, i) => (lowerBound = i >= start; higherBound = i < end; if (lowerBound And higherBound) then (true) else (false)))
             ));
 
@@ -199,7 +199,7 @@ it('should allow closures', () => {
         stack = Lib:Pop(stack);
     `
     result = defaultEval(`${exp} Lib:Stack; stack`);
-    expect(result.geometry.geometries).toStrictEqual([ { type: 'Point', coordinates: [ 2, 2 ] } ]);
+    expect(result.geometry.geometries).toStrictEqual([{ type: 'Point', coordinates: [2, 2] }]);
 });
 
 it('should support closure state', () => {
@@ -226,4 +226,15 @@ it('should support imports with state', () => {
         list:value()
     `);
     expect(result.geometry.geometries.map((p: any) => p.coordinates)).toStrictEqual([[1, 1], [3, 3]]);
+})
+
+fit('should support multiple imports', () => {
+    let result = defaultEval(`
+        let e1 = () => (export let a = 4);
+        let e2 = () => (export let b = 5);
+        let i1 = Import(e1());
+        let i2 = Import(e2());
+        Point(i1() i2())
+    `)
+    expect(result.geometry.coordinates).toStrictEqual([4, 5])
 })
