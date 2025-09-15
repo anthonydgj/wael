@@ -192,7 +192,7 @@ it('should allow closures', () => {
 
             true
         ));
-        Lib = Import(UseLib());
+        Lib = Use(UseLib());
         stack = Lib:Stack();
         stack = Lib:Push(Lib:Num(2), stack);
         stack = Lib:Push(Lib:Num(3), stack);
@@ -218,7 +218,7 @@ it('should support imports with state', () => {
             export let remove = (index) => (_value = value() |~ (v, i) => (i != index));
             value 
         );
-        list = Import(List());
+        list = Use(List());
         list:append(1 1);
         list:append(2 2);
         list:append(3 3);
@@ -232,8 +232,8 @@ it('should support multiple imports', () => {
     let result = defaultEval(`
         let e1 = () => (export let a = 4);
         let e2 = () => (export let b = 5);
-        let i1 = Import(e1());
-        let i2 = Import(e2());
+        let i1 = Use(e1());
+        let i2 = Use(e2());
         Point(i1() i2())
     `)
     expect(result.geometry.coordinates).toStrictEqual([4, 5])

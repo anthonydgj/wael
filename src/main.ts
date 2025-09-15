@@ -35,9 +35,9 @@ export class Wael {
             ...initialOptions,
             scope: initialOptions?.scope ?? Interpreter.createGlobalScope(),
         };
-        
+
         // Import standard library
-        Interpreter.evaluateInput(`StdLib = ${STD_LIB}; Import(StdLib()) Using (*)`, this.options.scope)
+        Interpreter.evaluateInput(`StdLib = ${STD_LIB}; Use(StdLib()) With (*)`, this.options.scope)
     }
 
     getEvaluationCount(): number {
@@ -61,7 +61,7 @@ export class Wael {
         this.evaluationCount++;
 
         if (typeof result === 'object' && typeof result?.type === 'string') {
-            switch(options?.outputFormat) {
+            switch (options?.outputFormat) {
                 case OutputFormat.WKT:
                     return wellknown.stringify(result);
                 case OutputFormat.GeoJSON:
@@ -70,7 +70,7 @@ export class Wael {
                     break;
             }
         }
-        
+
         const output = Wael.getOutputString(result, options.outputFormat);
         if (options.outputNonGeoJSON) {
             if (options.outputFormat === OutputFormat.GeoJSON) {
@@ -93,10 +93,10 @@ export class Wael {
                 const properties = Object.keys(result).map(key => {
                     return `  ${key} = ${result[key]?.toString()}`
                 });
-return `(
+                return `(
 ${properties.join(';\n')}
 )`
-            } 
+            }
         }
         return `${result}`
     }
