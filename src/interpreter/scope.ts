@@ -1,4 +1,4 @@
-export interface ScopeBindings  {
+export interface ScopeBindings {
     [identifier: string]: any;
 }
 
@@ -98,9 +98,11 @@ export class Scope {
         if (selectedIdentifiers) {
             selectedIdentifiers.forEach(selectedIdentifier => {
                 selectedBindings[selectedIdentifier] = this.availableBindings[selectedIdentifier]
+                delete this.availableBindings[selectedIdentifier]
             });
         } else {
             selectedBindings = this.availableBindings
+            this.availableBindings = {}
         }
         return selectedBindings;
     }
@@ -110,6 +112,7 @@ export class Scope {
         if (selectedIdentifiers) {
             selectedIdentifiers.forEach(selectedIdentifier => {
                 selectedBindings[selectedIdentifier] = this.availableBindings[selectedIdentifier]
+                delete this.availableBindings[selectedIdentifier]
             });
         }
         this.bindings = {
