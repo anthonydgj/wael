@@ -20,6 +20,7 @@ import { Scope, ScopeBindings } from './scope';
 
 import { BuiltInFunctions } from './built-in-functions';
 import { GRAMMAR } from './grammar';
+import path from 'path';
 import { readFileSync } from 'fs';
 import syncFetch from 'sync-fetch'
 
@@ -48,7 +49,7 @@ export namespace Interpreter {
 
     export const createGlobalScope = () => new Scope(undefined, undefined, STANDARD_LIBRARY);
 
-    export function evaluateInput(input: string, initialScope?: Scope): any {
+    export function evaluateInput(input: string, initialScope?: Scope, workingDirectory = '.'): any {
         const GLOBAL_SCOPE = createGlobalScope();
         let currentScope = initialScope || GLOBAL_SCOPE;
         const grammar = ohm.grammar(grammarString);
@@ -93,7 +94,7 @@ export namespace Interpreter {
                 if (uri.startsWith('http://') || uri.startsWith('https://')) {
                     data = syncFetch(uri).text();
                 } else {
-                    data = readFileSync(uri, 'utf8');
+                    data = readFileSync(path.join(workingDirectory, uri), 'utf8');
                 }
                 currentScope = currentScope.push();
                 let ret = undefined;
@@ -101,7 +102,7 @@ export namespace Interpreter {
                     ret = convertToGeometry(JSON.parse(data));
                 } catch {
                     try {
-                        const libRet = evaluateInput(data, currentScope);
+                        const libRet = evaluateInput(data, currentScope, workingDirectory);
                         if (libRet) {
                             ret = libRet
                         }

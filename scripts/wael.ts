@@ -4,6 +4,7 @@ import { Options, OutputFormat, Wael } from "../src/main";
 
 import { Interpreter } from '../src/interpreter/interpreter';
 import chalk from 'chalk';
+import path from 'path';
 import { toString } from '../src/interpreter/helpers';
 import yargs from 'yargs'
 
@@ -68,7 +69,7 @@ const highlightText = chalk.hex(`#1f91cf`);
 const errorText = chalk.hex(`#bd3131`);
 const subtleText = chalk.hex(`#777`);
 
-const outputFormat = args.geojson ? OutputFormat.GeoJSON : 
+const outputFormat = args.geojson ? OutputFormat.GeoJSON :
     args.format ? args.format : OutputFormat.WKT;
 
 let outputNonGeoJSON = args.outputNonGeoJSON;
@@ -115,11 +116,11 @@ const prompt = (details: string = '', script = '') => {
     }
 }
 
-const evaluate = (script: string, heading: string) => {
+const evaluate = (script: string, heading: string, options: Partial<Options> = {}) => {
     if (isInteractive) {
         prompt(heading, script);
     }
-    let result = wael.evaluate(script);
+    let result = wael.evaluate(script, options);
     if (isInteractive) {
         printOutput(result);
     }
@@ -130,14 +131,14 @@ const EXIT_CMD = `exit()`;
 const END_TOKEN = `;;`;
 
 if (isInteractive) {
-const instructions = 
-`Starting WAEL interactive session...
+    const instructions =
+        `Starting WAEL interactive session...
 
 End expressions with ;; to evaluate.
 The last evaluation result is stored in the ${Wael.IDENTIFIER_LAST} variable.
 Previous evaluation results are stored in indexed variables $0, $1, $2, ...
 `;
-console.log(subtleText(instructions));
+    console.log(subtleText(instructions));
 }
 
 
@@ -171,12 +172,15 @@ if (evaluateScript) {
 if (inputFiles && inputFiles.length > 0) {
     inputFiles.forEach((inputFile: any) => {
         const input = fs.readFileSync(inputFile, 'utf-8');
-        result = evaluate(input, inputFile.toString())
+        const filePath = path.dirname(inputFile)
+        result = evaluate(input, inputFile.toString(), {
+            workingDirectory: filePath
+        })
         hasEvaluated = true;
         if (options.outputFormat === OutputFormat.GeoJSON) {
             try {
                 result = getJsonString(result);
-            } catch(err) {
+            } catch (err) {
                 // return raw output
             }
         }
@@ -200,12 +204,12 @@ if (isInteractive) {
     prompt();
 
     const rl = readline.createInterface({
-      input: process.stdin,
-      output: process.stdout,
-      prompt: '',
-      terminal: true
+        input: process.stdin,
+        output: process.stdout,
+        prompt: '',
+        terminal: true
     });
-    
+
     rl.on('line', (line: string) => {
         if (line.toLocaleLowerCase() === EXIT_CMD) {
             rl.close();
@@ -224,15 +228,15 @@ if (isInteractive) {
             }
         }
     });
-    
+
     rl.once('close', () => {
-         // end of input
-     });
+        // end of input
+    });
 } else {
     if (hasEvaluated) {
         if (typeof result !== 'undefined') {
             if (typeof result === 'object') {
-                result = toString(result);    
+                result = toString(result);
             }
             console.log(result);
         }

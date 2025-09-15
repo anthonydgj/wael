@@ -15,6 +15,7 @@ export interface Options {
     outputNonGeoJSON?: boolean;
     scope?: Scope;
     storeHistoricalEvaluations?: boolean;
+    workingDirectory?: string
 }
 
 export const DEFAULT_OPTIONS: Options = {
@@ -50,7 +51,7 @@ export class Wael {
             ...overrideOptions
         };
 
-        const result = Interpreter.evaluateInput(input, options.scope);
+        const result = Interpreter.evaluateInput(input, options.scope, options.workingDirectory);
 
         // Track evaluations
         options.scope?.store(Wael.IDENTIFIER_LAST, result);
