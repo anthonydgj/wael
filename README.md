@@ -40,12 +40,9 @@ Point(-110 38) + PointGrid(20, 10, 2)
 
 **Create the same grid and introduce random offsets:**
 ```
-Point(-110 38) + PointGrid(20, 10, 2)
-    || Function(p => (
-        xOffset = 1 - Math:random() * 2;
-        yOffset = 1 - Math:random() * 2;
-        p + Point(xOffset yOffset)
-    ))
+offset = () => (1 - Math:random() * 2);
+Point(-110 38) + PointGrid(20, 10, 2) 
+    || p => (p + Point(offset() offset()))
 ```
 <image src="examples/grid_random.jpg" alt="Randomized point grid" width="700px" />
 
@@ -63,7 +60,7 @@ PointGrid(20, 10, 4) | Rotate(23)
 **Create several nested circle polygons:**
 ```
 numRings = 5;
-Generate numRings Function(i => (
+Generate numRings (i => (
     ring = numRings - i;
     PointCircle((ring * 2), (ring * 10)) | ToPolygon
 ))
@@ -224,7 +221,7 @@ Variables are defined using the equal (`=`) operator. Supported data types inclu
 longitude = 2;              # Number
 bool = True;                # Boolean
 p = Point(longitude 3);     # Geometry
-fn = Function(p => p + 1);  # Function
+fn = (p => p + 1);  # Function
 path = "./my-lib.wael";     # String
 ```
 
@@ -258,9 +255,9 @@ a ## 1
 
 ### Functions
 
-Functions are first-class and declared using the `Function` keyword:
+Functions are first-class and declared using the arrow symbol (`=>`), with a parameter list on the left and function body on the right:
 ```
-getEquatorPoint = Function(longitude => Point(longitude 0));
+getEquatorPoint = (longitude) => (Point(longitude 0));
 ```
 
 They can be invoked using parentheses `()`:
@@ -270,17 +267,17 @@ getEquatorPoint(14.19) # POINT (14.19 0)
 
 Functions can also accept multiple parameters and have function bodies spanning multiple lines. Similar to top-level expressions outside of a function, the last expression in the function body is used as the return value.
 ```
-myFn = Function((x, y, last) => (
+myFn = (x, y, last) => (
     first = Point(x y);
     LineString(first, last)
-));
+);
 
 myFn(1, 2, Point(3 4)) # LINESTRING (1 2, 3 4)
 ```
 
 Functions can have parameters bound using the `bind()` method:
 ```
-Generate 10 Function(i => ( x = Math:random() * 100; Point(x x) )) 
+Generate 10 (i => (x = Math:random() * 100; Point(x x)))
     || _Round:bind(2)   
 
 # GEOMETRYCOLLECTION (POINT (18.98 18.98), POINT (14.26 14.26), ...)
@@ -367,7 +364,7 @@ If (points:numGeometries > 3) Then (
 Multiple geometries can be generated using the `Generate` expression by specifying an iteration count and either a geometry or a function that returns a geometry. The set of all geometries returned from a `Generate` expression are collected into a `GEOMETRYCOLLECTION`.
 ```
 Generate 3 Point(0 0); # GEOMETRYCOLLECTION(POINT (0 0),POINT (0 0),POINT (0 0))
-Generate 3 Function(x => Point(x x)) # GEOMETRYCOLLECTION(POINT (0 0),POINT (1 1),POINT (2 2))
+Generate 3 (x => Point(x x)) # GEOMETRYCOLLECTION(POINT (0 0),POINT (1 1),POINT (2 2))
 ```
 
 The iteration count can also be specified as a variable:
@@ -389,17 +386,17 @@ a = 0; Generate ((i) => a < 3) (i => (a = a + 1; Point(i i))) # GEOMETRYCOLLECTI
 
 The output from any expression can be used as the input to another function with the pipe (`|`) operator:
 ```
-Point(1 1) | Function(x => LineString(x, 2 2)) # LINESTRING (1 1, 2 2)
+Point(1 1) | (x) => LineString(x, 2 2) # LINESTRING (1 1, 2 2)
 ```
 
 Each item in an array-like geometry can be mapped using a function with the double-pipe (`||`) operator:
 ```
-LineString(1 1, 2 2, 3 3) || Function(x => x * x) # LINESTRING (1 1, 4 4, 9 9)
+LineString(1 1, 2 2, 3 3) || (x => x * x) # LINESTRING (1 1, 4 4, 9 9)
 ```
 
 The array map index is also available as function parameter:
 ```
-LineString(1 1, 2 2, 3 3) || Function((x, i) => x * i) # LINESTRING (0 0, 2 2, 6 6)
+LineString(1 1, 2 2, 3 3) || ((x, i) => x * i) # LINESTRING (0 0, 2 2, 6 6)
 ```
 
 Each point in a geometry can be transformed using the pipe-all (`|*`) operator:
@@ -413,7 +410,7 @@ LineString(1.4325 1.5325, 2.23525 2.7453, 3.26474 3.34643) |* Round(1) # LINESTR
 
 Array-like geometries can be filtered using the filter (`|~`) operator:
 ```
-LineString(1 1, 2 2, 3 3) |~ Function((p, i) => p:x <= 2) # LINESTRING (1 1, 2 2)
+LineString(1 1, 2 2, 3 3) |~ (p, i) => (p:x <= 2) # LINESTRING (1 1, 2 2)
 ```
 
 #### Reducing
@@ -422,7 +419,7 @@ LineString(1 1, 2 2, 3 3) |~ Function((p, i) => p:x <= 2) # LINESTRING (1 1, 2 2
 
 Array-like geometries can be reduced using the reduce (`|>`) operator:
 ```
-LineString(1 1, 2 2, 3 3) |> Function((total, current, index) => total + current) # Point(6 6)
+LineString(1 1, 2 2, 3 3) |> (total, current, index) => (total + current) # Point(6 6)
 ```
 
 ### Module System
