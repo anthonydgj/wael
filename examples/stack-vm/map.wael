@@ -1,0 +1,11 @@
+export let Map = () => (
+    let values = GeometryCollection();
+    export let set = (key, val) => (
+        # Remove existing entry
+        values = (values |~ (p, i) => (
+            p:x != key
+        ));
+        values = values ++ (key val)
+    );
+    () => ("Map"; values)
+)

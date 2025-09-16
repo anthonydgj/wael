@@ -1,0 +1,13 @@
+export let List = (initial) => (
+    let values = if (initial == undefined) then (GeometryCollection()) else (initial);
+    export let add = (val) => (values = values ++ val);
+    export let get = (index) => (
+        let geometryCollectionIndex = Math:floor(index / 2);
+        if (geometryCollectionIndex >= values:numGeometries()) then (undefined) else (
+            let offset = index % 2;
+            let p = values:geometryN(geometryCollectionIndex);
+            if (offset == 0) then (p:x) else (p:y)
+        )
+    );
+    () => values
+)

@@ -1,0 +1,63 @@
+# A space-efficient, numeric stack data structure
+export let Stack = () => (
+    let _value = GeometryCollection();
+    let _size = 0;
+
+    # Push a number onto the stack
+    export let push = (n) => (
+        let num = n;
+        _value = if (_size % 2 == 0) then (
+            _value ++ (n 0)
+        ) else (
+            _value || (p, i) => (if (i == _value:numGeometries() - 1) then (p:y(num)) else (p))
+        );
+        _size = _size + 1;
+        undefined
+    );
+
+    # Pop a number from the stack
+    export let pop = () => (
+        let popVal = undefined;
+        _value = if (_size % 2 == 0) then (
+            _value || (v, i) => (
+                if (i == _value:numGeometries() - 1) then (
+                    popVal = v:y;
+                    v:y(0)
+                ) else (
+                    v
+                )
+            )
+        ) else (
+            _value |~ (v, i) => (
+                if (i == _value:numGeometries() - 1) then (
+                    popVal = v:x;
+                    false
+                ) else (
+                    true
+                )
+            )
+        );
+        _size = _size - 1;
+        popVal
+    );
+
+    # Get number of items in the stack 
+    export let size = () => (_size);
+
+    # View the top item in the stack
+    export let peek = () => (
+        if (_size == 0) then (
+            undefined
+        ) else (
+            let last = _value:geometryN(_value:numGeometries() - 1);
+            if (_size % 2 == 0) then (
+                last:y()
+            ) else (
+                last:x()
+            )
+        )
+    );
+
+    # Default: output the stack list
+    () => (_value)
+)

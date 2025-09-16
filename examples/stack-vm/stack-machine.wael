@@ -1,0 +1,89 @@
+# Stack-Based Virtual Machine
+# Each instruction is 8-bits  
+
+# Library Imports
+Use("stack.wael") With (Stack);
+Use("bytes.wael") With (Byte);
+Use("map.wael") With (Map);
+Use("list.wael") With (List);
+
+# Constants
+let MAX_SAFE_INTEGER = 2 ^ 53 - 1;
+let MIN_SAFE_INTEGER = 0 - (2 ^ 53 - 1);
+
+let CODE_PUSH = 1;
+let CODE_ADD = 10;
+let CODE_SUBTRACT = 11;
+let CODE_MULTIPLY = 12;
+let CODE_DIVIDE = 13;
+
+# Initialize instructions 
+let INSTRUCTIONS = if ($0 == undefined) then (GeometryCollection()) else ($0);
+
+# Initialize instructions executor
+Executor = (program) => (
+
+    # Internal state
+    let stack = Use(Stack());
+    let instructions = Use(List(program));
+    let instPtr = 0;
+    let currentInstCode = undefined;
+
+    # Helper functions
+    let UnaryOperator = (s, fn) => (a = s:pop(); s:push(fn(a)); s);
+    let BinaryOperator = (s, fn) => (a = s:pop(); b = s:pop(); s:push(fn(a, b)); s);
+
+    # Instructions
+    let Push = () => (
+        let nextValue = readNext();
+        if (nextValue != undefined) then (
+            stack:push(Byte(nextValue))
+        ) else (
+            undefined
+        );
+        nextValue
+    ); 
+    let Add = () => (BinaryOperator(stack, (a, b) => (Byte(a + b))));
+    let Subtract = () => (BinaryOperator(stack, (a, b) => (Byte(a - b))));
+    let Multiply = () => (BinaryOperator(stack, (a, b) => (Byte(a * b))));
+    let Divide = () => (BinaryOperator(stack, (a, b) => (Byte(a / b))));
+
+    # Instruction lookup
+    let Instruction = (code) => (
+        if (code == CODE_PUSH) then (Push) else (
+        if (code == CODE_ADD) then (Add) else (
+        if (code == CODE_SUBTRACT) then (Subtract) else (
+        if (code == CODE_MULTIPLY) then (Multiply) else (
+        if (code == CODE_DIVIDE) then (Divide) else (
+            () => ()
+        )))))
+    );
+
+    # Read the next instruction
+    let readNext = () => (
+        let instCode = instructions:get(instPtr);
+        instPtr = instPtr + 1;
+        instCode
+    );
+
+    # Execute the next instruction 
+    export let step = () => (
+        let instruction = Instruction(currentInstCode);
+        if (instruction != undefined) then (instruction()) else (false);
+        stack()
+    );
+
+    # Process all instructions
+    export let start = () => (
+        Generate 
+            (i => (currentInstCode = readNext(); currentInstCode != undefined)) 
+            (i => (step(); 1 1))
+    );
+
+    () => (stack())
+);
+
+# Run the virtual machine
+let exec = Use(Executor(INSTRUCTIONS));
+exec:start();
+exec()
