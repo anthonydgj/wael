@@ -226,7 +226,7 @@ it('should support imports with state', () => {
         list:value()
     `);
     expect(result.geometry.geometries.map((p: any) => p.coordinates)).toStrictEqual([[1, 1], [3, 3]]);
-})
+});
 
 it('should support multiple imports', () => {
     let result = defaultEval(`
@@ -235,6 +235,23 @@ it('should support multiple imports', () => {
         let i1 = Use(e1());
         let i2 = Use(e2());
         Point(i1() i2())
-    `)
-    expect(result.geometry.coordinates).toStrictEqual([4, 5])
+    `);
+    expect(result.geometry.coordinates).toStrictEqual([4, 5]);
+});
+
+it('should support multiple usage instances of the same module', () => {
+    let result = defaultEval(`
+        Counter = () => (let count = 0; export let inc = () => (count = count + 1); () => count);
+        c1 = Use(Counter());
+        c2 = Use(Counter());
+        c1:inc();
+        c1:inc();
+        c1:inc();
+        c2:inc();
+        c2:inc();
+        c1();
+
+        Point(c1() c2())
+    `);
+    expect(result.geometry.coordinates).toStrictEqual([3, 2]);
 })

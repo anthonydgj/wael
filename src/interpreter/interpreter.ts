@@ -28,6 +28,7 @@ const grammarString = GRAMMAR;
 export namespace Interpreter {
 
     export const IMPORT_USING_ALL = '*';
+    export const DEFAULT_EXPORT_BINDING = 'export'
 
     export const STANDARD_LIBRARY: ScopeBindings = {};
     const math: { [prop: string]: any } = {};
@@ -62,6 +63,9 @@ export namespace Interpreter {
                 // Return function import object if populated
                 const importObj = currentScope.useImports();
                 if (importObj && Object.keys(importObj).length > 0) {
+                    if ((ret ?? null) !== null) {
+                        importObj[DEFAULT_EXPORT_BINDING] = ret
+                    }
                     return importObj;
                 }
 
@@ -355,19 +359,22 @@ export namespace Interpreter {
             FunctionCallExp(callable, p) {
                 let fn = callable.eval();
                 const params = p.eval();
-                if (!fn) {
+
+                if ((fn ?? null) === null) {
                     throw new Error(`${callable.sourceString} is: ${fn}`);
                 }
-                if (typeof fn === 'object') {
-                    const keys = Object.keys(fn);
-                    if (keys.length > 0) {
-                        const lastValueIndex = keys[keys.length - 1];
-                        fn = fn[lastValueIndex];
-                    }
+
+                if (
+                    typeof fn === 'object' &&
+                    ((fn[DEFAULT_EXPORT_BINDING] ?? null) !== null)
+                ) {
+                    fn = fn[DEFAULT_EXPORT_BINDING];
                 }
+
                 if (typeof fn !== 'function') {
                     return fn;
                 }
+
                 return fn(...params);
             },
             AccessibleExp_method(val, _accessOp, prop, optionalParams: ohm.Node) {
