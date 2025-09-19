@@ -254,4 +254,13 @@ it('should support multiple usage instances of the same module', () => {
         Point(c1() c2())
     `);
     expect(result.geometry.coordinates).toStrictEqual([3, 2]);
-})
+});
+
+it('should import function correctly from external library', () => {
+    let result = defaultEval(`
+        Use("src/tests/map.wael") With (Map);
+        Use(Map())
+    `);
+    expect(result).toBeTruthy();
+    expect(result.set).toBeTruthy();
+});

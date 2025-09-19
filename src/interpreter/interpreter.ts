@@ -376,6 +376,10 @@ export namespace Interpreter {
                     return fn;
                 }
 
+                fn.context = {
+                    currentScope
+                }
+
                 return fn(...params);
             },
             AccessibleExp_method(val, _accessOp, prop, optionalParams: ohm.Node) {
@@ -415,9 +419,11 @@ export namespace Interpreter {
                 }
                 params = Array.isArray(params) ? params : [params];
                 let fnScope = currentScope;
-                const fn = function (...values: any[]) {
+                const fn = (...values: any[]) => {
+
                     // Create new scope per function call.
-                    currentScope = currentScope.push();
+                    const contextScope = (fn as any)?.context?.currentScope || currentScope;
+                    currentScope = contextScope.push();
                     currentScope.capture(fnScope);
 
                     if (isSpread) {
@@ -432,9 +438,8 @@ export namespace Interpreter {
                     currentScope = currentScope.pop() || GLOBAL_SCOPE;
                     return ret;
                 };
-                const boundFn = fn.bind(currentScope);
-                boundFn.toString = function () { return `Function(${p.sourceString} => ${body.sourceString})` }
-                return boundFn;
+                fn.toString = function () { return `Function(${p.sourceString} => ${body.sourceString})` }
+                return fn;
             },
             FunctionParameters_spread(_leftParen, _operator, identifier, _rightParen) {
                 return {
