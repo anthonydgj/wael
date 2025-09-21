@@ -236,22 +236,6 @@ The `GEOMETRYCOLLECTION` and `POINT` geometry types can be created without keywo
 (1 1, 2 2, 3 3) # GEOMETRYCOLLECTION (POINT (1 1), POINT (2 2), POINT (3 3))
 ```
 
-#### Variable Scope
-
-By default, variables have function scope can can be accessed or re-assigned from any nested functions:
-```
-a = 1;
-() => (a  = 2)();
-a ## 2
-```
-
-To shadow an existing variable, the `let` keyword can be used:
-```
-a = 1;
-() => (let a  = 2)();
-a ## 1
-```
-
 
 ### Functions
 
@@ -288,6 +272,23 @@ The spread operator `...` can be used to destructure a geometry collection from 
 Offset = (...g) => (g + 1);
 Offset(1 1, 2 2, 3 3) # GEOMETRYCOLLECTION (POINT (2 2), POINT (3 3), POINT (4 4))
 ```
+
+#### Variable Scope
+
+By default, variables have function scope can can be accessed or re-assigned from any nested functions:
+```
+a = 1;
+() => (a = 2)();
+a ## 2
+```
+
+To shadow an existing variable, the `let` keyword can be used:
+```
+a = 1;
+() => (let a = 2)();
+a ## 1
+```
+
 
 ### Properties and Methods
 
