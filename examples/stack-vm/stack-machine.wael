@@ -16,6 +16,10 @@ let CODE_ADD = 10;
 let CODE_SUBTRACT = 11;
 let CODE_MULTIPLY = 12;
 let CODE_DIVIDE = 13;
+let CODE_READ = 20; # TODO
+let CODE_JUMP = 21; # TODO
+let CODE_JUMP_IF_ZERO = 22; # TODO
+
 
 # Initialize instructions 
 let INSTRUCTIONS = if ($0 == undefined) then (GeometryCollection()) else ($0);
