@@ -1,6 +1,6 @@
 # Spatial Data Stack-Based Virtual Machine 
 
-A program is encoded in a GeoJON `GEOMETRYCOLLECTION` of `POINT` values that is interpreted as a list of bytes. For example, the program `GeometryCollection(1 3, 1 4, 10 0, 1 5, 11 0)` is interpreted as bytes `1, 2, 1, 4, 10, 0, 1, 5, 11, 0`.
+A program targeted to run on this VM is encoded in a GeoJSON `GEOMETRYCOLLECTION` of `POINT` values interpreted as a list of bytes. For example, the program `GeometryCollection(1 3, 1 4, 10 0, 1 5, 11 0)` is interpreted as bytes `1, 2, 1, 4, 10, 0, 1, 5, 11, 0`.
 
 This program can be run with the following command:
 ```
