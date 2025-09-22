@@ -267,7 +267,7 @@ Generate 10 (i => (x = Math:random() * 100; Point(x x)))
 # GEOMETRYCOLLECTION (POINT (18.98 18.98), POINT (14.26 14.26), ...)
 ```
 
-The spread operator `...` can be used to destructure a geometry collection from function parameters:
+The spread operator `...` can be used to collect all geometry function arguments into a geometry collection:
 ```
 Offset = (...g) => (g + 1);
 Offset(1 1, 2 2, 3 3) # GEOMETRYCOLLECTION (POINT (2 2), POINT (3 3), POINT (4 4))
