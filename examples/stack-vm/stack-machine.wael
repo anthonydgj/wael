@@ -12,6 +12,7 @@ let MAX_SAFE_INTEGER = 2 ^ 53 - 1;
 let MIN_SAFE_INTEGER = 0 - (2 ^ 53 - 1);
 
 let CODE_PUSH = 1;
+let CODE_POP = 2;
 let CODE_ADD = 10;
 let CODE_SUBTRACT = 11;
 let CODE_MULTIPLY = 12;
@@ -20,6 +21,10 @@ let CODE_READ = 20; # TODO
 let CODE_JUMP = 21; # TODO
 let CODE_JUMP_IF_ZERO = 22; # TODO
 
+# Initialize transform 
+let TRANSFORM = if (TRANSFORM != undefined) 
+    then (TRANSFORM) 
+    else ((v) => (v));
 
 # Initialize instructions 
 let INSTRUCTIONS = if ($0 == undefined) then (GeometryCollection()) else ($0);
@@ -47,6 +52,9 @@ Executor = (program) => (
         );
         nextValue
     ); 
+    let Pop = () => (
+        stack:pop()
+    );
     let Add = () => (BinaryOperator(stack, (a, b) => (Byte(a + b))));
     let Subtract = () => (BinaryOperator(stack, (a, b) => (Byte(a - b))));
     let Multiply = () => (BinaryOperator(stack, (a, b) => (Byte(a * b))));
@@ -55,12 +63,13 @@ Executor = (program) => (
     # Instruction lookup
     let Instruction = (code) => (
         if (code == CODE_PUSH) then (Push) else (
+        if (code == CODE_POP) then (Pop) else (
         if (code == CODE_ADD) then (Add) else (
         if (code == CODE_SUBTRACT) then (Subtract) else (
         if (code == CODE_MULTIPLY) then (Multiply) else (
         if (code == CODE_DIVIDE) then (Divide) else (
             () => ()
-        )))))
+        ))))))
     );
 
     # Read the next instruction
@@ -84,10 +93,13 @@ Executor = (program) => (
             (i => (step(); 1 1))
     );
 
+    # Default 
     () => (stack())
 );
 
 # Run the virtual machine
-let exec = Use(Executor(INSTRUCTIONS));
+let exec = Use(Executor(INSTRUCTIONS |* (v) => (
+    if (v != undefined) then (TRANSFORM(v)) else (v)
+)));
 exec:start();
 exec()
