@@ -7,6 +7,7 @@ export let VirtualMachine = (program) => (
     Use("list.wael") With (List);
 
     # Instruction codes
+    let CODE_NOOP = 0;
     let CODE_PUSH = 1;
     let CODE_POP = 2;
     let CODE_ADD = 10;
@@ -47,6 +48,7 @@ export let VirtualMachine = (program) => (
 
     # Instruction lookup
     let Instruction = (code) => (
+        if (code == CODE_NOOP) then (() => (stack)) else (
         if (code == CODE_PUSH) then (Push) else (
         if (code == CODE_POP) then (Pop) else (
         if (code == CODE_ADD) then (Add) else (
@@ -54,7 +56,7 @@ export let VirtualMachine = (program) => (
         if (code == CODE_MULTIPLY) then (Multiply) else (
         if (code == CODE_DIVIDE) then (Divide) else (
             () => ()
-        ))))))
+        )))))))
     );
 
     # Read the next instruction
