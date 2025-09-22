@@ -41,9 +41,9 @@ export let VirtualMachine = (program) => (
         stack:pop()
     );
     let Add = () => (BinaryOperator(stack, (a, b) => (Byte(a + b))));
-    let Subtract = () => (BinaryOperator(stack, (a, b) => (Byte(a - b))));
+    let Subtract = () => (BinaryOperator(stack, (a, b) => (Byte(b - a))));
     let Multiply = () => (BinaryOperator(stack, (a, b) => (Byte(a * b))));
-    let Divide = () => (BinaryOperator(stack, (a, b) => (Byte(a / b))));
+    let Divide = () => (BinaryOperator(stack, (a, b) => (Byte(b / a))));
 
     # Instruction lookup
     let Instruction = (code) => (

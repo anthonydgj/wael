@@ -11,11 +11,15 @@ let TRANSFORM = if (TRANSFORM != undefined)
     else ((v) => (v));
 
 # Initialize instructions 
-let INSTRUCTIONS = if ($0 == undefined) then (GeometryCollection()) else ($0);
+let INSTRUCTIONS = if ($0 != undefined) 
+    then ($0) 
+    else (GeometryCollection());
 
 # Decode instructions
 let decodedInstructions = INSTRUCTIONS |* (v) => (
-    if (v != undefined) then (TRANSFORM(v)) else (v)
+    if (v != undefined) 
+        then (TRANSFORM(v)) 
+        else (v)
 );
 
 # Run the virtual machine
