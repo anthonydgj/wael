@@ -148,7 +148,7 @@ if (bindImports) {
         const [identifier, uri] = bindImport.split('=');
         if (identifier && uri) {
             try {
-                result = evaluate(`${identifier} = import('${uri.trim()}')`, `import ${identifier}`);
+                result = evaluate(`${identifier} = use('${uri.trim()}')`, `use ${identifier}`);
             } catch (err: any) {
                 errorExit(`Unable to evaluate import binding "${bindImport}" \n\t${err.message}`);
             }
