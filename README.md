@@ -27,7 +27,7 @@ See the [Terminal Usage](#terminal-usage) section for instructions using the CLI
 
 ## Examples
 
-The following examples use language constructs and built-in functions to generate geometry patterns.
+The following examples use language constructs and standard library functions to generate geometry patterns.
 
 **Create a 20x10 grid of points with 2-unit spacing starting from coordinates -110, 38:**
 ```
@@ -474,7 +474,10 @@ myLine ++ myPoint # LINESTRING (1 1, 2 2, 3 3)
 
 `⚠ experimental feature`
 
-Several built-in functions are provided to support common geometry generation and transformation operations. 
+Several built-in functions are provided to support common geometry generation and transformation operations. To use the standard library, set the interpreter option `useStdLib` to `true` or load the library at runtime with:
+```
+Use(StdLib()) With (*)
+```
 
 #### `Math` properties and methods
 

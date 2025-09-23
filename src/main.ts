@@ -15,7 +15,8 @@ export interface Options {
     outputNonGeoJSON?: boolean;
     scope?: Scope;
     storeHistoricalEvaluations?: boolean;
-    workingDirectory?: string
+    workingDirectory?: string;
+    useStdLib?: boolean
 }
 
 export const DEFAULT_OPTIONS: Options = {
@@ -38,7 +39,11 @@ export class Wael {
         };
 
         // Import standard library
-        Interpreter.evaluateInput(`StdLib = ${STD_LIB}; Use(StdLib()) With (*)`, this.options.scope)
+        Interpreter.evaluateInput(`${STD_LIB}`, this.options.scope);
+        if (!this.options?.useStdLib) {
+            this.useStdLib();
+        }
+
     }
 
     getEvaluationCount(): number {
@@ -50,6 +55,10 @@ export class Wael {
             ...this.options,
             ...overrideOptions
         };
+
+        if (!this.options?.useStdLib && overrideOptions?.useStdLib) {
+            this.useStdLib();
+        }
 
         const result = Interpreter.evaluateInput(input, options.scope, options.workingDirectory);
 
@@ -82,6 +91,10 @@ export class Wael {
             const outputString = typeof output === 'string' ? output : JSON.stringify(output, undefined, 2)
             throw new Error(`Invalid '${options.outputFormat}' evaluation result: ${outputString}`)
         }
+    }
+
+    private useStdLib() {
+        Interpreter.evaluateInput(`Use(StdLib()) With (*)`, this.options.scope)
     }
 
     static evaluate(input: string, options?: Partial<Options>) {
