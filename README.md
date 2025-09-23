@@ -1,6 +1,6 @@
 # Well-Known Text Arithmetic Expression Language (WAEL)
 
-The Well-Known Text Arithmetic Expression Language (WAEL) is an experimental, domain-specific language for generating and manipulating geometry patterns. The language syntax aims to be a superset of [Well-Known Text (WKT)](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) with added support for programming features like variables, basic arithmetic, functions and comments. Geometries can be transformed using [array programming](https://en.wikipedia.org/wiki/Array_programming) features like geometry arithmetic and pipe transformations (see the [Syntax](#syntax) section below for details).
+The Well-Known Text Arithmetic Expression Language (WAEL - pronounced "whale") is an experimental, domain-specific language for generating and manipulating geometry patterns. The language syntax aims to be a superset of [Well-Known Text (WKT)](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) with added support for programming features like variables, basic arithmetic, functions and comments. Geometries can be transformed using [array programming](https://en.wikipedia.org/wiki/Array_programming) features like geometry arithmetic and pipe transformations (see the [Syntax](#syntax) section below for details).
 
 Basic support is currently available for the following 2D geometries: `POINT`, `LINESTRING`, `POLYGON`, `MULTIPOINT`, `MULTILINESTRING`, `GEOMETRYCOLLECTION`. Sections with an `⚠ experimental feature` label indicate features that could be updated or modified in future versions.
 
@@ -79,22 +79,22 @@ npx ts-node ./scripts/wael.ts --help
 
 Following the [build instructions](#build-instructions), a `wael` binary application can be used:
 ```
-wael --help
+./wael --help
 ```
 
 To evaluate code and output the resulting WKT, specify one or more input files:
 ```
-wael ./myScript.wael
+./wael ./myScript.wael
 ```
 
 To output GeoJSON instead of WKT, add the `--geojson` flag:
 ```
-wael ./myScript.wael --geojson
+./wael ./myScript.wael --geojson
 ```
 
 To evaluate expressions interactively in a read-eval-print loop (REPL), use the `--interactive` (or `-i`) flag.
 ```
-wael -i
+./wael -i
 ```
 
 <br>
@@ -103,14 +103,14 @@ wael -i
 
 All evaluated files, including the interactive environment, will share the same scope. This means that any variables defined in a script file will be accessible in following scripts and the interactive environment, if specified. For example, in the following command, `myConstants.wael` variables will be accessible to `myFunctions.wael`, and variables in both scripts will be accessible in the interactive environment.
 ```
-wael ./myConstants.wael ./myFunctions.wael -i
+./wael ./myConstants.wael ./myFunctions.wael -i
 ```
 
 <br>
 
 Expressions can be passed in directly with the `--evaluate` (or `-e`) flag.
 ```
-wael -e "Point(1 1) + Point(2 2)"
+./wael -e "Point(1 1) + Point(2 2)"
 ```
 
 Any variables defined in the `--evaluate` script can be used in following script files. For example, the following `path.wael` script references an undefined `start` variable:
@@ -120,7 +120,7 @@ start ++ GeometryCollection(Point(2 2), Point(3 3), Point(4 4))
 
 When evaluated with the following command:
 ```
-wael -e "start = Point(1 1)" path.wael
+./wael -e "start = Point(1 1)" path.wael
 ```
 
 The `start` variable will be defined in the `--evaluate` argument and the output will be:
@@ -221,7 +221,7 @@ Variables are defined using the equal (`=`) operator. Supported data types inclu
 longitude = 2;              # Number
 bool = True;                # Boolean
 p = Point(longitude 3);     # Geometry
-fn = (p => p + 1);  # Function
+fn = (p) => (p + 1);        # Function
 path = "./my-lib.wael";     # String
 ```
 
@@ -259,15 +259,7 @@ myFn = (x, y, last) => (
 myFn(1, 2, Point(3 4)) # LINESTRING (1 2, 3 4)
 ```
 
-Functions can have parameters bound using the `bind()` method:
-```
-Generate 10 (i => (x = Math:random() * 100; Point(x x)))
-    || _Round:bind(2)   
-
-# GEOMETRYCOLLECTION (POINT (18.98 18.98), POINT (14.26 14.26), ...)
-```
-
-The spread operator `...` can be used to collect all geometry function arguments into a geometry collection:
+The spread operator `...` can be used to collect all function arguments into a geometry collection:
 ```
 Offset = (...g) => (g + 1);
 Offset(1 1, 2 2, 3 3) # GEOMETRYCOLLECTION (POINT (2 2), POINT (3 3), POINT (4 4))
@@ -282,7 +274,7 @@ a = 1;
 a ## 2
 ```
 
-To shadow an existing variable, the `let` keyword can be used:
+To assign a variable explicitly within the current scope (and shadow any existing variables with the same name), the `let` keyword can be used:
 ```
 a = 1;
 () => (let a = 2)();
@@ -336,22 +328,22 @@ b = Point(3 4);
 a:x < b:x # true
 ```
 
-Control flow can be dictated using `If-Then-Else` expressions:
+Control flow can be dictated using `if-then-else` expressions:
 ```
-result = If (Point(1 2):x < 3)
-         Then (LineString(1 1, 2 2, 3 3))
-         Else (Point(0 0));
+result = if (Point(1 2):x < 3)
+         then (LineString(1 1, 2 2, 3 3))
+         else (Point(0 0));
 result # LINESTRING(1 1, 2 2, 3 3)
 ```
 
-All three parts of the `If-Then-Else` expression are required. The `Then` and `Else` blocks can contain multiple lines, similar to a function body.
+All three parts of the `if-then-else` expression are required. The `then` and `else` blocks can contain multiple lines, similar to a function body.
 ```
 points = GeometryCollection(Point(0 0), Point(0 0), Point(0 0), Point(0 0), Point(0 0));
-If (points:numGeometries > 3) Then (
+if (points:numGeometries > 3) then (
     a = Point(1 2);
     b = Point(3 4);
     a + b
-) Else (
+) else (
     a = LineString(1 1, 2 2);
     b = LineString(3 3, 4 4);
     a + b
@@ -376,16 +368,20 @@ Generate count Point(0 0) # GEOMETRYCOLLECTION(POINT (0 0),POINT (0 0),POINT (0 
 
 A predicate function can be provided to generate geometries while a condition holds:
 ```
-a = 0; Generate ((i) => a < 3) (i => (a = a + 1; Point(i i))) # GEOMETRYCOLLECTION (POINT (0 0), POINT (1 1), POINT (2 2))
+a = 0; 
+Generate ((i) => a < 3) 
+    (i => (a = a + 1; Point(i i))) # GEOMETRYCOLLECTION (POINT (0 0), POINT (1 1), POINT (2 2))
 ```
 
-### Pipe Transformations
+### Pipe Transformations 
+
+Map, Filter and Reduce operators are natively supported.
 
 #### Mapping
 
 `⚠ experimental feature`
 
-The output from any expression can be used as the input to another function with the pipe (`|`) operator:
+The output from any expression can be used as the input to a function with the pipe (`|`) operator:
 ```
 Point(1 1) | (x) => LineString(x, 2 2) # LINESTRING (1 1, 2 2)
 ```
@@ -395,7 +391,7 @@ Each item in an array-like geometry can be mapped using a function with the doub
 LineString(1 1, 2 2, 3 3) || (x => x * x) # LINESTRING (1 1, 4 4, 9 9)
 ```
 
-The array map index is also available as function parameter:
+The current index is available in a function parameter:
 ```
 LineString(1 1, 2 2, 3 3) || ((x, i) => x * i) # LINESTRING (0 0, 2 2, 6 6)
 ```
@@ -426,6 +422,7 @@ LineString(1 1, 2 2, 3 3) |> (total, current, index) => (total + current) # Poin
 ### Module System
 
 `⚠ experimental feature`
+Data and expressions can be encapsulated in modules as a local file, network URL or function. 
 
 Data can be imported with `Use` expressions. For example, if the file `etna.wael` contains `Point(14.99 37.75)`, it can be used in another script with:
 ```
@@ -435,12 +432,12 @@ data # POINT (14.99 37.75)
 
 Supported data formats include WKT, GeoJSON and WAEL.
 
-Data or code can also be used from network locations:
+To use data or code from a network location, provide the URL path as a string:
 ```
 Lib = Use("https://gist.githubusercontent.com/anthonydgj/29dd64c93e0656475e01bf228f117144/raw/7b65273fab38af5b9793d1bade7a6afd5ff5d021/ext.wael")
 ```
 
-By default, the last expression in a WAEL script will be returned from a `Use` expression. To provide one or more named variables in a module, the `export` keyword can be used with variable declarations and accessed using the accessor `:` operator:
+By default, the last expression in a WAEL script will be returned from a `Use` expression. To also provide one or more named variables in a module, the `export` keyword can be used with variable declarations and accessed using the accessor `:` operator:
 ```
 MyLib = () => (
     export let p = Point(2 2)
@@ -450,27 +447,38 @@ Lib = Use(MyLib());
 Lib:p # POINT (2 2)
 ```
 
-The `With` syntax allows bringing specific variables into scope:
+The `With` syntax can be used to bring specific variables into scope:
 ```
 MyLib = () => (
-    export let p = Point(2 2);
-    export let l = LineString(1 1, 2 2, 3 3)
+    export let myPoint = Point(2 2);
+    export let myLine = LineString(1 1, 2 2, 3 3)
 );
 
-Use(MyLib()) With (l);
-l # LINESTRING (1 1, 2 2, 3 3)
+Use(MyLib()) With (myLine);
+myLine # LINESTRING (1 1, 2 2, 3 3)
+```
+
+Passing `*` will bring all variables into scope:
+```
+MyLib = () => (
+    export let myPoint = Point(2 2);
+    export let myLine = LineString(1 1, 2 2, 3 3)
+);
+
+Use(MyLib()) With (*);
+myLine ++ myPoint # LINESTRING (1 1, 2 2, 3 3)
 ```
 
 
-### Built-In Functions
+### Standard Library
 
 `⚠ experimental feature`
 
-Several built-in functions are provided to support geometry generation and transformation. 
+Several built-in functions are provided to support common geometry generation and transformation operations. 
 
-#### `Math` proerties and methods
+#### `Math` properties and methods
 
-All JavaScript `Math` [static properties](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math#static_properties) and [static functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math#static_methods) are accessible from the `Math` variable:
+All JavaScript `Math` [static properties](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math#static_properties) and [static functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math#static_methods) are accessible from the `Math` module:
 
 ```
 pi = Math:PI;   # 3.141592653589793
@@ -497,7 +505,7 @@ PointCircle(5, 50) # GEOMETRYCOLLECTION(POINT (5 0),POINT (4.9605735065723895 0.
 
 #### Rotate
 
-`Rotate(angleDegrees, originPoint)` - get function to rotate a geometry by the specified degrees around an origin point
+`Rotate(angleDegrees, originPoint)` - get a function to rotate a geometry by the specified degrees around an origin point
 ```
 MultiPoint(1 1, 2 2, 3 3) | Rotate(23, Point(0 0)) # MULTIPOINT (1.3112079320509338 0.5297935627181312, ... )
 ```
