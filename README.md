@@ -422,7 +422,7 @@ LineString(1 1, 2 2, 3 3) |> (total, current, index) => (total + current) # Poin
 ### Module System
 
 `⚠ experimental feature`
-Data and expressions can be encapsulated in modules as a local file, network URL or function. 
+Data and expressions can be encapsulated in modules as a local file, network resource or function. 
 
 Data can be imported with `Use` expressions. For example, if the file `etna.wael` contains `Point(14.99 37.75)`, it can be used in another script with:
 ```
