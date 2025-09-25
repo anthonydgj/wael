@@ -37,7 +37,6 @@ export namespace Interpreter {
         math[prop] = (Math as any)[prop];
     });
     STANDARD_LIBRARY['Math'] = math;
-    STANDARD_LIBRARY['Flatten'] = BuiltInFunctions.Flatten;
     STANDARD_LIBRARY['PointCircle'] = BuiltInFunctions.PointCircle;
     STANDARD_LIBRARY['PointGrid'] = BuiltInFunctions.PointGrid;
     STANDARD_LIBRARY['ToLineString'] = BuiltInFunctions.ToLineString;

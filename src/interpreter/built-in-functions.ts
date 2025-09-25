@@ -8,27 +8,6 @@ import booleanEqual from "@turf/boolean-equal"
 
 export namespace BuiltInFunctions {
 
-    const FlattenHelper = (value: any) => {
-        const flattenedValues: any[] = [];
-        if (!!value) {
-            if (value?.type === GeometryType.GeometryCollection) {
-                for (const item of value.geometries) {
-                    flattenedValues.push(...FlattenHelper(item));
-                }
-            } else {
-                flattenedValues.push(value);
-            }
-        }
-        return flattenedValues;
-    };
-
-    export const Flatten = (value: any) => {
-        if (value?.type === GeometryType.GeometryCollection) {
-            return turf.geometryCollection(FlattenHelper(value)).geometry;
-        }
-        return value;
-    };
-
     export const PointCircle = (radius: number, count: number) => {
         const circlePoints: any[] = [];
         const angleIncrement = (2 * Math.PI) / count;
@@ -43,8 +22,8 @@ export namespace BuiltInFunctions {
 
     export const PointGrid = (x: number, y: number, spacing = 1) => {
         const points: any[] = [];
-        for (let i=0; i<x; i++) {
-            for (let j=0; j<y; j++) {
+        for (let i = 0; i < x; i++) {
+            for (let j = 0; j < y; j++) {
                 const point = turf.point([i * spacing, j * spacing]).geometry;
                 points.push(point);
             }
