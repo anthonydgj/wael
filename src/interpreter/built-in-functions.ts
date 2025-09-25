@@ -8,18 +8,6 @@ import booleanEqual from "@turf/boolean-equal"
 
 export namespace BuiltInFunctions {
 
-    export const PointCircle = (radius: number, count: number) => {
-        const circlePoints: any[] = [];
-        const angleIncrement = (2 * Math.PI) / count;
-        for (let i = 0; i < count; i++) {
-            const angle = i * angleIncrement;
-            const x = radius * Math.cos(angle);
-            const y = radius * Math.sin(angle);
-            circlePoints.push(turf.point([x, y]).geometry);
-        }
-        return turf.geometryCollection(circlePoints).geometry;
-    };
-
     const getPointsList = (value: any) => {
         let points;
         if (isGeometryType(GeometryType.GeometryCollection, value)) {

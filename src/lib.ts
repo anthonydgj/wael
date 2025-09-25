@@ -7,6 +7,18 @@ export let StdLib = () => (
             else (g)
         )
     );
+    export let PointCircle = (radius, count) => (
+        (2 * Math:PI) / count | (angleIncrement => (
+            Generate count (i => (
+                (i * angleIncrement) | (angle) => (
+                    (
+                        (radius * Math:cos(angle))
+                        (radius * Math:sin(angle))
+                    )
+                )
+            ))
+        ))
+    );
     export let PointGrid = (x, y, spacing) => (
         Generate x (xCoord => (
             Generate y (yCoord => (
