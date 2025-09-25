@@ -20,17 +20,6 @@ export namespace BuiltInFunctions {
         return turf.geometryCollection(circlePoints).geometry;
     };
 
-    export const PointGrid = (x: number, y: number, spacing = 1) => {
-        const points: any[] = [];
-        for (let i = 0; i < x; i++) {
-            for (let j = 0; j < y; j++) {
-                const point = turf.point([i * spacing, j * spacing]).geometry;
-                points.push(point);
-            }
-        }
-        return turf.geometryCollection(points).geometry;
-    }
-
     const getPointsList = (value: any) => {
         let points;
         if (isGeometryType(GeometryType.GeometryCollection, value)) {

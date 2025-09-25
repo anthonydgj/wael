@@ -38,7 +38,6 @@ export namespace Interpreter {
     });
     STANDARD_LIBRARY['Math'] = math;
     STANDARD_LIBRARY['PointCircle'] = BuiltInFunctions.PointCircle;
-    STANDARD_LIBRARY['PointGrid'] = BuiltInFunctions.PointGrid;
     STANDARD_LIBRARY['ToLineString'] = BuiltInFunctions.ToLineString;
     STANDARD_LIBRARY['ToMultiPoint'] = BuiltInFunctions.ToMultiPoint;
     STANDARD_LIBRARY['ToPolygon'] = BuiltInFunctions.ToPolygon;
