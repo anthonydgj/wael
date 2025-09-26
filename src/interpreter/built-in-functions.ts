@@ -52,18 +52,4 @@ export namespace BuiltInFunctions {
         const pointsList = getPointsList(value);
         return turf.geometryCollection(pointsList.map((p: any) => turf.point(p).geometry)).geometry;
     };
-
-    export const Round = (precision = 0, val: any): any => {
-        if (typeof val === 'number') {
-            return +val.toFixed(precision);
-        }
-        if (isGeometryType(GeometryType.Point, val)) {
-            const coords = val.coordinates;
-            return turf.point([
-                Round(precision, coords[0]),
-                Round(precision, coords[1]),
-            ]).geometry;
-        }
-        throw new OperationNotSupported(`Unable to round value: ${toString(val)}`)
-    }
 }
