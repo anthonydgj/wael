@@ -18,7 +18,6 @@ import {
 } from './helpers';
 import { Scope, ScopeBindings } from './scope';
 
-import { BuiltInFunctions } from './built-in-functions';
 import { GRAMMAR } from './grammar';
 import path from 'path';
 import { readFileSync } from 'fs';
@@ -37,7 +36,6 @@ export namespace Interpreter {
         math[prop] = (Math as any)[prop];
     });
     STANDARD_LIBRARY['Math'] = math;
-    STANDARD_LIBRARY['ToGeometryCollection'] = BuiltInFunctions.ToGeometryCollection;
 
     export const createGlobalScope = () => new Scope(undefined, undefined, STANDARD_LIBRARY);
 

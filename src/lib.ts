@@ -65,6 +65,7 @@ export let StdLib = () => (
             )
         )
     );
+    export let ToGeometryCollection = (v) => (v |> (total, curr) => (total ++ curr));
     "StdLib"
 )
 `
