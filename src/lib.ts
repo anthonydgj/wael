@@ -1,5 +1,6 @@
 export const STD_LIB = String.raw`
 export let StdLib = () => (
+    # Flatten any nested GeometryCollection values
     export let Flatten = (collection) => (
         collection |> (total, g) => (
             total ++ if (g:type == GeometryCollection)
@@ -7,6 +8,8 @@ export let StdLib = () => (
             else (g)
         )
     );
+
+    # Create a circle of points
     export let PointCircle = (radius, count) => (
         (2 * Math:PI) / count | (angleIncrement => (
             Generate count (i => (
@@ -19,11 +22,15 @@ export let StdLib = () => (
             ))
         ))
     );
+
+    # Create a grid of points
     export let PointGrid = (x, y, spacing) => (
         Generate x (xCoord => (
             Generate y (yCoord => (
                 (xCoord yCoord) * spacing))))
     );
+
+    # Rotate a geometry
     export let _Rotate = (angleDegrees, origin, geometry) => (
         origin = if (origin == undefined) then (0 0) else (origin);
         geometry |* (p) => (
@@ -36,6 +43,8 @@ export let StdLib = () => (
         )
     );
     export let Rotate = ((deg, origin) => (val => _Rotate(deg, origin, val)));
+    
+    # Round number or coordinate values 
     export let _Round = (precision, value) => (
         if (value:type == undefined) then (
             let factor = 10 ^ precision;
@@ -45,6 +54,8 @@ export let StdLib = () => (
         )
     );
     export let Round = ((precision) => (val => _Round(precision, val)));
+    
+    # Check if two points have equal coordinates
     export let PointsEqual = (p1, p2) => (
         let xEqual = p1:x == p2:x;
         let yEqual = p1:y == p2:y;
@@ -52,9 +63,16 @@ export let StdLib = () => (
             then (true)
             else (false)
     );
+
     let getPoints = (value) => (GeometryCollection() ++ value |> (cur, total) => (cur ++ total));
+    
+    # Convert an array-like geometry to a LineString
     export let ToLineString = (value) => (getPoints(value) | (p) => (LineString(...p)));
+    
+    # Convert an array-like geometry to a MultiPoint
     export let ToMultiPoint = (value) => (getPoints(value) | (p) => (MultiPoint(...p)));
+   
+    # Convert an array-like geometry to a Polygon
     export let ToPolygon = (value) => (
         getPoints(value) | (p) => (
             if (PointsEqual(p:geometryN(0), p:geometryN(p:numGeometries - 1)) == true) then (
@@ -65,7 +83,10 @@ export let StdLib = () => (
             )
         )
     );
+
+    # Convert an array-like geometry to a GeometryCollection
     export let ToGeometryCollection = (v) => (v |> (total, curr) => (total ++ curr));
+
     "StdLib"
 )
 `
