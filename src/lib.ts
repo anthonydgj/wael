@@ -45,6 +45,8 @@ export let StdLib = () => (
         )
     );
     export let Round = ((precision) => (val => _Round(precision, val)));
+    let getPoints = (value) => (GeometryCollection() ++ value |> (cur, total) => (cur ++ total));
+    export let ToLineString = (value) => (getPoints(value) | (p) => LineString(...p));
     "StdLib"
 )
 `

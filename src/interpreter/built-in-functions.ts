@@ -24,11 +24,6 @@ export namespace BuiltInFunctions {
         throw new Error("Expected geometry with points list");
     }
 
-    export const ToLineString = (value: any) => {
-        const pointsList = getPointsList(value);
-        return turf.lineString(pointsList).geometry;
-    };
-
     export const ToMultiPoint = (value: any) => {
         const pointsList = getPointsList(value);
         return turf.multiPoint(pointsList).geometry;

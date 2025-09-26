@@ -37,7 +37,6 @@ export namespace Interpreter {
         math[prop] = (Math as any)[prop];
     });
     STANDARD_LIBRARY['Math'] = math;
-    STANDARD_LIBRARY['ToLineString'] = BuiltInFunctions.ToLineString;
     STANDARD_LIBRARY['ToMultiPoint'] = BuiltInFunctions.ToMultiPoint;
     STANDARD_LIBRARY['ToPolygon'] = BuiltInFunctions.ToPolygon;
     STANDARD_LIBRARY['ToGeometryCollection'] = BuiltInFunctions.ToGeometryCollection;
