@@ -249,7 +249,9 @@ MultiPoint = Paren<PointList>
 multiPointKeyword = caseInsensitive<"MULTIPOINT">
 
 // Base point type helpers
-PointList = NonemptyListOf<PointListArgument, Comma>
+PointList = PointListLiteral | PointListSpread
+PointListLiteral = NonemptyListOf<PointListArgument, Comma>
+PointListSpread = spreadOperator Identifier
 PointListArgument = Point | ComputedValue<PointExp>
 PointExp = Arithmetic<PointArithmetic>
 PointArithmetic = PointPrimitive | ComputedExp

@@ -518,8 +518,11 @@ export namespace Interpreter {
                 const points = list.eval();
                 return turf.lineString(points.map((p: any) => p.coordinates)).geometry;
             },
-            PointList(list) {
+            PointListLiteral(list) {
                 return list.asIteration().children.map(c => c.eval());
+            },
+            PointListSpread(_op, collection) {
+                return getArrayLikeItems(collection.eval());
             },
             PointTaggedText(_, point) {
                 return point.eval();
