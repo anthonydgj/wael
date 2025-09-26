@@ -24,20 +24,6 @@ export namespace BuiltInFunctions {
         throw new Error("Expected geometry with points list");
     }
 
-    export const ToPolygon = (value: any) => {
-        const pointsList = getPointsList(value);
-        // Auto-close polygon
-        if (pointsList.length > 0) {
-            if (!booleanEqual(
-                turf.point(pointsList[0]).geometry,
-                turf.point(pointsList[pointsList.length - 1]).geometry
-            )) {
-                pointsList.push(pointsList[0]);
-            }
-        }
-        return turf.polygon([pointsList]).geometry;
-    };
-
     export const ToGeometryCollection = (value: any) => {
         const pointsList = getPointsList(value);
         return turf.geometryCollection(pointsList.map((p: any) => turf.point(p).geometry)).geometry;

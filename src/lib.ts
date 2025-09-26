@@ -45,9 +45,26 @@ export let StdLib = () => (
         )
     );
     export let Round = ((precision) => (val => _Round(precision, val)));
+    export let PointsEqual = (p1, p2) => (
+        let xEqual = p1:x == p2:x;
+        let yEqual = p1:y == p2:y;
+        if (xEqual and yEqual) 
+            then (true)
+            else (false)
+    );
     let getPoints = (value) => (GeometryCollection() ++ value |> (cur, total) => (cur ++ total));
     export let ToLineString = (value) => (getPoints(value) | (p) => (LineString(...p)));
     export let ToMultiPoint = (value) => (getPoints(value) | (p) => (MultiPoint(...p)));
+    export let ToPolygon = (value) => (
+        getPoints(value) | (p) => (
+            if (PointsEqual(p:geometryN(0), p:geometryN(p:numGeometries - 1)) == true) then (
+                Polygon((...p))
+            ) else (
+                let closed = p ++ p:geometryN(0);
+                Polygon((...closed))
+            )
+        )
+    );
     "StdLib"
 )
 `
