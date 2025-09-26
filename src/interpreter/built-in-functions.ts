@@ -24,11 +24,6 @@ export namespace BuiltInFunctions {
         throw new Error("Expected geometry with points list");
     }
 
-    export const ToMultiPoint = (value: any) => {
-        const pointsList = getPointsList(value);
-        return turf.multiPoint(pointsList).geometry;
-    };
-
     export const ToPolygon = (value: any) => {
         const pointsList = getPointsList(value);
         // Auto-close polygon
