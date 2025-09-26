@@ -53,27 +53,6 @@ export namespace BuiltInFunctions {
         return turf.geometryCollection(pointsList.map((p: any) => turf.point(p).geometry)).geometry;
     };
 
-    export const Rotate = (angleDegrees: number, origin: Point = turf.point([0, 0]).geometry, geometry: any) => {
-        return transform(geometry, (p: Point) => {
-            // Convert angle from degrees to radians
-            const angleRadians = (angleDegrees * Math.PI) / -180;
-            const originX = origin.coordinates[0];
-            const originY = origin.coordinates[1];
-            const x = p.coordinates[0];
-            const y = p.coordinates[1];
-
-            // Calculate the distance from the origin to the point
-            const dx = x - originX;
-            const dy = y - originY;
-
-            // Perform the rotation
-            const newX = originX + dx * Math.cos(angleRadians) - dy * Math.sin(angleRadians);
-            const newY = originY + dx * Math.sin(angleRadians) + dy * Math.cos(angleRadians);
-
-            return turf.point([newX, newY]).geometry;
-        });
-    }
-
     export const Round = (precision = 0, val: any): any => {
         if (typeof val === 'number') {
             return +val.toFixed(precision);
