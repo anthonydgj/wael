@@ -40,7 +40,7 @@ export class Wael {
 
         // Import standard library
         Interpreter.evaluateInput(`${STD_LIB}`, this.options.scope);
-        if (!this.options?.useStdLib) {
+        if (this.options?.useStdLib) {
             this.useStdLib();
         }
 
