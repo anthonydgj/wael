@@ -54,6 +54,10 @@ const args = (yargs as any).command('$0', `${packageJson.description}\nVersion: 
         string: true,
         description: 'Bind imported data to a variable'
     })
+    .option('useStdLib', {
+        boolean: true,
+        description: 'Load the standard library'
+    })
     .version(version)
     .parseSync();
 
@@ -67,6 +71,7 @@ const postEvaluateScript = args.postEvaluate;
 const inputFiles = args._;
 const isInteractive = args.interactive;
 const bindImports = args.bindImport;
+const useStdLib = args.useStdLib;
 const highlightText = chalk.hex(`#1f91cf`);
 const errorText = chalk.hex(`#bd3131`);
 const subtleText = chalk.hex(`#777`);
@@ -81,15 +86,16 @@ if (outputNonGeoJSON === undefined && isInteractive) {
 const options: Options = {
     outputFormat,
     scope: Interpreter.createGlobalScope(),
-    outputNonGeoJSON
+    outputNonGeoJSON,
+    useStdLib: useStdLib
 };
 
 const wael = new Wael(options);
 let result: any;
 let hasEvaluated = false;
 
-const errorExit = (message: string) => {
-    console.log(errorText(message));
+const errorExit = (message: string, err?: any) => {
+    console.log(errorText(message), err);
     process.exit(-1);
 }
 
@@ -152,7 +158,7 @@ if (bindImports) {
             try {
                 result = evaluate(`${identifier} = use('${uri.trim()}')`, `use ${identifier}`);
             } catch (err: any) {
-                errorExit(`Unable to evaluate import binding "${bindImport}" \n\t${err.message}`);
+                errorExit(`Unable to evaluate import binding "${bindImport}" \n\t${err.message}`, err);
             }
         } else {
             errorExit(`Unable to evaluate import binding "${bindImport}"`);
@@ -243,6 +249,6 @@ if (isInteractive) {
             console.log(result);
         }
     } else {
-        yargs.showHelp();
+        (yargs as any).showHelp();
     }
 }
