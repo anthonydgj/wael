@@ -2,6 +2,9 @@
   "name": "wael-lib",
   "version": "0.0.20",
   "description": "Well-Known Text Arithmetic Expression Language",
+  "bin": {
+    "wael": "./dist/wael/wael.cjs"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/anthonydgj/wael.git"
