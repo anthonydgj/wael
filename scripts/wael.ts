@@ -39,8 +39,12 @@ const args = (yargs as any).command('$0', `${packageJson.description}\nVersion: 
         boolean: true,
         description: 'Launch an interactive session'
     })
+    .option('pre-evaluate', {
+        string: true,
+        description: `Evaluate the specified script text before bound imports and [${input_files}]`
+    })
     .option('evaluate', {
-        alias: ['e', 'pre-evaluate'],
+        alias: ['e'],
         string: true,
         description: `Evaluate the specified script text before [${input_files}]`
     })
@@ -67,6 +71,7 @@ const getJsonString = (json: any) => {
 
 
 const evaluateScript = args.evaluate;
+const preEvaluateScript = args.preEvaluate;
 const postEvaluateScript = args.postEvaluate;
 const inputFiles = args._;
 const isInteractive = args.interactive;
@@ -149,6 +154,15 @@ Previous evaluation results are stored in indexed variables $0, $1, $2, ...
     console.log(subtleText(instructions));
 }
 
+// Pre-evaluate script
+if (preEvaluateScript) {
+    try {
+        result = evaluate(preEvaluateScript, `pre-evaluate`);
+    } catch (err: any) {
+        errorExit(`Unable to evaluate 'pre-evaluate' script: \n\t${err}`, err);
+    }
+    hasEvaluated = true;
+}
 
 // Evaluate import bindings
 if (bindImports) {
@@ -166,7 +180,7 @@ if (bindImports) {
     }
 }
 
-// Evaluate initial script
+// Evaluate script
 if (evaluateScript) {
     try {
         result = evaluate(evaluateScript, `pre-evaluate`);
@@ -195,12 +209,12 @@ if (inputFiles && inputFiles.length > 0) {
     });
 }
 
-// Evaluate initial script
+// Post-evaluate script
 if (postEvaluateScript) {
     try {
         result = evaluate(postEvaluateScript, `post-evaluate`);
     } catch (err: any) {
-        errorExit(`Unable to evaluate 'post-evaluate' script: \n\t${err}`);
+        errorExit(`Unable to evaluate 'post-evaluate' script: \n\t${err}`, err);
     }
     hasEvaluated = true;
 }
