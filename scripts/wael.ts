@@ -29,10 +29,10 @@ const args = (yargs as any).command('$0', `${packageJson.description}\nVersion: 
         boolean: true,
         description: 'Output as GeoJSON'
     })
-    .option('outputNonGeoJSON', {
-        alias: 'a',
+    .option('strict', {
+        alias: 's',
         boolean: true,
-        description: 'Output non-GeoJSON results'
+        description: 'Error when result is non-spatial'
     })
     .option('interactive', {
         alias: 'i',
@@ -44,7 +44,7 @@ const args = (yargs as any).command('$0', `${packageJson.description}\nVersion: 
         description: `Evaluate the specified script text before bound imports and [${input_files}]`
     })
     .option('evaluate', {
-        alias: ['e'],
+        alias: 'e',
         string: true,
         description: `Evaluate the specified script text before [${input_files}]`
     })
@@ -77,6 +77,7 @@ const inputFiles = args._;
 const isInteractive = args.interactive;
 const bindImports = args.bindImport;
 const useStdLib = args.useStdLib;
+const strict = args.strict;
 const highlightText = chalk.hex(`#1f91cf`);
 const errorText = chalk.hex(`#bd3131`);
 const subtleText = chalk.hex(`#777`);
@@ -84,14 +85,11 @@ const subtleText = chalk.hex(`#777`);
 const outputFormat = args.geojson ? OutputFormat.GeoJSON :
     args.format ? args.format : OutputFormat.WKT;
 
-let outputNonGeoJSON = args.outputNonGeoJSON;
-if (outputNonGeoJSON === undefined && isInteractive) {
-    outputNonGeoJSON = true;
-}
+
 const options: Options = {
     outputFormat,
     scope: Interpreter.createGlobalScope(),
-    outputNonGeoJSON,
+    outputNonGeoJSON: !strict,
     useStdLib: useStdLib
 };
 
