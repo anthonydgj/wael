@@ -72,9 +72,9 @@ Generate numRings (i => (
 
 ## Terminal Usage
 
-The `wael.ts` script can be used to evaluate code and output the resulting WKT:
+The `wael` CLI tool can be used to evaluate code:
 ```
-npx ts-node ./scripts/wael.ts --help
+npx wael --help
 ```
 
 Following the [build instructions](#build-instructions), a `wael` binary application can be used:
@@ -84,17 +84,17 @@ Following the [build instructions](#build-instructions), a `wael` binary applica
 
 To evaluate code and output the resulting WKT, specify one or more input files:
 ```
-./wael ./myScript.wael
+npx wael ./myScript.wael
 ```
 
 To output GeoJSON instead of WKT, add the `--geojson` flag:
 ```
-./wael ./myScript.wael --geojson
+npx wael ./myScript.wael --geojson
 ```
 
 To evaluate expressions interactively in a read-eval-print loop (REPL), use the `--interactive` (or `-i`) flag.
 ```
-./wael -i
+npx wael -i
 ```
 
 <br>
@@ -103,14 +103,14 @@ To evaluate expressions interactively in a read-eval-print loop (REPL), use the 
 
 All evaluated files, including the interactive environment, will share the same scope. This means that any variables defined in a script file will be accessible in following scripts and the interactive environment, if specified. For example, in the following command, `myConstants.wael` variables will be accessible to `myFunctions.wael`, and variables in both scripts will be accessible in the interactive environment.
 ```
-./wael ./myConstants.wael ./myFunctions.wael -i
+npx wael ./myConstants.wael ./myFunctions.wael -i
 ```
 
 <br>
 
 Expressions can be passed in directly with the `--evaluate` (or `-e`) flag.
 ```
-./wael -e "Point(1 1) + Point(2 2)"
+npx wael -e "Point(1 1) + Point(2 2)"
 ```
 
 Any variables defined in the `--evaluate` script can be used in following script files. For example, the following `path.wael` script references an undefined `start` variable:
@@ -120,7 +120,7 @@ start ++ GeometryCollection(Point(2 2), Point(3 3), Point(4 4))
 
 When evaluated with the following command:
 ```
-./wael -e "start = Point(1 1)" path.wael
+npx wael -e "start = Point(1 1)" path.wael
 ```
 
 The `start` variable will be defined in the `--evaluate` argument and the output will be:
