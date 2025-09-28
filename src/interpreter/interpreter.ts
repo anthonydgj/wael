@@ -132,6 +132,14 @@ export namespace Interpreter {
                         return value1 === value2;
                     case "!=":
                         return value1 !== value2;
+                }
+                throw new Error(`Operator not supported: ${operator}`);
+            },
+            LogicalExp(v1, op, v2) {
+                const value1 = v1.eval();
+                const operator = op.sourceString;
+                const value2 = v2.eval();
+                switch (operator.trim().toLocaleLowerCase()) {
                     case "and":
                         return value1 && value2;
                     case "or":

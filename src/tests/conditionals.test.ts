@@ -121,3 +121,27 @@ test('should support logical operators', () => {
     result = defaultEval(`!false`);
     expect(result).toBe(true);
 });
+
+test('should support conditional composition', () => {
+    let result;
+    result = defaultEval(`1 == 1 AND 2 == 2`);
+    expect(result).toBe(true);
+    result = defaultEval(`1 == 1 AND 2 == 1`);
+    expect(result).toBe(false);
+    result = defaultEval(`(1 == 1) AND (2 == 2)`);
+    expect(result).toBe(true);
+    result = defaultEval(`1 > 0 AND 2 < 3`);
+    expect(result).toBe(true);
+    result = defaultEval(`1 == 1 AND !(2 == 2)`);
+    expect(result).toBe(false);
+    result = defaultEval(`1 == 1 AND !(2 == 3)`);
+    expect(result).toBe(true);
+    result = defaultEval(`1 >= 0 AND 1 == 1 AND 2 <= 3 AND !(2 == 3) AND 2 != 3`);
+    expect(result).toBe(true);
+    result = defaultEval(`1 == 2 OR 1 >= 0 AND 1 == 1 AND 2 <= 3 AND !(2 == 3) AND 2 != 3`);
+    expect(result).toBe(true);
+    result = defaultEval(`1 == 2 AND 1 >= 0 AND 1 == 1 AND 2 <= 3 AND !(2 == 3) OR 2 != 3`);
+    expect(result).toBe(false);
+    result = defaultEval(`(1 == 2 AND 1 >= 0 AND 1 == 1 AND 2 <= 3 AND !(2 == 3)) OR 2 != 3`);
+    expect(result).toBe(true);
+});

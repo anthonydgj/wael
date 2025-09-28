@@ -168,15 +168,17 @@ thenKeyword = caseInsensitive<"then">
 elseKeyword = caseInsensitive<"else">
 
 // Conditional expressions
-BooleanResultExp = EqualityExp | CompareExp | NotExp | booleanValue
+BooleanResultExp = EqualityExp | CompareExp | NotExp | LogicalExp | booleanValue | Paren<BooleanResultExp>
 EqualityExp = ComparePrimitive equalityOperatorPrimitive ComparePrimitive
 NotExp = notOperator ComparePrimitive
-ConditionalValue = CompareExp | EqualityExp | BooleanValue | NumberExp
 CompareExp = ComparePrimitive compareOperatorPrimitive ComparePrimitive
+LogicalExp = LogicalPrimitive logicalOperator LogicalPrimitive
 ComparePrimitive = BooleanResultExp | ComputedValue<NumberExp> | AccessibleExp<GeometryExp> | geometryKeyword
+LogicalPrimitive = ComputedValue<BooleanResultExp> 
 conditionalOperator = compareOperatorPrimitive | equalityOperatorPrimitive
 compareOperatorPrimitive = "<=" | ">=" | "<" | ">"
-equalityOperatorPrimitive = "==" | "!=" | logicalOperator
+equalityOperatorPrimitive = 
+	| "==" | "!=" 
 logicalOperator = caseInsensitive<"And"> | caseInsensitive<"Or">
 notOperator = "!"
 
