@@ -46,8 +46,9 @@ export let StdLib = () => (
     
     # Round number or coordinate values 
     export let _Round = (precision, value) => (
+        let prec = if (precision == undefined) then (1) else (precision);
         if (value:type == undefined) then (
-            let factor = 10 ^ precision;
+            let factor = 10 ^ prec;
             Math:round(value * factor) / factor
         ) else (
             value |* (p) => (Point(_Round(p:x) _Round(p:y)))
@@ -57,6 +58,7 @@ export let StdLib = () => (
     
     # Check if two points have equal coordinates
     export let PointsEqual = (p1, p2) => (
+        
         let xEqual = p1:x == p2:x;
         let yEqual = p1:y == p2:y;
         if (xEqual and yEqual) 
