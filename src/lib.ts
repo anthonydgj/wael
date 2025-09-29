@@ -11,20 +11,19 @@ export let StdLib = () => (
 
     # Create a circle of points
     export let PointCircle = (radius, count) => (
-        (2 * Math:PI) / count | (angleIncrement => (
-            Generate count (i => (
-                (i * angleIncrement) | (angle) => (
-                    Point(
-                        (radius * Math:cos(angle))
-                        (radius * Math:sin(angle))
-                    )
-                )
-            ))
+        let angleIncrement = (2 * Math:PI) / count;
+        Generate count (i => (
+            let angle = i * angleIncrement;
+            Point(
+                (radius * Math:cos(angle))
+                (radius * Math:sin(angle))
+            )
         ))
     );
 
     # Create a grid of points
     export let PointGrid = (x, y, spacing) => (
+        let spacing = if (spacing == undefined) then (1) else (spacing);
         Generate x (xCoord => (
             Generate y (yCoord => (
                 (xCoord yCoord) * spacing))))
@@ -32,35 +31,40 @@ export let StdLib = () => (
 
     # Rotate a geometry
     export let _Rotate = (angleDegrees, origin, geometry) => (
-        origin = if (origin == undefined) then (0 0) else (origin);
+        let origin = if (origin == undefined) then (0 0) else (origin);
         geometry |* (p) => (
-            (angleDegrees * Math:PI) / -180 | (angleRadians) => (
-                Point(
-                    ((origin:x + (p:x - origin:x) * Math:cos(angleRadians) - (p:y - origin:y) * Math:sin(angleRadians)))
-                    ((origin:y + (p:x - origin:x) * Math:sin(angleRadians) + (p:y - origin:y) * Math:cos(angleRadians)))
-                )
+            let angleRadians = (angleDegrees * Math:PI) / -180;
+            Point(
+                ((origin:x + (p:x - origin:x) * Math:cos(angleRadians) - (p:y - origin:y) * Math:sin(angleRadians)))
+                ((origin:y + (p:x - origin:x) * Math:sin(angleRadians) + (p:y - origin:y) * Math:cos(angleRadians)))
             )
         )
     );
+
+    # Return a function that rotates a geometry
     export let Rotate = ((deg, origin) => (val => _Rotate(deg, origin, val)));
     
     # Round number or coordinate values 
     export let _Round = (precision, value) => (
-        let prec = if (precision == undefined) then (1) else (precision);
+        let precision = if (precision == undefined) then (1) else (precision);
         if (value:type == undefined) then (
-            let factor = 10 ^ prec;
+            let factor = 10 ^ precision;
             Math:round(value * factor) / factor
         ) else (
             value |* (p) => (Point(_Round(p:x) _Round(p:y)))
         )
     );
+
+    # Return a function that rounds a number
     export let Round = ((precision) => (val => _Round(precision, val)));
     
     # Check if two points have equal coordinates
     export let PointsEqual = (p1, p2) => (
-        if (p1:x == p2:x and p1:y == p2:y) 
-            then (true)
-            else (false)
+        if (p1 == undefined or p2 == undefined) then (false) else (
+            if (p1:x == p2:x and p1:y == p2:y) 
+                then (true)
+                else (false)
+        ) 
     );
 
     let getPoints = (value) => (GeometryCollection() ++ value |> (cur, total) => (cur ++ total));
@@ -84,7 +88,7 @@ export let StdLib = () => (
     );
 
     # Convert an array-like geometry to a GeometryCollection
-    export let ToGeometryCollection = (v) => (v |> (total, curr) => (total ++ curr));
+    export let ToGeometryCollection = getPoints;
 
     "StdLib"
 )
