@@ -58,10 +58,7 @@ export let StdLib = () => (
     
     # Check if two points have equal coordinates
     export let PointsEqual = (p1, p2) => (
-        
-        let xEqual = p1:x == p2:x;
-        let yEqual = p1:y == p2:y;
-        if (xEqual and yEqual) 
+        if (p1:x == p2:x and p1:y == p2:y) 
             then (true)
             else (false)
     );
