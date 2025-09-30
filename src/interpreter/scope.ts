@@ -1,4 +1,5 @@
 import { moduleToString } from "./helpers";
+import packageJson from '../../package.json'
 
 export interface ScopeBindings {
     [identifier: string]: any;
@@ -17,6 +18,7 @@ export interface ScopeBindingMetadata {
 export class Scope {
 
     public readonly IDENTIFIER_SCOPE = '$SCOPE';
+    public readonly IDENTIFIER_VERSION = '$VERSION';
 
     bindings: ScopeBindings = {};
     availableBindings: ScopeBindings = {};
@@ -79,6 +81,10 @@ export class Scope {
                 };
                 currentBindings.toString = function () { return moduleToString(currentBindings) }
                 return currentBindings;
+            }
+
+            if (identifier === this.IDENTIFIER_VERSION) {
+                return packageJson?.version || 'UNKNOWN';
             }
         }
         return binding;
