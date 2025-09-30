@@ -29,6 +29,7 @@ export class Wael {
     private options: Options;
     private evaluationCount = 0;
     static IDENTIFIER_LAST = '$?';
+    static IDENTIFIER_OPTIONS = '$OPTIONS';
 
     constructor(
         initialOptions?: Options
@@ -39,12 +40,17 @@ export class Wael {
             scope: initialOptions?.scope ?? Interpreter.createGlobalScope(),
         };
 
+        const optionsVariable = {
+            ...this.options
+        };
+        delete optionsVariable.scope;
+        this.options.scope?.store(Wael.IDENTIFIER_OPTIONS, this.options);
+
         // Import standard library
         Interpreter.evaluateInput(`${STD_LIB}`, this.options.scope);
         if (this.options?.useStdLib) {
             this.useStdLib();
         }
-
     }
 
     getEvaluationCount(): number {
