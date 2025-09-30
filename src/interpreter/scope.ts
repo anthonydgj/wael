@@ -1,3 +1,5 @@
+import { moduleToString } from "./helpers";
+
 export interface ScopeBindings {
     [identifier: string]: any;
 }
@@ -13,6 +15,8 @@ export interface ScopeBindingMetadata {
 }
 
 export class Scope {
+
+    public readonly IDENTIFIER_SCOPE = '$SCOPE';
 
     bindings: ScopeBindings = {};
     availableBindings: ScopeBindings = {};
@@ -66,7 +70,18 @@ export class Scope {
 
     resolve(identifier: string): any {
         const scope = this.resolveScope(identifier) ?? this
-        return scope.bindings[identifier];
+        const binding = scope.bindings[identifier];
+        if (!binding) {
+            // Handle dynamic bindings
+            if (identifier === this.IDENTIFIER_SCOPE) {
+                const currentBindings = {
+                    ...scope.bindings
+                };
+                currentBindings.toString = function () { return moduleToString(currentBindings) }
+                return currentBindings;
+            }
+        }
+        return binding;
     };
 
     push(extraBindings?: ScopeBindings): Scope {

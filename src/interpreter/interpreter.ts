@@ -13,6 +13,7 @@ import {
     isAnyGeometryType,
     isGeometryType,
     isNumber,
+    moduleToString,
     toString,
     transform
 } from './helpers';
@@ -56,6 +57,9 @@ export namespace Interpreter {
                 if (importObj && Object.keys(importObj).length > 0) {
                     if ((ret ?? null) !== null) {
                         importObj[DEFAULT_EXPORT_BINDING] = ret
+                    }
+                    importObj.toString = function () {
+                        return moduleToString(importObj);
                     }
                     return importObj;
                 }
@@ -437,6 +441,7 @@ export namespace Interpreter {
                     return ret;
                 };
                 fn.toString = function () { return `Function(${p.sourceString} => ${body.sourceString})` }
+                fn.toStringShort = function () { return `Function(${p.sourceString} => (...))` }
                 return fn;
             },
             FunctionParameters_spread(_leftParen, _operator, identifier, _rightParen) {

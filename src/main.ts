@@ -4,6 +4,7 @@ import * as wellknown from 'wellknown';
 import { Interpreter } from "./interpreter/interpreter";
 import { STD_LIB } from './lib';
 import { Scope } from "./interpreter/scope";
+import { moduleToString } from './interpreter/helpers';
 
 export enum OutputFormat {
     WKT = 'WKT',
@@ -102,17 +103,15 @@ export class Wael {
     }
 
     private static getOutputString(result: any, outputFormat?: OutputFormat) {
-        if (typeof result === 'object') {
-            if (outputFormat === OutputFormat.WKT) {
-                const properties = Object.keys(result).map(key => {
-                    return `  ${key} = ${result[key]?.toString()}`
-                });
-                return `(
-${properties.join(';\n')}
-)`
+        if (!result?.hasOwnProperty('toString')) {
+            if (typeof result === 'object') {
+                return moduleToString(result);
+            }
+            if (typeof result === 'string') {
+                return `"${result}"`;
             }
         }
-        return `${result}`
+        return `${result}`;
     }
 }
 

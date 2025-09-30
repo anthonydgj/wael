@@ -26,7 +26,7 @@ export const isGeometryType = (type: GeometryType, ...values: any) => {
 };
 
 export const getGeometryType = (value: any, isForDisplay = false): GeometryType | undefined => {
-    if(typeof value === 'object') {
+    if (typeof value === 'object') {
         const type = value?.geometry?.type || value?.type
         if (isForDisplay && type === GeometryType.GeometryCollection) {
             return GeometryType.GeometryCollection;
@@ -39,7 +39,7 @@ export const getGeometryType = (value: any, isForDisplay = false): GeometryType 
 
 export const isAGeometryType = (value: any, ...types: GeometryType[]) => {
     for (const type of types) {
-        if(isGeometryType(type, value)) {
+        if (isGeometryType(type, value)) {
             return true;
         }
     }
@@ -82,7 +82,7 @@ export const arithmeticOperationExp = (a: any, b: any, op: (a: any, b: any) => a
 
 export const arithmeticOperation = (A: any, B: any, op: (a: any, b: any) => any): any => {
     if (isNumber(A, B)) {
-      return op(A, B);  
+        return op(A, B);
     }
     if (isNumber(A) && isAnyGeometryType(B)) {
         return arithmeticOperation(turf.point([A, A]).geometry, B, op);
@@ -172,14 +172,14 @@ export function transformPoints(coords: any[], coordsMapFn: (g: Point) => any): 
                     const point = turf.point(coords).geometry;
                     return coordsMapFn(point).coordinates;
                 }
-                
+
             }
         }
     }
     return coords
 }
 
-export function transform(geoJson: any, coordsMapFn: (g: Point) => any): any {    
+export function transform(geoJson: any, coordsMapFn: (g: Point) => any): any {
     if (!!geoJson) {
 
         if (!!geoJson.features) {
@@ -292,7 +292,7 @@ export function geometryAccessor(v: any, p: any, params: any[]) {
                 throw Error(`Expected one value in "${property}" setter for "${v.sourceString}" but got: ${toString(params)}`)
             case 'numgeometries':
                 return value.geometries.length;
-            }
+        }
     } else if (isGeometryType(GeometryType.LineString, value)) {
         switch (property.toLocaleLowerCase()) {
             case 'pointn':
@@ -303,9 +303,34 @@ export function geometryAccessor(v: any, p: any, params: any[]) {
                 throw Error(`Expected one value in "${property}" setter for "${v.sourceString}" but got: ${toString(params)}`)
             case 'numpoints':
                 return value.coordinates.length;
-            }
+        }
     }
 
     throw new Error(`Property "${property}" not accessible on object: ${toString(value)}`);
+}
 
+export const moduleToString = (obj: any) => {
+    const bindings = Object.keys(obj ?? {})
+        .filter(identifier => {
+            return identifier !== 'toString' &&
+                !identifier?.startsWith('$') &&
+                (obj[identifier] ?? null) !== null
+        })
+        .map(identifier => {
+            const value = obj[identifier];
+            let strValue;
+            if (value?.toStringShort) {
+                strValue = value.toStringShort();
+            } else if (typeof value === 'object') {
+                strValue = `Module(...)`;
+            } else if (typeof value === 'string') {
+                strValue = `"${value}"`
+            } else if (typeof value === 'function') {
+                strValue = `<Native Function>`
+            } else {
+                strValue = value;
+            }
+            return `\t${identifier} = ${strValue}`;
+        });
+    return `Module(\n${bindings.join('\n')}\n)`;
 }
