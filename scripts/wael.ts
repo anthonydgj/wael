@@ -181,9 +181,9 @@ if (bindImports) {
 // Evaluate script
 if (evaluateScript) {
     try {
-        result = evaluate(evaluateScript, `pre-evaluate`);
+        result = evaluate(evaluateScript, `evaluate`);
     } catch (err: any) {
-        errorExit(`Unable to evaluate pre-evaluate script: \n\t${err}`);
+        errorExit(`Unable to evaluate script: \n\t${err}`);
     }
     hasEvaluated = true;
 }
