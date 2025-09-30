@@ -46,7 +46,7 @@ export let StdLib = () => (
     
     # Round number or coordinate values 
     export let _Round = (precision, value) => (
-        let precision = if (precision == undefined) then (1) else (precision);
+        let precision = if (precision == undefined) then (0) else (precision);
         if (value:type == undefined) then (
             let factor = 10 ^ precision;
             Math:round(value * factor) / factor
