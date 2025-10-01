@@ -3,6 +3,8 @@ import * as turf from '@turf/turf';
 import { GeometryType } from "./types";
 import { Point } from 'geojson';
 
+const INDENT = '  ';
+
 export const isAnyGeometryType = (value: any) => {
     const types = Object.values(GeometryType);
     for (const type of types) {
@@ -330,7 +332,7 @@ export const moduleToString = (obj: any) => {
             } else {
                 strValue = value;
             }
-            return `\t${identifier} = ${strValue}`;
+            return `${INDENT}${identifier} = ${strValue}`;
         });
     return `Module(\n${bindings.join('\n')}\n)`;
 }
