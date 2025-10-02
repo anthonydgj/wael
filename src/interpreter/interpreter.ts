@@ -7,6 +7,7 @@ import {
     OperationNotSupported,
     arithmeticOperationExp,
     convertToGeometry,
+    generateGeometries,
     geometryAccessor,
     getArrayLikeItems,
     getGeometryType,
@@ -322,42 +323,11 @@ export namespace Interpreter {
                 let lastValue = scopedExpressions.eval();
                 return lastValue;
             },
-            GenerateExp(_keyword, numExp, valueExp) {
-                const num = numExp.eval();
-                if (!Number.isInteger(num) && typeof num !== 'function') {
-                    throw new Error(`Expected integer but got: ${toString(num)}`);
-                }
-                let value = valueExp.eval();
-                let mapFn;
-                if (typeof value === 'function') {
-                    mapFn = value;
-                } else if (isAnyGeometryType(value)) {
-                    mapFn = () => value;
-                } else {
-                    throw new Error(`Expected geometry type or function but got: ${toString(value)}`);
-                }
-                const items: any[] = [];
-                if (typeof num === 'function') {
-                    let i = 0;
-                    let condition = num(i);
-                    while (condition) {
-                        const result = mapFn(i);
-                        if (!isAnyGeometryType(result)) {
-                            throw new Error(`Expected geometry type return value but got: ${toString(result)}`);
-                        }
-                        items.push(result);
-                        condition = num(++i);
-                    }
-                } else {
-                    for (let i = 0; i < num; i++) {
-                        const result = mapFn(i);
-                        if (!isAnyGeometryType(result)) {
-                            throw new Error(`Expected geometry type return value but got: ${toString(result)}`);
-                        }
-                        items.push(result);
-                    }
-                }
-                return turf.geometryCollection(items).geometry;
+            GenerateTextExp(_keyword, numExp, valueExp) {
+                return generateGeometries(numExp, valueExp);
+            },
+            GenerateSymbolExp(numExp, _symbol, valueExp) {
+                return generateGeometries(numExp, valueExp);
             },
             FunctionCallExp(callable, p) {
                 let fn = callable.eval();
