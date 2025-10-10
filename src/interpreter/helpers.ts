@@ -354,7 +354,7 @@ export const generateGeometries = (numExp: any, valueExp: any) => {
     const items: any[] = [];
     if (typeof num === 'function') {
         let i = 0;
-        let condition = num(i);
+        let condition = num(i, num);
         while (condition) {
             const result = mapFn(i);
             if (!isAnyGeometryType(result)) {
@@ -365,7 +365,7 @@ export const generateGeometries = (numExp: any, valueExp: any) => {
         }
     } else {
         for (let i = 0; i < num; i++) {
-            const result = mapFn(i);
+            const result = mapFn(i, num);
             if (!isAnyGeometryType(result)) {
                 throw new Error(`Expected geometry type return value but got: ${toString(result)}`);
             }

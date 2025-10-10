@@ -350,7 +350,7 @@ if (points:numGeometries > 3) then (
 ) # POINT (4 6)
 ```
 
-### Iteration
+### Generation Expressions
 
 `⚠ experimental feature`
 
@@ -358,6 +358,7 @@ Multiple geometries can be generated using the `Generate` expression by specifyi
 ```
 3 >> Point(0 0); # GEOMETRYCOLLECTION(POINT (0 0),POINT (0 0),POINT (0 0))
 3 >> (x => Point(x x)) # GEOMETRYCOLLECTION(POINT (0 0),POINT (1 1),POINT (2 2))
+3 >> ((x, count) => Point(x x) + count) # GEOMETRYCOLLECTION (POINT (3 3), POINT (4 4), POINT (5 5))
 ```
 
 The iteration count can also be specified as a variable:
