@@ -4,8 +4,8 @@ export let StdLib = () => (
     export let Flatten = (collection) => (
         collection |> (total, g) => (
             total ++ if (g:type == GeometryCollection)
-            then (Flatten(g))
-            else (g)
+                then (Flatten(g))
+                else (g)
         )
     );
 
@@ -51,7 +51,7 @@ export let StdLib = () => (
             let factor = 10 ^ precision;
             Math:round(value * factor) / factor
         ) else (
-            value |* (p) => (Point(_Round(p:x) _Round(p:y)))
+            value |* (p) => (Point(_Round(precision, p:x) _Round(precision, p:y)))
         )
     );
 
