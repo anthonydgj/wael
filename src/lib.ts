@@ -90,6 +90,10 @@ export let StdLib = () => (
     # Convert an array-like geometry to a GeometryCollection
     export let ToGeometryCollection = getPoints;
 
+    # Generate geometries
+    export let _Gen = (c, fn) => (c >> fn);
+    export let Gen = (c) => (_Gen:bind(c));
+
     "StdLib"
 )
 `
