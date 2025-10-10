@@ -66,15 +66,15 @@ mappedLineString = LineString(1 1, 2 2, 3 3)
 # Generate point grid
 size = 50;
 spacing = 10;
-grid = Generate size Function(x => 
-    Generate size Function(y => 
+grid = size >> Function(x => 
+    size >> Function(y => 
         Point((x * spacing) (y * spacing))
     )
 );
 
 # Create multiple rings of points
 Circles = Function((numRings, radius, count) => (
-    Generate numRings Function(x => (
+    numRings >> Function(x => (
         PointCircle((radius * (x + 1)), count)
     ))
 ));

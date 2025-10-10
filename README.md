@@ -60,7 +60,7 @@ PointGrid(20, 10, 4) | Rotate(23)
 **Create several nested circle polygons:**
 ```
 numRings = 5;
-Generate numRings (i => (
+numRings >> (i => (
     ring = numRings - i;
     PointCircle((ring * 2), (ring * 10)) | ToPolygon
 ))
@@ -356,20 +356,20 @@ if (points:numGeometries > 3) then (
 
 Multiple geometries can be generated using the `Generate` expression by specifying an iteration count and either a geometry or a function that returns a geometry. The set of all geometries returned from a `Generate` expression are collected into a `GEOMETRYCOLLECTION`.
 ```
-Generate 3 Point(0 0); # GEOMETRYCOLLECTION(POINT (0 0),POINT (0 0),POINT (0 0))
-Generate 3 (x => Point(x x)) # GEOMETRYCOLLECTION(POINT (0 0),POINT (1 1),POINT (2 2))
+3 >> Point(0 0); # GEOMETRYCOLLECTION(POINT (0 0),POINT (0 0),POINT (0 0))
+3 >> (x => Point(x x)) # GEOMETRYCOLLECTION(POINT (0 0),POINT (1 1),POINT (2 2))
 ```
 
 The iteration count can also be specified as a variable:
 ```
 count = 3;
-Generate count Point(0 0) # GEOMETRYCOLLECTION(POINT (0 0),POINT (0 0),POINT (0 0))
+count >> Point(0 0) # GEOMETRYCOLLECTION(POINT (0 0),POINT (0 0),POINT (0 0))
 ```
 
 A predicate function can be provided to generate geometries while a condition holds:
 ```
 a = 0; 
-Generate ((i) => a < 3) 
+((i) => a < 3) >>
     (i => (a = a + 1; Point(i i))) # GEOMETRYCOLLECTION (POINT (0 0), POINT (1 1), POINT (2 2))
 ```
 

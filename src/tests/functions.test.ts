@@ -179,8 +179,8 @@ it('should allow closures', () => {
             Export Get = Function((n, g) => g:geometryN(n));
 
             # Data Structures
-            Export List = Function(val => if (val:type == GeometryCollection) then (val) else (Generate val Num(0)));
-            Export Seq = Function(n => Generate n Function(i => Point(i i)));
+            Export List = Function(val => if (val:type == GeometryCollection) then (val) else (val >> Num(0)));
+            Export Seq = Function(n => n >> Function(i => Point(i i)));
             Export Slice = Function((start, end, g) => (
                 g |~ Function((p, i) => (lowerBound = i >= start; higherBound = i < end; if (lowerBound And higherBound) then (true) else (false)))
             ));

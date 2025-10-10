@@ -13,7 +13,7 @@ test('should map array-like geometries', () => {
     expect(result).toBeTruthy();
     expect(result.geometry.geometries.map((f: any) => f.coordinates)).toStrictEqual([[2, 2], [3, 3], [4, 4]]);
 
-    result = defaultEval(`Generate 3 Function(x => (x = x+1; Point(x x))) || Function(x => LineString(x, (x + Point(1 1))))`);
+    result = defaultEval(`3 >> Function(x => (x = x+1; Point(x x))) || Function(x => LineString(x, (x + Point(1 1))))`);
     expect(result).toBeTruthy();
     expect(result.geometry.geometries.map((f: any) => f.coordinates)).toStrictEqual([
         [[1, 1], [2, 2]],
@@ -33,7 +33,7 @@ test('should map array-like geometries', () => {
 
     result = defaultEval(`
         CreateCircles = Function(() => (
-            Generate 5 Function(i => (
+            5 >> Function(i => (
                 ring = i + 1;
                 PointCircle((ring * 2), (ring * 10))
             )) | Flatten        
@@ -59,13 +59,13 @@ test('should filter array-like geometries', () => {
 
     result = defaultEval(`GeometryCollection(Point(1 1), Point(2 2), Point(3 3)) |~ Function((x, i) => i < 2)`);
     expect(result).toBeTruthy();
-    expect(result.geometry.geometries).toStrictEqual([{"type":"Point","coordinates":[1,1]},{"type":"Point","coordinates":[2,2]}]);
+    expect(result.geometry.geometries).toStrictEqual([{ "type": "Point", "coordinates": [1, 1] }, { "type": "Point", "coordinates": [2, 2] }]);
 });
 
 test('should error when attempting to generate non-geometries', () => {
     try {
         defaultEval(`
-           Generate 100 Function(x => x)
+           100 >> Function(x => x)
         `);
         fail('Expected an error.');
     } catch (err) {
@@ -133,7 +133,7 @@ test('should bind parameters to functions', () => {
         myFnPartial(Point(3 4))
     `);
     expect(result).toBeTruthy();
-    expect(result.geometry.coordinates).toStrictEqual([[1, 2],[3, 4]])
+    expect(result.geometry.coordinates).toStrictEqual([[1, 2], [3, 4]])
 });
 
 test('should support reduce operator', () => {

@@ -323,9 +323,6 @@ export namespace Interpreter {
                 let lastValue = scopedExpressions.eval();
                 return lastValue;
             },
-            GenerateTextExp(_keyword, numExp, valueExp) {
-                return generateGeometries(numExp, valueExp);
-            },
             GenerateSymbolExp(numExp, _symbol, valueExp) {
                 return generateGeometries(numExp, valueExp);
             },

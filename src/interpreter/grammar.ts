@@ -76,14 +76,12 @@ AccessibleExp<Type> =
 OperationExp =  PipeExp | GenerateExp | ConcatExp
 PipeExp = MappableValue anyPipeOperator Pipeable 
 Pipeable = FunctionCallExp | Callable
-GenerateExp = GenerateTextExp | GenerateSymbolExp
-GenerateTextExp = generateKeyword GenerateCountExpr ComputedValue<GenerateValue>
+GenerateExp = GenerateSymbolExp
 GenerateSymbolExp = GenerateCountExpr ">>" ComputedGenerateValue
 GenerateCountExpr = ComputedValue<NumberExp> | FunctionTextExp
 ConcatExp = MappableValue concatOperator MappableValue
 ComputedGenerateValue = FunctionExp | ComputedValue<GenerateValue>
 GenerateValue = GeometryExp | FunctionTextExp
-generateKeyword = caseInsensitive<"Generate">
 MappableValue = AssignableExpression 
 
 // Helpers
@@ -270,7 +268,6 @@ pointKeyword = caseInsensitive<"POINT">
 // Keywords
 keyword = geometryKeyword
     | functionKeyword
-    | generateKeyword
     | booleanValue
     | ifKeyword
     | thenKeyword

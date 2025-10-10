@@ -184,7 +184,7 @@ it('should support network imports', () => {
     expect(result).toBeTruthy();
     expect(result.geometry.coordinates).toStrictEqual([1, 1]);
 
-    result = defaultEval(`Use("https://gist.githubusercontent.com/anthonydgj/29dd64c93e0656475e01bf228f117144/raw/905511d67bbe5e401c6ee34efbe5b737c7f20831/gistfile1.txt") With (Num); Num(2)`)
+    result = defaultEval(`Use("https://gist.githubusercontent.com/anthonydgj/29dd64c93e0656475e01bf228f117144/raw/70f007bc469b07ee7b56f17a8df842e167679cec/ext.wael") With (Num); Num(2)`)
     expect(result).toBeTruthy();
     expect(result.geometry.coordinates).toStrictEqual([2, 2]);
 });

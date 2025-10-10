@@ -12,7 +12,7 @@ export let StdLib = () => (
     # Create a circle of points
     export let PointCircle = (radius, count) => (
         let angleIncrement = (2 * Math:PI) / count;
-        Generate count (i => (
+        count >> (i => (
             let angle = i * angleIncrement;
             Point(
                 (radius * Math:cos(angle))
@@ -24,8 +24,8 @@ export let StdLib = () => (
     # Create a grid of points
     export let PointGrid = (x, y, spacing) => (
         let spacing = if (spacing == undefined) then (1) else (spacing);
-        Generate x (xCoord => (
-            Generate y (yCoord => (
+        x >> (xCoord => (
+            y >> (yCoord => (
                 (xCoord yCoord) * spacing))))
     );
 
@@ -91,8 +91,8 @@ export let StdLib = () => (
     export let ToGeometryCollection = getPoints;
 
     # Generate geometries
-    export let _Gen = (c, fn) => (c >> fn);
-    export let Gen = (c) => (_Gen:bind(c));
+    export let _Generate = (c, fn) => (c >> fn);
+    export let Generate = (c) => (let count = c; (fn) => (_Generate(count, fn)));
 
     "StdLib"
 )
