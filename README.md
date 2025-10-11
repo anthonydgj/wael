@@ -274,19 +274,19 @@ a = 1;
 a ## 2
 ```
 
+To assign a variable explicitly within the current scope (and shadow any existing variables in scope with the same name), the `let` keyword can be used:
+```
+a = 1;
+() => (let a = 2)();
+a ## 1
+```
+
 This scoping allows for closures, which can be used to emulate mutable state:
 ```
 Counter = () => (let c = 0; () => (c = c + 1));
 c = Counter();
 c();
 c() # 2
-```
-
-To assign a variable explicitly within the current scope (and shadow any existing variables in scope with the same name), the `let` keyword can be used:
-```
-a = 1;
-() => (let a = 2)();
-a ## 1
 ```
 
 ### Properties and Methods
