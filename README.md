@@ -435,7 +435,7 @@ Supported data formats include WKT, GeoJSON and WAEL.
 
 To use data or code from a network location, provide the URL path as a string:
 ```
-Lib = Use("https://gist.githubusercontent.com/anthonydgj/29dd64c93e0656475e01bf228f117144/raw/7b65273fab38af5b9793d1bade7a6afd5ff5d021/ext.wael")
+Lib = Use("https://gist.githubusercontent.com/anthonydgj/29dd64c93e0656475e01bf228f117144/raw/70f007bc469b07ee7b56f17a8df842e167679cec/ext.wael")
 ```
 
 By default, the last expression in a WAEL script will be returned from a `Use` expression. To also provide one or more named variables in a module, the `export` keyword can be used with variable declarations and accessed using the accessor `:` operator:
