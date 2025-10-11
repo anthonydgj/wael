@@ -4,7 +4,7 @@ import * as wellknown from 'wellknown';
 import { Interpreter } from "./interpreter/interpreter";
 import { STD_LIB } from './lib';
 import { Scope } from "./interpreter/scope";
-import { moduleToString } from './interpreter/helpers';
+import { objectToString } from './interpreter/helpers';
 
 export enum OutputFormat {
     WKT = 'WKT',
@@ -111,7 +111,7 @@ export class Wael {
     private static getOutputString(result: any, outputFormat?: OutputFormat) {
         if (!result?.hasOwnProperty('toString')) {
             if (typeof result === 'object') {
-                return moduleToString(result);
+                return objectToString(result);
             }
             if (typeof result === 'string') {
                 return `"${result}"`;

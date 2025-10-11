@@ -311,7 +311,7 @@ export function geometryAccessor(v: any, p: any, params: any[]) {
     throw new Error(`Property "${property}" not accessible on object: ${toString(value)}`);
 }
 
-export const moduleToString = (obj: any) => {
+export const objectToString = (obj: any) => {
     const bindings = Object.keys(obj ?? {})
         .filter(identifier => {
             return identifier !== 'toString' &&
@@ -324,7 +324,11 @@ export const moduleToString = (obj: any) => {
             if (value?.toStringShort) {
                 strValue = value.toStringShort();
             } else if (typeof value === 'object') {
-                strValue = `Module(...)`;
+                if (isAnyGeometryType(value)) {
+                    strValue = value?.type;
+                } else {
+                    strValue = `Module(...)`;
+                }
             } else if (typeof value === 'string') {
                 strValue = `"${value}"`
             } else if (typeof value === 'function') {

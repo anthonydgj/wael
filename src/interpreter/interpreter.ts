@@ -14,7 +14,7 @@ import {
     isAnyGeometryType,
     isGeometryType,
     isNumber,
-    moduleToString,
+    objectToString,
     toString,
     transform
 } from './helpers';
@@ -60,7 +60,7 @@ export namespace Interpreter {
                         importObj[DEFAULT_EXPORT_BINDING] = ret
                     }
                     importObj.toString = function () {
-                        return moduleToString(importObj);
+                        return objectToString(importObj);
                     }
                     return importObj;
                 }

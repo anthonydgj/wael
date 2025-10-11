@@ -1,4 +1,4 @@
-import { moduleToString } from "./helpers";
+import { objectToString } from "./helpers";
 import packageJson from '../../package.json'
 
 export interface ScopeBindings {
@@ -79,7 +79,7 @@ export class Scope {
                 const currentBindings = {
                     ...scope.bindings
                 };
-                currentBindings.toString = function () { return moduleToString(currentBindings) }
+                currentBindings.toString = function () { return objectToString(currentBindings) }
                 return currentBindings;
             }
 
