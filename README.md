@@ -1,6 +1,6 @@
 # Well-Known Text Arithmetic Expression Language (WAEL)
 
-The Well-Known Text Arithmetic Expression Language (WAEL - pronounced like "whale") is an experimental, domain-specific language for generating and manipulating geometry patterns. The language provides spatial geometry types as core data structures and has a syntax similar to [Well-Known Text (WKT)](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry), with added support for programming features like variables, basic arithmetic, functions and comments. Geometries can be transformed using [array programming](https://en.wikipedia.org/wiki/Array_programming) features like geometry arithmetic and pipe transformations (see the [Syntax](#syntax) section below for details).
+The Well-Known Text Arithmetic Expression Language (WAEL - pronounced like "whale") is an experimental, domain-specific language for generating and manipulating geometry patterns. The language provides spatial geometry types as core data structures and has a syntax similar to [Well-Known Text (WKT)](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry), with added support for programming features like variables, basic arithmetic, functions and comments. Geometries are immutable and can be transformed using [array programming](https://en.wikipedia.org/wiki/Array_programming) features like geometry arithmetic, or by using pipe transformations (see the [Syntax](#syntax) section below for details).
 
 Basic support is currently available for the following 2D geometries: `POINT`, `LINESTRING`, `POLYGON`, `MULTIPOINT`, `MULTILINESTRING`, `GEOMETRYCOLLECTION`. Sections with an `⚠ experimental feature` label indicate features that could be updated or modified in future versions.
 
@@ -16,14 +16,17 @@ Install dependency:
 npm install wael-lib
 ```
 
-Evaluate code using the `evaluate()` method:
+To run the interpreter CLI tool (see [CLI Usage](#command-line-interface-cli-usage)):
+```
+npx wael
+```
+
+To evaluate code from JavaScript:
 ```
 import { Wael } from 'wael-lib';
 
 const result = Wael.evaluate(`Point(1 1) + Point(2 2)`); // POINT (3 3)
 ```
-
-See the [Terminal Usage](#terminal-usage) section for instructions using the CLI program.
 
 ## Examples
 
@@ -70,7 +73,7 @@ numRings >> (i => (
 <br>
 
 
-## Terminal Usage
+## Command Line Interface (CLI) Usage
 
 The `wael` CLI tool can be used to evaluate code:
 ```
@@ -129,6 +132,14 @@ GEOMETRYCOLLECTION (POINT (1 1), POINT (2 2), POINT (3 3), POINT (4 4))
 ```
 
 <br>
+
+### Metadata Variables 
+
+The interpreter also provides metadata stored in special variables:
+- `$VERSION`: the language version running in the interpreter 
+- `$SCOPE`: a module exporting all variables currently in scope (except numbered history)
+- `$?`: the last evaluation result 
+- `$0`, `$1`, ... `$n`: previous evaluation results 
 
 
 ## Syntax
@@ -211,7 +222,7 @@ Point(1 1) ++ Polygon((2 2, 3 3, 4 4, 2 2)); # GEOMETRYCOLLECTION(POINT (1 1),PO
 
 ### Variables
 
-Variables are defined using the equal (`=`) operator. Supported data types include: 
+Variables are defined and assigned a value using the equal (`=`) operator. Supported data types include: 
 * Number
 * Boolean: `True`, `False`
 * Geometry: `Point`, `MultiPoint`, `LineString`, `MultiLineString`, `Polygon`, `GeometryCollection`
@@ -223,6 +234,11 @@ bool = True;                # Boolean
 p = Point(longitude 3);     # Geometry
 fn = (p) => (p + 1);        # Function
 path = "./my-lib.wael";     # String
+```
+
+The assignment value is also the evaluation result:
+```
+p1 = Point(1 1) # POINT (1 1)
 ```
 
 #### Geometry Literals
@@ -357,11 +373,11 @@ if (points:numGeometries > 3) then (
 ) # POINT (4 6)
 ```
 
-### Generation Expressions
+### Iteration
 
 `⚠ experimental feature`
 
-Multiple geometries can be generated using the `Generate` expression by specifying an iteration count and either a geometry or a function that returns a geometry. The set of all geometries returned from a `Generate` expression are collected into a `GEOMETRYCOLLECTION`.
+Multiple geometries can be generated using the `Iterate` operator `>>` by specifying an iteration count and either a geometry or a function that returns a geometry. The set of all geometries returned from a `Generate` expression are collected into a `GEOMETRYCOLLECTION`.
 ```
 3 >> Point(0 0); # GEOMETRYCOLLECTION(POINT (0 0),POINT (0 0),POINT (0 0))
 3 >> (x => Point(x x)) # GEOMETRYCOLLECTION(POINT (0 0),POINT (1 1),POINT (2 2))
