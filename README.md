@@ -267,20 +267,27 @@ Offset(1 1, 2 2, 3 3) # GEOMETRYCOLLECTION (POINT (2 2), POINT (3 3), POINT (4 4
 
 #### Variable Scope
 
-By default, variables have function scope can can be accessed or re-assigned from any nested functions:
+Variables have lexical scope and can be accessed or re-assigned from any nested functions:
 ```
 a = 1;
 () => (a = 2)();
 a ## 2
 ```
 
-To assign a variable explicitly within the current scope (and shadow any existing variables with the same name), the `let` keyword can be used:
+This scoping allows for closures, which can be used to emulate mutable state:
+```
+Counter = () => (let c = 0; () => (c = c + 1));
+c = Counter();
+c();
+c() # 2
+```
+
+To assign a variable explicitly within the current scope (and shadow any existing variables in scope with the same name), the `let` keyword can be used:
 ```
 a = 1;
 () => (let a = 2)();
 a ## 1
 ```
-
 
 ### Properties and Methods
 
