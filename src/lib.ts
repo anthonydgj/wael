@@ -42,7 +42,10 @@ export let StdLib = () => (
     );
 
     # Return a function that rotates a geometry
-    export let Rotate = ((deg, origin) => (val => _Rotate(deg, origin, val)));
+    export let Rotate = (deg, origin) => (
+        let _rotate = _Rotate;
+        (val) => (_rotate(deg, origin, val))
+    );
     
     # Round number or coordinate values 
     export let _Round = (precision, value) => (
@@ -56,7 +59,10 @@ export let StdLib = () => (
     );
 
     # Return a function that rounds a number
-    export let Round = ((precision) => (val => _Round(precision, val)));
+    export let Round = (precision) => (
+        let _round = _Round;
+        (val) => (_round(precision, val))
+    );
     
     # Check if two points have equal coordinates
     export let PointsEqual = (p1, p2) => (
