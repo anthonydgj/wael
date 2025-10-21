@@ -133,13 +133,10 @@ export class Scope {
         if (selectedIdentifiers) {
             selectedIdentifiers.forEach(selectedIdentifier => {
                 selectedBindings[selectedIdentifier] = this.availableBindings[selectedIdentifier]
+                this.store(selectedIdentifier, this.availableBindings[selectedIdentifier])
                 delete this.availableBindings[selectedIdentifier]
             });
         }
-        this.bindings = {
-            ...this.bindings,
-            ...selectedBindings,
-        };
         return selectedBindings;
     }
 
