@@ -264,3 +264,14 @@ it('should import function correctly from external library', () => {
     expect(result).toBeTruthy();
     expect(result.set).toBeTruthy();
 });
+
+it('should import function from external library with internal reference that has not been imported', () => {
+    let result = defaultEval(`
+        Use(StdLib()) With (Round);
+        Round(2)(3.14159)
+    `, {
+        useStdLib: false
+    });
+    expect(result).toBeTruthy();
+    expect(result).toBe(3.14);
+});
