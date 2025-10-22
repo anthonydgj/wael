@@ -33,7 +33,6 @@ test('should generate geometries', () => {
     result = defaultEval(`(3 >> Function(x => Point(x x))) + Point(1 1)`);
     expect(result).toBeTruthy();
     expect(result.geometry.geometries.map((f: any) => f.coordinates)).toStrictEqual([[1, 1], [2, 2], [3, 3]]);
-
 });
 
 test('should generate with function count provider', () => {
@@ -49,4 +48,15 @@ test('should generate with function count provider', () => {
     result = defaultEval(`a = 0; ((i) => a < 3) >> (i => (a = a + 1; Point(i i)))`)
     expect(result).toBeTruthy();
     expect(result.geometry.geometries.map((f: any) => f.coordinates)).toStrictEqual([[0, 0], [1, 1], [2, 2]]);
+});
+
+test('should exclude undefined values', () => {
+    let result;
+    result = defaultEval(`5 >> (i) => (if (i % 2 == 0) then (Point(i i)) else (undefined))`)
+    expect(result).toBeTruthy();
+    expect(result.geometry.geometries.map((f: any) => f.coordinates)).toStrictEqual([[0, 0], [2, 2], [4, 4]]);
+
+    result = defaultEval(`(i => i < 6) >> (i) => (if (i % 2 == 0) then (Point(i i)) else (undefined))`)
+    expect(result).toBeTruthy();
+    expect(result.geometry.geometries.map((f: any) => f.coordinates)).toStrictEqual([[0, 0], [2, 2], [4, 4]]);
 });

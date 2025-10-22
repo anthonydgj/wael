@@ -361,19 +361,23 @@ export const generateGeometries = (numExp: any, valueExp: any) => {
         let condition = num(i, num);
         while (condition) {
             const result = mapFn(i);
-            if (!isAnyGeometryType(result)) {
-                throw new Error(`Expected geometry type return value but got: ${toString(result)}`);
+            if (result !== undefined) {
+                if (!isAnyGeometryType(result)) {
+                    throw new Error(`Expected geometry type return value but got: ${toString(result)}`);
+                }
+                items.push(result);
             }
-            items.push(result);
             condition = num(++i);
         }
     } else {
         for (let i = 0; i < num; i++) {
             const result = mapFn(i, num);
-            if (!isAnyGeometryType(result)) {
-                throw new Error(`Expected geometry type return value but got: ${toString(result)}`);
+            if (result !== undefined) {
+                if (!isAnyGeometryType(result)) {
+                    throw new Error(`Expected geometry type return value but got: ${toString(result)}`);
+                }
+                items.push(result);
             }
-            items.push(result);
         }
     }
     return turf.geometryCollection(items).geometry;
