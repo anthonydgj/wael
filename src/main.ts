@@ -28,8 +28,10 @@ export const DEFAULT_OPTIONS: Options = {
 export class Wael {
     private options: Options;
     private evaluationCount = 0;
+    private history: { [identifier: string]: any } = {};
     static IDENTIFIER_LAST = '$?';
     static IDENTIFIER_OPTIONS = '$OPTIONS';
+    static IDENTIFIER_HISTORY = '$HISTORY';
 
     constructor(
         initialOptions?: Options
@@ -45,6 +47,7 @@ export class Wael {
         };
         delete optionsVariable.scope;
         this.options.scope?.store(Wael.IDENTIFIER_OPTIONS, this.options);
+        this.options.scope?.store(Wael.IDENTIFIER_HISTORY, this.history);
 
         // Import standard library
         Interpreter.evaluateInput(`${STD_LIB}`, this.options.scope);
@@ -74,6 +77,7 @@ export class Wael {
         if (options.storeHistoricalEvaluations) {
             const indexedResultLabel = `$${this.evaluationCount}`;
             options.scope?.store(indexedResultLabel, result);
+            this.history[indexedResultLabel] = result;
         }
         this.evaluationCount++;
 

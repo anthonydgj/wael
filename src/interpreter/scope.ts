@@ -79,7 +79,7 @@ export class Scope {
                 const currentBindings = {
                     ...scope.bindings
                 };
-                currentBindings.toString = function () { return objectToString(currentBindings) }
+                currentBindings.toString = function () { return objectToString(currentBindings, false) }
                 return currentBindings;
             }
 

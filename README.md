@@ -138,6 +138,7 @@ GEOMETRYCOLLECTION (POINT (1 1), POINT (2 2), POINT (3 3), POINT (4 4))
 The interpreter also provides metadata stored in special variables:
 - `$VERSION`: the language version running in the interpreter 
 - `$SCOPE`: a module exporting all variables currently in scope (except numbered history)
+- `$HISTORY`: a module exporting all numbered historical evaluations
 - `$?`: the last evaluation result 
 - `$0`, `$1`, ... `$n`: previous evaluation results 
 

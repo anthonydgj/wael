@@ -311,11 +311,11 @@ export function geometryAccessor(v: any, p: any, params: any[]) {
     throw new Error(`Property "${property}" not accessible on object: ${toString(value)}`);
 }
 
-export const objectToString = (obj: any) => {
+export const objectToString = (obj: any, includeHistory = true) => {
     const bindings = Object.keys(obj ?? {})
         .filter(identifier => {
             return identifier !== 'toString' &&
-                !identifier?.startsWith('$') &&
+                (includeHistory || !identifier?.startsWith('$')) &&
                 (obj[identifier] ?? null) !== null
         })
         .map(identifier => {
