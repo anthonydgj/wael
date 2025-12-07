@@ -315,7 +315,7 @@ export function geometryAccessor(v: any, p: any, params: any[]) {
         }
     }
 
-    throw new Error(`Property "${property}" not accessible on object: ${toString(value)}`);
+    return value[property]
 }
 
 export const objectToString = (obj: any, includeHistory = true) => {
