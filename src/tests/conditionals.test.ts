@@ -67,7 +67,7 @@ test('should support If-Then-Else expressions', () => {
             (3 >> Function(x => Point(x x)))
         Else (Point(2 2))`);
     expect(result).toBeTruthy();
-    expect(result.geometry.geometries.map((f: any) => f.coordinates)).toStrictEqual([[0, 0], [1, 1], [2, 2]]);
+    expect(result.geometry.geometries.map((f: any) => f.geometry.coordinates)).toStrictEqual([[0, 0], [1, 1], [2, 2]]);
 
     result = defaultEval(`
         If (3 < 4) Then (
@@ -76,7 +76,7 @@ test('should support If-Then-Else expressions', () => {
         )
         Else (Point(2 2))`);
     expect(result).toBeTruthy();
-    expect(result.geometry.geometries.map((f: any) => f.coordinates)).toStrictEqual([[1, 1], [2, 2], [3, 3]]);
+    expect(result.geometry.geometries.map((f: any) => f.geometry.coordinates)).toStrictEqual([[1, 1], [2, 2], [3, 3]]);
 
     result = defaultEval(`
         a = If (3 < 4) Then (
@@ -85,7 +85,7 @@ test('should support If-Then-Else expressions', () => {
         ) Else (Point(2 2));
         a`);
     expect(result).toBeTruthy();
-    expect(result.geometry.geometries.map((f: any) => f.coordinates)).toStrictEqual([[1, 1], [2, 2], [3, 3]]);
+    expect(result.geometry.geometries.map((f: any) => f.geometry.coordinates)).toStrictEqual([[1, 1], [2, 2], [3, 3]]);
 
 });
 

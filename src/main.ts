@@ -86,7 +86,7 @@ export class Wael {
                 case OutputFormat.WKT:
                     return wellknown.stringify(result);
                 case OutputFormat.GeoJSON:
-                    return turf.feature(result) as any;
+                    return result;
                 default:
                     break;
             }

@@ -1,3 +1,4 @@
+import { OutputFormat } from "../main";
 import { defaultEval } from "./test-utils";
 
 test('should create points', () => {
@@ -69,13 +70,13 @@ test('should create collection', () => {
     expect(result).toBeTruthy();
 
     const point = result.geometry.geometries[0];
-    expect(point.coordinates).toStrictEqual([4, 23.5]);
+    expect(point.geometry.coordinates).toStrictEqual([4, 23.5]);
 
     const lineString = result.geometry.geometries[1];
-    expect(lineString.coordinates).toStrictEqual([[4, 23.5], [24.56, 85.24]]);
+    expect(lineString.geometry.coordinates).toStrictEqual([[4, 23.5], [24.56, 85.24]]);
 
     const polygon = result.geometry.geometries[2];
-    expect(polygon.coordinates).toStrictEqual([[[1, 2], [3, 4], [5, 6], [1, 2]]]);
+    expect(polygon.geometry.coordinates).toStrictEqual([[[1, 2], [3, 4], [5, 6], [1, 2]]]);
 });
 
 test('should handle empty geometries', () => {
@@ -86,7 +87,7 @@ test('should handle empty geometries', () => {
 
     result = defaultEval(`GeometryCollection() ++ Point(1 1)`);
     expect(result).toBeTruthy();
-    expect(result.geometry.geometries.map((f: any) => f.coordinates)).toStrictEqual(([[1, 1]]))
+    expect(result.geometry.geometries.map((f: any) => f.geometry.coordinates)).toStrictEqual(([[1, 1]]))
 });
 
 test('should handle computed coordinate values', () => {
@@ -121,15 +122,14 @@ test('should support point literal', () => {
 test('should support GeometryCollection literal', () => {
     let result;
     result = defaultEval(`(1 2, 3 4)`);
-    expect(result.geometry.geometries?.map((f: any) => f.coordinates)).toStrictEqual([[1, 2], [3, 4]]);
+    expect(result.geometry.geometries?.map((f: any) => f.geometry.coordinates)).toStrictEqual([[1, 2], [3, 4]]);
 
     result = defaultEval(`(LineString(1 1, 2 2), (3 3, 4 5))`);
     expect(result.geometry.geometries.length).toBe(2);
-    expect(result.geometry.geometries[0].coordinates).toStrictEqual([[1, 1], [2, 2]]);
-    expect(result.geometry.geometries[1].geometries[0].coordinates).toStrictEqual([3, 3]);
-    expect(result.geometry.geometries[1].geometries[1].coordinates).toStrictEqual([4, 5]);
+    expect(result.geometry.geometries[0].geometry.coordinates).toStrictEqual([[1, 1], [2, 2]]);
+    expect(result.geometry.geometries[1].geometry.geometries[0].geometry.coordinates).toStrictEqual([3, 3]);
+    expect(result.geometry.geometries[1].geometry.geometries[1].geometry.coordinates).toStrictEqual([4, 5]);
 
     result = defaultEval(`((p) => (p + Point(1 2)))((2 1, 3 4))`);
-    expect(result.geometry.geometries?.map((f: any) => f.coordinates)).toStrictEqual([[3, 3], [4, 6]]);
-
+    expect(result.geometry.geometries?.map((f: any) => f.geometry.coordinates)).toStrictEqual([[3, 3], [4, 6]]);
 })

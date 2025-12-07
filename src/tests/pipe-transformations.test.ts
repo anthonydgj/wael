@@ -11,11 +11,11 @@ test('should map array-like geometries', () => {
 
     result = defaultEval(`GeometryCollection(Point(1 1), Point(2 2), Point(3 3)) || Function(x => x + Point(1 1))`);
     expect(result).toBeTruthy();
-    expect(result.geometry.geometries.map((f: any) => f.coordinates)).toStrictEqual([[2, 2], [3, 3], [4, 4]]);
+    expect(result.geometry.geometries.map((f: any) => f.geometry.coordinates)).toStrictEqual([[2, 2], [3, 3], [4, 4]]);
 
     result = defaultEval(`3 >> Function(x => (x = x+1; Point(x x))) || Function(x => LineString(x, (x + Point(1 1))))`);
     expect(result).toBeTruthy();
-    expect(result.geometry.geometries.map((f: any) => f.coordinates)).toStrictEqual([
+    expect(result.geometry.geometries.map((f: any) => f.geometry.coordinates)).toStrictEqual([
         [[1, 1], [2, 2]],
         [[2, 2], [3, 3]],
         [[3, 3], [4, 4]],
@@ -59,7 +59,10 @@ test('should filter array-like geometries', () => {
 
     result = defaultEval(`GeometryCollection(Point(1 1), Point(2 2), Point(3 3)) |~ Function((x, i) => i < 2)`);
     expect(result).toBeTruthy();
-    expect(result.geometry.geometries).toStrictEqual([{ "type": "Point", "coordinates": [1, 1] }, { "type": "Point", "coordinates": [2, 2] }]);
+    expect(result.geometry.geometries).toStrictEqual([
+        { type: 'Feature', properties: {}, geometry: { "type": "Point", "coordinates": [1, 1] } },
+        { type: 'Feature', properties: {}, geometry: { "type": "Point", "coordinates": [2, 2] } }
+    ]);
 });
 
 test('should error when attempting to generate non-geometries', () => {
@@ -99,17 +102,17 @@ test('should map coordinates', () => {
     ) |* Function(p => p + 3)`);
     expect(result).toBeTruthy();
     let geometries = result?.geometry.geometries;
-    expect(geometries[0].coordinates).toStrictEqual([4, 4]);
-    expect(geometries[1].coordinates).toStrictEqual([[4, 4], [5, 5]]);
-    expect(geometries[2].coordinates).toStrictEqual([[4, 4], [5, 5], [6, 6]]);
-    expect(geometries[3].coordinates).toStrictEqual([[[4, 4], [5, 5], [6, 6]], [[7, 7], [8, 8], [9, 9]]]);
-    expect(geometries[4].coordinates).toStrictEqual([[[4, 4], [5, 5], [6, 6], [4, 4]], [[10, 10], [11, 11], [12, 12], [10, 10]]]);
-    geometries = geometries[5].geometries;
-    expect(geometries[0].coordinates).toStrictEqual([4, 4]);
-    expect(geometries[1].coordinates).toStrictEqual([[4, 4], [5, 5]]);
-    expect(geometries[2].coordinates).toStrictEqual([[4, 4], [5, 5], [6, 6]]);
-    expect(geometries[3].coordinates).toStrictEqual([[[4, 4], [5, 5], [6, 6]], [[7, 7], [8, 8], [9, 9]]]);
-    expect(geometries[4].coordinates).toStrictEqual([[[4, 4], [5, 5], [6, 6], [4, 4]], [[10, 10], [11, 11], [12, 12], [10, 10]]]);
+    expect(geometries[0].geometry.coordinates).toStrictEqual([4, 4]);
+    expect(geometries[1].geometry.coordinates).toStrictEqual([[4, 4], [5, 5]]);
+    expect(geometries[2].geometry.coordinates).toStrictEqual([[4, 4], [5, 5], [6, 6]]);
+    expect(geometries[3].geometry.coordinates).toStrictEqual([[[4, 4], [5, 5], [6, 6]], [[7, 7], [8, 8], [9, 9]]]);
+    expect(geometries[4].geometry.coordinates).toStrictEqual([[[4, 4], [5, 5], [6, 6], [4, 4]], [[10, 10], [11, 11], [12, 12], [10, 10]]]);
+    geometries = geometries[5].geometry.geometries;
+    expect(geometries[0].geometry.coordinates).toStrictEqual([4, 4]);
+    expect(geometries[1].geometry.coordinates).toStrictEqual([[4, 4], [5, 5]]);
+    expect(geometries[2].geometry.coordinates).toStrictEqual([[4, 4], [5, 5], [6, 6]]);
+    expect(geometries[3].geometry.coordinates).toStrictEqual([[[4, 4], [5, 5], [6, 6]], [[7, 7], [8, 8], [9, 9]]]);
+    expect(geometries[4].geometry.coordinates).toStrictEqual([[[4, 4], [5, 5], [6, 6], [4, 4]], [[10, 10], [11, 11], [12, 12], [10, 10]]]);
 });
 
 test('should bind parameters to functions', () => {

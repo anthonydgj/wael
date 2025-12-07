@@ -1,7 +1,8 @@
 import * as turf from '@turf/turf';
 
+import { Feature, Point } from 'geojson';
+
 import { GeometryType } from "./types";
-import { Point } from 'geojson';
 
 const INDENT = '  ';
 
@@ -18,8 +19,10 @@ export const isAnyGeometryType = (value: any) => {
 export const isGeometryType = (type: GeometryType, ...values: any) => {
     for (const value of values) {
         const isType = typeof value === 'object' &&
-            value?.type === type ||
-            value?.geometry?.type === type;
+            (
+                (value?.type === 'Feature' && value?.geometry.type === type) ||
+                (value?.type === 'FeatureCollection' && type === GeometryType.GeometryCollection)
+            )
         if (!isType) {
             return false;
         }
@@ -53,9 +56,9 @@ export const getArrayLikeItems = (value: any) => {
         isGeometryType(GeometryType.LineString, value) ||
         isGeometryType(GeometryType.MultiPoint, value)
     ) {
-        return value.coordinates;
+        return value.geometry.coordinates;
     } else if (isGeometryType(GeometryType.GeometryCollection, value)) {
-        return value.geometries;
+        return value.geometry.geometries;
     }
     return undefined;
 };
@@ -87,10 +90,10 @@ export const arithmeticOperation = (A: any, B: any, op: (a: any, b: any) => any)
         return op(A, B);
     }
     if (isNumber(A) && isAnyGeometryType(B)) {
-        return arithmeticOperation(turf.point([A, A]).geometry, B, op);
+        return arithmeticOperation(turf.point([A, A]), B, op);
     }
     if (isNumber(B) && isAnyGeometryType(A)) {
-        return arithmeticOperation(A, turf.point([B, B]).geometry, op);
+        return arithmeticOperation(A, turf.point([B, B]), op);
     }
     if (isGeometryType(GeometryType.Point, A, B)) {
         return pointOperation(A, B, op);
@@ -111,14 +114,14 @@ export const arithmeticOperation = (A: any, B: any, op: (a: any, b: any) => any)
 }
 
 export const pointOperation = (
-    A: any,
-    B: any,
+    A: GeoJSON.Feature<Point>,
+    B: GeoJSON.Feature<Point>,
     computeFn: (a: number, b: number) => number
 ) => {
     return turf.point([
-        computeFn(A.coordinates[0], B.coordinates[0]),
-        computeFn(A.coordinates[1], B.coordinates[1]),
-    ]).geometry;
+        computeFn(A.geometry.coordinates[0], B.geometry.coordinates[0]),
+        computeFn(A.geometry.coordinates[1], B.geometry.coordinates[1]),
+    ]);
 }
 
 
@@ -127,12 +130,12 @@ export const lineStringOperation = (
     B: any,
     computeFn: (a: number, b: number) => number
 ) => {
-    return turf.lineString(A.coordinates.map((p: number[], index: number) => {
+    return turf.lineString(A.geometry.coordinates.map((p: number[], index: number) => {
         return [
-            computeFn(p[0], B.coordinates[index][0]),
-            computeFn(p[1], B.coordinates[index][1]),
+            computeFn(p[0], B.geometry.coordinates[index][0]),
+            computeFn(p[1], B.geometry.coordinates[index][1]),
         ];
-    })).geometry;
+    }));
 }
 
 export const multiPointOperation = (
@@ -140,12 +143,12 @@ export const multiPointOperation = (
     B: any,
     computeFn: (a: number, b: number) => number
 ) => {
-    return turf.multiPoint(A.coordinates.map((p: number[], index: number) => {
+    return turf.multiPoint(A.geometry.coordinates.map((p: number[], index: number) => {
         return [
-            computeFn(p[0], B.coordinates[index][0]),
-            computeFn(p[1], B.coordinates[index][1]),
+            computeFn(p[0], B.geometry.coordinates[index][0]),
+            computeFn(p[1], B.geometry.coordinates[index][1]),
         ];
-    })).geometry;
+    }));
 }
 
 export class OperationNotSupported extends Error {
@@ -162,7 +165,7 @@ export function toString(value: any) {
     }
 }
 
-export function transformPoints(coords: any[], coordsMapFn: (g: Point) => any): any {
+export function transformPoints(coords: any[], coordsMapFn: (g: GeoJSON.Feature<Point>) => any): any {
     if (!!coords) {
         if (Array.isArray(coords)) {
             if (coords.length > 0) {
@@ -171,8 +174,8 @@ export function transformPoints(coords: any[], coordsMapFn: (g: Point) => any): 
                     return coords.map((c: any) => transformPoints(c, coordsMapFn));
                 } else {
                     // coords is a point
-                    const point = turf.point(coords).geometry;
-                    return coordsMapFn(point).coordinates;
+                    const point = turf.point(coords);
+                    return coordsMapFn(point).geometry.coordinates;
                 }
 
             }
@@ -181,48 +184,52 @@ export function transformPoints(coords: any[], coordsMapFn: (g: Point) => any): 
     return coords
 }
 
-export function transform(geoJson: any, coordsMapFn: (g: Point) => any): any {
+export function transform(geoJson: GeoJSON.Feature | GeoJSON.FeatureCollection, coordsMapFn: (g: GeoJSON.Feature<Point>) => any): any {
     if (!!geoJson) {
-
-        if (!!geoJson.features) {
+        if (geoJson.type === 'FeatureCollection') {
             return {
                 ...geoJson,
                 features: geoJson.features.map((feature: any) => transform(feature, coordsMapFn))
             };
         }
 
-        if (!!geoJson.geometries) {
-            return {
-                ...geoJson,
-                geometries: geoJson.geometries.map((geometry: any) => transform(geometry, coordsMapFn))
-            }
-        }
-
-        const geometry: any = geoJson.geometry;
-        if (!!geometry) {
-            if (geoJson.coordinates) {
+        if (geoJson.type === 'Feature') {
+            if (geoJson.geometry.type === 'GeometryCollection') {
                 return {
                     ...geoJson,
                     geometry: {
-                        ...geometry,
-                        coordinates: transformPoints(geometry.coordinates, coordsMapFn)
+                        ...geoJson.geometry,
+                        geometries: geoJson.geometry.geometries.map((geometry: any) => transform(geometry, coordsMapFn))
                     }
                 }
             }
+
+            if (geoJson.geometry.coordinates) {
+                return {
+                    ...geoJson,
+                    geometry: {
+                        ...geoJson.geometry,
+                        coordinates: transformPoints(geoJson.geometry.coordinates, coordsMapFn)
+                    }
+                }
+            }
+
+            // const coordinates = geoJson.coordinates;
+            // if (!!coordinates) {
+            //     return {
+            //         ...geoJson,
+            //         coordinates: transformPoints(coordinates, coordsMapFn)
+            //     }
+            // }
+
         }
 
-        const coordinates = geoJson.coordinates;
-        if (!!coordinates) {
-            return {
-                ...geoJson,
-                coordinates: transformPoints(coordinates, coordsMapFn)
-            }
-        }
     }
     return geoJson;
 }
 
 export function convertToGeometry(json: any): any {
+    return json;
     if (json.type === 'Feature') {
         return json.geometry;
     } else if (json.type === 'FeatureCollection') {
@@ -263,48 +270,48 @@ export function geometryAccessor(v: any, p: any, params: any[]) {
                     if (params.length === 1) {
                         return turf.point([
                             params[0],
-                            value.coordinates[1]
-                        ]).geometry;
+                            value.geometry.coordinates[1]
+                        ]);
                     }
                     throw Error(`Expected one value in "${property}" setter for "${v.sourceString}" but got: ${toString(params)}`)
                 }
                 // getter
-                return value.coordinates[0];
+                return value.geometry.coordinates[0];
             case 'y':
                 if (params?.length > 0) {
                     // setter
                     if (params.length === 1) {
                         return turf.point([
-                            value.coordinates[0],
+                            value.geometry.coordinates[0],
                             params[0]
-                        ]).geometry;
+                        ]);
                     }
                     throw Error(`Expected one value in "${property}" setter for "${v.sourceString}" but got: ${toString(params)}`)
                 }
                 // getter
-                return value.coordinates[1];
+                return value.geometry.coordinates[1];
         }
     } else if (isGeometryType(GeometryType.GeometryCollection, value)) {
         switch (property.toLocaleLowerCase()) {
             case 'geometryn':
                 if (params.length === 1) {
                     const index = parseInt(params[0]);
-                    return value.geometries[index];
+                    return value.geometry.geometries[index];
                 }
                 throw Error(`Expected one value in "${property}" setter for "${v.sourceString}" but got: ${toString(params)}`)
             case 'numgeometries':
-                return value.geometries.length;
+                return value.geometry.geometries.length;
         }
     } else if (isGeometryType(GeometryType.LineString, value)) {
         switch (property.toLocaleLowerCase()) {
             case 'pointn':
                 if (params.length === 1) {
                     const index = parseInt(params[0]);
-                    return turf.point(value.coordinates[index]).geometry;
+                    return turf.point(value.geometry.coordinates[index]);
                 }
                 throw Error(`Expected one value in "${property}" setter for "${v.sourceString}" but got: ${toString(params)}`)
             case 'numpoints':
-                return value.coordinates.length;
+                return value.geometry.coordinates.length;
         }
     }
 
@@ -380,5 +387,5 @@ export const generateGeometries = (numExp: any, valueExp: any) => {
             }
         }
     }
-    return turf.geometryCollection(items).geometry;
+    return turf.geometryCollection(items);
 }

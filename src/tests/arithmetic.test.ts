@@ -21,7 +21,7 @@ test('should support point arithmetic', () => {
     result = defaultEval(`Point(2 5) ^ Point(3 0)`);
     expect(result).toBeTruthy();
     expect(result.geometry.coordinates).toStrictEqual([8, 1]);
-    
+
     result = defaultEval(`Point(2 5) % Point(3 2)`);
     expect(result).toBeTruthy();
     expect(result.geometry.coordinates).toStrictEqual([2, 1]);
@@ -139,10 +139,10 @@ test('should support variable type arithmetic', () => {
 
     result = defaultEval(`GeometryCollection(1 1, 2 2) + 3`);
     expect(result).toBeTruthy();
-    expect(result?.geometry.geometries?.map((f: any) => f.coordinates)).toStrictEqual([[4, 4], [5, 5]]);
+    expect(result?.geometry.geometries?.map((f: any) => f.geometry.coordinates)).toStrictEqual([[4, 4], [5, 5]]);
     result = defaultEval(`44 / GeometryCollection(1 1, 2 2)`);
     expect(result).toBeTruthy();
-    expect(result?.geometry.geometries?.map((f: any) => f.coordinates)).toStrictEqual([[44, 44], [22, 22]]);
+    expect(result?.geometry.geometries?.map((f: any) => f.geometry.coordinates)).toStrictEqual([[44, 44], [22, 22]]);
 
     result = defaultEval(`
     GeometryCollection(
@@ -162,17 +162,17 @@ test('should support variable type arithmetic', () => {
     `);
     expect(result).toBeTruthy();
     let geometries = result?.geometry.geometries;
-    expect(geometries[0].coordinates).toStrictEqual([4, 4]);
-    expect(geometries[1].coordinates).toStrictEqual([[4, 4], [5, 5]]);
-    expect(geometries[2].coordinates).toStrictEqual([[4, 4], [5, 5], [6, 6]]);
-    expect(geometries[3].coordinates).toStrictEqual([[[4, 4], [5, 5], [6, 6]], [[7, 7], [8, 8], [9, 9]]]);
-    expect(geometries[4].coordinates).toStrictEqual([[[4, 4], [5, 5], [6, 6], [4, 4]], [[10, 10], [11, 11], [12, 12], [10, 10]]]);
-    geometries = geometries[5].geometries;
-    expect(geometries[0].coordinates).toStrictEqual([4, 4]);
-    expect(geometries[1].coordinates).toStrictEqual([[4, 4], [5, 5]]);
-    expect(geometries[2].coordinates).toStrictEqual([[4, 4], [5, 5], [6, 6]]);
-    expect(geometries[3].coordinates).toStrictEqual([[[4, 4], [5, 5], [6, 6]], [[7, 7], [8, 8], [9, 9]]]);
-    expect(geometries[4].coordinates).toStrictEqual([[[4, 4], [5, 5], [6, 6], [4, 4]], [[10, 10], [11, 11], [12, 12], [10, 10]]]);
+    expect(geometries[0].geometry.coordinates).toStrictEqual([4, 4]);
+    expect(geometries[1].geometry.coordinates).toStrictEqual([[4, 4], [5, 5]]);
+    expect(geometries[2].geometry.coordinates).toStrictEqual([[4, 4], [5, 5], [6, 6]]);
+    expect(geometries[3].geometry.coordinates).toStrictEqual([[[4, 4], [5, 5], [6, 6]], [[7, 7], [8, 8], [9, 9]]]);
+    expect(geometries[4].geometry.coordinates).toStrictEqual([[[4, 4], [5, 5], [6, 6], [4, 4]], [[10, 10], [11, 11], [12, 12], [10, 10]]]);
+    geometries = geometries[5].geometry.geometries;
+    expect(geometries[0].geometry.coordinates).toStrictEqual([4, 4]);
+    expect(geometries[1].geometry.coordinates).toStrictEqual([[4, 4], [5, 5]]);
+    expect(geometries[2].geometry.coordinates).toStrictEqual([[4, 4], [5, 5], [6, 6]]);
+    expect(geometries[3].geometry.coordinates).toStrictEqual([[[4, 4], [5, 5], [6, 6]], [[7, 7], [8, 8], [9, 9]]]);
+    expect(geometries[4].geometry.coordinates).toStrictEqual([[[4, 4], [5, 5], [6, 6], [4, 4]], [[10, 10], [11, 11], [12, 12], [10, 10]]]);
 });
 
 test('should obey operator precedence', () => {

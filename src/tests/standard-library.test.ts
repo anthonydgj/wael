@@ -12,7 +12,7 @@ test('should convert from geometry collection', () => {
 
     result = defaultEval(`GeometryCollection(Point(1 1), Point(2 2), Point(3 3)) | ToGeometryCollection`);
     expect(result).toBeTruthy();
-    expect(result.geometry.geometries.map((f: any) => f.coordinates)).toStrictEqual([[1, 1], [2, 2], [3, 3]]);
+    expect(result.geometry.geometries.map((f: any) => f.geometry.coordinates)).toStrictEqual([[1, 1], [2, 2], [3, 3]]);
 });
 
 test('should convert from line string', () => {
@@ -27,7 +27,7 @@ test('should convert from line string', () => {
 
     result = defaultEval(`LineString(1 1, 2 2, 3 3) | ToGeometryCollection`);
     expect(result).toBeTruthy();
-    expect(result.geometry.geometries.map((f: any) => f.coordinates)).toStrictEqual([[1, 1], [2, 2], [3, 3]]);
+    expect(result.geometry.geometries.map((f: any) => f.geometry.coordinates)).toStrictEqual([[1, 1], [2, 2], [3, 3]]);
 });
 
 test('should convert from multi point', () => {
@@ -42,7 +42,7 @@ test('should convert from multi point', () => {
 
     result = defaultEval(`MultiPoint(1 1, 2 2, 3 3) | ToGeometryCollection`);
     expect(result).toBeTruthy();
-    expect(result.geometry.geometries.map((f: any) => f.coordinates)).toStrictEqual([[1, 1], [2, 2], [3, 3]]);
+    expect(result.geometry.geometries.map((f: any) => f.geometry.coordinates)).toStrictEqual([[1, 1], [2, 2], [3, 3]]);
 });
 
 test('should rotate points', () => {

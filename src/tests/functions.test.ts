@@ -138,7 +138,7 @@ it('should handle recursion', () => {
         ));
         build_list(3)
     `);
-    expect(result?.geometry.geometries?.map((f: any) => f.coordinates))
+    expect(result?.geometry.geometries?.map((f: any) => f.geometry.coordinates))
         .toStrictEqual([[1, 1], [2, 2], [3, 3]]);
 });
 
@@ -165,7 +165,7 @@ it('should handle function calls of function calls', () => {
 it('should handle the spread operator parameter', () => {
     let result;
     result = defaultEval(`((...g) => g)(1 1, 2 2, 3 3)`)
-    expect(result?.geometry.geometries?.map((f: any) => f.coordinates))
+    expect(result?.geometry.geometries?.map((f: any) => f.geometry.coordinates))
         .toStrictEqual([[1, 1], [2, 2], [3, 3]])
 });
 
@@ -199,7 +199,7 @@ it('should allow closures', () => {
         stack = Lib:Pop(stack);
     `
     result = defaultEval(`${exp} Lib:Stack; stack`);
-    expect(result.geometry.geometries).toStrictEqual([{ type: 'Point', coordinates: [2, 2] }]);
+    expect(result.geometry.geometries).toStrictEqual([{ type: 'Feature', geometry: { type: 'Point', coordinates: [2, 2] }, properties: {} }]);
 });
 
 it('should support closure state', () => {
@@ -225,7 +225,7 @@ it('should support imports with state', () => {
         list:remove(1);
         list:value()
     `);
-    expect(result.geometry.geometries.map((p: any) => p.coordinates)).toStrictEqual([[1, 1], [3, 3]]);
+    expect(result.geometry.geometries.map((p: any) => p.geometry.coordinates)).toStrictEqual([[1, 1], [3, 3]]);
 });
 
 it('should support multiple imports', () => {

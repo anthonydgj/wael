@@ -94,7 +94,7 @@ export namespace Interpreter {
                 currentScope = currentScope.push();
                 let ret = undefined;
                 try {
-                    ret = convertToGeometry(JSON.parse(data));
+                    ret = JSON.parse(data);
                 } catch {
                     try {
                         const libRet = evaluateInput(data, currentScope, workingDirectory);
@@ -203,13 +203,13 @@ export namespace Interpreter {
                     ) {
                         const combined = list1.concat(list2);
                         if (type1 === GeometryType.LineString) {
-                            return turf.lineString(combined).geometry;
+                            return turf.lineString(combined);
                         }
                         if (type1 === GeometryType.MultiPoint) {
-                            return turf.multiPoint(combined).geometry;
+                            return turf.multiPoint(combined);
                         }
                         if (type1 === GeometryType.GeometryCollection) {
-                            return turf.geometryCollection(combined).geometry;
+                            return turf.geometryCollection(combined);
                         }
                     }
                 }
@@ -227,32 +227,32 @@ export namespace Interpreter {
                         list2 = getArrayLikeItems(geom2);
                     } else {
                         if (type2 === GeometryType.Point) {
-                            list2 = [geom2.coordinates];
+                            list2 = [geom2.geometry.coordinates];
                         }
                     }
                     if (list2) {
                         const combined = list1.concat(list2);
                         if (type1 === GeometryType.LineString) {
-                            return turf.lineString(combined).geometry;
+                            return turf.lineString(combined);
                         }
                         if (type1 === GeometryType.MultiPoint) {
-                            return turf.multiPoint(combined).geometry;
+                            return turf.multiPoint(combined);
                         }
                         if (type1 === GeometryType.GeometryCollection) {
-                            return turf.geometryCollection(combined).geometry;
+                            return turf.geometryCollection(combined);
                         }
                     }
                 }
 
                 if (type1 === GeometryType.GeometryCollection) {
-                    return turf.geometryCollection(geom1.geometries.concat([geom2])).geometry;
+                    return turf.geometryCollection(geom1.geometry.geometries.concat([geom2]));
                 }
 
                 if (type2 === GeometryType.GeometryCollection) {
-                    return turf.geometryCollection([geom1].concat(...geom2.geometries)).geometry;
+                    return turf.geometryCollection([geom1].concat(...geom2.geometry.geometries));
                 }
 
-                return turf.geometryCollection([geom1, geom2]).geometry;
+                return turf.geometryCollection([geom1, geom2]);
             },
             PipeExp(a, op, f) {
                 const operator = op.sourceString;
@@ -288,31 +288,31 @@ export namespace Interpreter {
                     if (isAnyGeometryType(mappedList)) {
                         return mappedList;
                     }
-                    return turf.geometryCollection(mappedList).geometry;
+                    return turf.geometryCollection(mappedList);
                 }
 
                 if (isGeometryType(GeometryType.LineString, val)) {
                     let mappedList = listFn.call(
-                        list.map(coords => turf.point(coords).geometry),
+                        list.map(coords => turf.point(coords)),
                         fn
                     );
                     if (isAnyGeometryType(mappedList)) {
                         return mappedList;
                     }
-                    mappedList = mappedList.map((v: any) => v.coordinates);
-                    return turf.lineString(mappedList).geometry;
+                    mappedList = mappedList.map((v: any) => v.geometry.coordinates);
+                    return turf.lineString(mappedList);
                 }
 
                 if (isGeometryType(GeometryType.MultiPoint, val)) {
                     let mappedList = listFn.call(
-                        list.map(coords => turf.point(coords).geometry),
+                        list.map(coords => turf.point(coords)),
                         fn
                     );
                     if (isAnyGeometryType(mappedList)) {
                         return mappedList;
                     }
-                    mappedList = mappedList.map((v: any) => v.coordinates);
-                    return turf.multiPoint(mappedList).geometry;
+                    mappedList = mappedList.map((v: any) => v.geometry.coordinates);
+                    return turf.multiPoint(mappedList);
                 }
 
                 // TODO -- Multi line types (Polygon, MultiLineString)
@@ -396,7 +396,7 @@ export namespace Interpreter {
                     currentScope.capture(fnScope);
 
                     if (isSpread) {
-                        const geometries = turf.geometryCollection(values).geometry
+                        const geometries = turf.geometryCollection(values)
                         currentScope.store(params[0].identifier, geometries, undefined, false)
                     } else {
                         params.forEach((paramName: any, index: number) => {
@@ -464,34 +464,34 @@ export namespace Interpreter {
             },
             GeometryCollectionText_present(_leftParen, list, _rightParen) {
                 const geometries = ((list || []) as any).asIteration().children.map((c: any) => c.eval());
-                return turf.geometryCollection(geometries).geometry;
+                return turf.geometryCollection(geometries);
             },
             GeometryCollectionParameters(list) {
                 const geometries = ((list || []) as any).asIteration().children.map((c: any) => c.eval());
-                return turf.geometryCollection(geometries).geometry;
+                return turf.geometryCollection(geometries);
             },
             MultiPolygonText_present(_leftParen, list, _rightParen) {
                 const polygons = list.asIteration().children.map(c => c.eval());
-                return turf.multiPolygon(polygons.map(p => p.coordinates)).geometry;
+                return turf.multiPolygon(polygons.map(p => p.geometry.coordinates));
             },
             MultiLineStringText_present(_leftParen, list, _rightParen) {
                 const lineStrings = list.asIteration().children.map(c => c.eval());
-                return turf.multiLineString(lineStrings.map(p => p.coordinates)).geometry;
+                return turf.multiLineString(lineStrings.map(p => p.geometry.coordinates));
             },
             MultiPointText(multiPoint) {
                 return multiPoint.eval();
             },
             MultiPoint(list) {
                 const points = list.eval();
-                return turf.multiPoint(points.map((p: any) => p.coordinates)).geometry;
+                return turf.multiPoint(points.map((p: any) => p.geometry.coordinates));
             },
             PolygonText_present(_leftParen, list, _rightParen) {
                 const points = list.asIteration().children.map(c => c.eval());
-                return turf.polygon(points.map(p => p.coordinates)).geometry;
+                return turf.polygon(points.map(p => p.geometry.coordinates));
             },
             LineStringText_present(_leftParen, list, _rightParen) {
                 const points = list.eval();
-                return turf.lineString(points.map((p: any) => p.coordinates)).geometry;
+                return turf.lineString(points.map((p: any) => p.geometry.coordinates));
             },
             PointListLiteral(list) {
                 return list.asIteration().children.map(c => c.eval());
@@ -506,7 +506,7 @@ export namespace Interpreter {
                 return point.eval();
             },
             Point(x, y) {
-                return turf.point([x.eval(), y.eval()]).geometry;
+                return turf.point([x.eval(), y.eval()]);
             },
             ArithmeticAdd_plus(a, _, b) {
                 const result = arithmeticOperationExp(a, b, (a, b) => a + b);

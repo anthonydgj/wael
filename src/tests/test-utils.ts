@@ -6,7 +6,7 @@ export const DEFAULT_OPTIONS: Options = {
     useStdLib: true
 };
 
-export const defaultEval = (input: string, opts = {}) => {
+export const defaultEval = (input: string, opts: Partial<Options> = {}) => {
     const options = { ...DEFAULT_OPTIONS, ...opts }
     return new Wael().evaluate(input, options);
 }
